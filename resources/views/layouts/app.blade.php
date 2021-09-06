@@ -19,6 +19,53 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <style>
+    button.btn.radius {
+        border-radius:20px;
+        font-size: 120%;
+    }
+
+    .inner-addon { 
+        position: relative; 
+    }
+    .inner-addon i.bi {
+        font-size: 20px;
+        position: absolute;
+        padding: 4px;
+        display: none;
+    }
+    .left-addon i.bi  { left:  0px;}
+    .right-addon i.bi { right: 0px;}
+    .left-addon input  { padding-left:  30px; }
+    .right-addon input { padding-right: 30px; }
+    </style>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".inner-addon i.bi").click(function() {
+                $(this).hide().parent().children("input").val("").focus();
+            });
+
+            $(".inner-addon input").on('keyup',function(e) {
+                if ($(this).val() != "") {
+                    $(this).parent().children("i.bi").show();
+                } else {
+                    $(this).parent().children("i.bi").hide();
+                }
+            });
+        });
+
+        {{-- 訊息提示視窗Function --}}
+        function showMessageModal(content) {
+            $("#messageModal > .modal-dialog > .modal-content > .modal-body").html(content);
+            $("#messageModal").modal("show");
+        }
+
+        function hideMessageModal() {
+            $("#messageModal").modal("hide");
+        }
+    </script>
 </head>
 <body>
     <div id="app">
@@ -81,6 +128,18 @@
         <main class="py-4">
             @yield('content')
         </main>
+    </div>
+
+    {{-- 訊息提示視窗  --}}
+    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-danger"></div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-primary" onclick="hideMessageModal();">確認</button>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

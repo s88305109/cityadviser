@@ -20,7 +20,6 @@ class CreateUserTable extends Migration
             $table->string('user_password', 255)->comment('使用者密碼');
             $table->datetime('login_time')->nullable()->comment('使用者最後登入時間');
             $table->datetime('sign_out_time')->nullable()->comment('使用者最後登出時間');
-            $table->string('remember_token', 100)->nullable()->comment('保持登入狀態資訊');
             $table->tinyInteger('status')->comment('帳號狀態');
         });
 

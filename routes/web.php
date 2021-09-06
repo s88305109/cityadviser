@@ -35,4 +35,4 @@ Route::get('/', function () {
 Route::get('/login', [LoginController::class, 'show']);                             // 登入介面
 Route::post('/login', [LoginController::class, 'verification']);                    // 驗證帳號
 Route::get('/logout', [LoginController::class, 'logout']);                          // 登出
-Route::get('/reload-captcha', [CaptchaServiceController::class, 'reloadCaptcha']);  // 驗證碼重刷
+Route::get('/reload-captcha', [CaptchaServiceController::class, 'reloadCaptcha']);  // 重刷驗證碼

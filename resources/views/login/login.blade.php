@@ -2,8 +2,6 @@
 
 @section('content')
 
-<meta name="csrf-token" content="{{ csrf_token() }}">
-
 <script type="text/javascript">
     $(document).ready(function () {
         $.ajaxSetup({
@@ -13,37 +11,46 @@
         });
 
         $("#reload").click(function () {
-            refresh();
+            refreshCaptcha();
+        });
+
+        $("#showPassword").click(function () {
+            if($(this).is(":checked")) {
+                $("#user_password").attr("type", "text");
+            } else {
+                $("#user_password").attr("type", "password");
+            }
         });
 
         $("#run").click(function () {
             if($(".step1").is(":visible")) {
-                $(".step1, .step3").hide();
-                $(".step2").fadeIn('fast');
+                if ($("#user_number").val() == "") {
+                    $("#user_number").addClass("is-invalid");
+                    $("#user_number_label").html("請輸入帳號").addClass("text-danger");
+                    return false;
+                }
+
+                $(".step1, .step3").addClass("d-none");
+                $(".step2").removeClass("d-none");
                 $("#user_password").focus();
             } else if($(".step2").is(":visible")) {
-                $(".step1, .step2").hide();
-                $(".step3").fadeIn('fast');
+                if ($("#user_password").val() == "") {
+                    $("#user_password").addClass("is-invalid");
+                    $("#user_password_label").html("請輸入密碼").addClass("text-danger");
+                    return false;
+                }
+
+                $(".step1, .step2").addClass("d-none");
+                $(".step3").removeClass("d-none");
                 $("#captcha").focus();
             } else if($(".step3").is(":visible")) {
-                $.ajax({
-                    type: "POST",
-                    url: "/login",
-                    data: $(".login-form").serialize(),
-                    dataType: "json",
-                    success: function (response) {
-                        if (response.status == "OK") {
-                            window.location.href = "/";
-                        } else {
-                            alert(response.msg);
-                            console.log(response.msg);
-                            refresh();
-                        }
-                    },
-                    error: function (thrownError) {
-                        console.log(thrownError);
-                    }
-                });
+                if ($("#captcha").val() == "") {
+                    $("#captcha").addClass("is-invalid");
+                    $("#captcha_label").html("請輸入驗證碼").addClass("text-danger");
+                    return false;
+                }
+
+                $("form.login-form").submit();
             }
         });
 
@@ -52,89 +59,108 @@
                 $("#run").trigger("click");
             }
         });
+
+        @error('user_password')
+        $(".step1, .step3").addClass("d-none");
+        $(".step2").removeClass("d-none");
+        $("#user_password").focus();
+        @enderror
+
+        @error('captcha')
+        $(".step1, .step2").addClass("d-none");
+        $(".step3").removeClass("d-none");
+        $("#captcha").focus();
+        @enderror
     });
 
-    function refresh() {
-        $.ajax({
-            type: "GET",
-            url: "reload-captcha",
-            success: function (data) {
-                $(".captcha span").html(data.captcha);
-            }
+    function refreshCaptcha() {
+        $.get("/reload-captcha").done(function(data){
+            $(".captcha span").html(data.captcha);
+            $("#captcha").val("");
         });
     }
 </script>
-
-<style>
-.step2, .step3{
-    display: none;
-}
-</style>
 
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="row justify-content-center mt-2">
-                <img src="/images/logo.jpg">
+                <img src="/images/logo-128.png">
             </div>
+            <h1 class="text-center mt-1">融鎰數位科技</h1>
 
             <div class="card-body">
-                <form class="login-form needs-validation" method="POST" action="/login" novalidate>
+                <form class="login-form" method="POST" action="/login" novalidate>
                     @csrf
 
                     <div class="form-group row step1">
-                        <label for="user_number" class="col-md-4 col-form-label text-md-right">請輸入帳號</label>
+                        <label id="user_number_label" for="user_number" class="col-md-4 col-form-label text-md-right">請輸入帳號</label>
 
                         <div class="col-md-6">
-                            <input type="text " class="form-control @error('user_number ') is-invalid @enderror" id="user_number" name="user_number" value="{{ old('user_number ') }}" required autocomplete="email" autofocus>
-
-                            @error('email')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-group row step2">
-                        <label for="user_password" class="col-md-4 col-form-label text-md-right">請輸入密碼</label>
-
-                        <div class="col-md-6">
-                            <input type="password" class="form-control @error('user_password') is-invalid @enderror" id="user_password"  name="user_password" required autocomplete="current-password">
-
-                            @error('user_password')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-group row step3">
-                        <label for="captcha" class="col-md-4 col-form-label text-md-right">請輸入驗證碼</label>
-
-                        <div class="col-md-6">
-                            <input type="text" class="form-control @error('captcha') is-invalid @enderror" id="captcha"  name="captcha" required autocomplete="off">
-
-                            <div class="captcha">
-                                <span>{!! captcha_img() !!}</span>
-                                <button type="button" class="btn btn-primary" class="reload" id="reload">
-                                    &#x21bb;
-                                </button>
+                            <div class="inner-addon right-addon">
+                                <i class="bi bi-x-circle-fill text-danger"></i>
+                                <input type="text " class="form-control @error('user_number') is-invalid @enderror" id="user_number" name="user_number" value="{{ old('user_number') }}" required autocomplete="email" autofocus>
                             </div>
 
-                            @error('captcha')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
+                            @error('user_number')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
                             @enderror
                         </div>
                     </div>
+
+                    <div class="form-group row step2 d-none">
+                        <label id="user_password_label" for="user_password" class="col-md-4 col-form-label text-md-right">請輸入密碼</label>
+
+                        <div class="col-md-6">
+                            <div class="inner-addon right-addon">
+                                <i class="bi bi-x-circle-fill text-danger"></i>
+                                <input type="password" class="form-control @error('user_password') is-invalid @enderror" id="user_password"  name="user_password" value="{{ old('user_password') }}" required autocomplete="current-password">
+                            </div>
+
+                            @error('user_password')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                    
+                        <label class="col-md-4 col-form-label text-md-right"></label>
+                        <div class="col-md-6">
+                            <div class="form-check form-check-inline">
+                                <label class="form-check-label" for="showPassword"><input type="checkbox" class="form-check-input" id="showPassword"> 顯示密碼</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row step3 d-none">
+                        <label id="captcha_label" for="captcha" class="col-md-4 col-form-label text-md-right">請輸入驗證碼</label>
+
+                        <div class="col-md-6">
+                            <input type="text" class="form-control @error('captcha') is-invalid @enderror" id="captcha" name="captcha" required autocomplete="off">
+                            
+                            @error('captcha')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+
+                        <label class="col-md-4 col-form-label"></label>
+                        <div class="captcha col-md-6">
+                            <span>{!! captcha_img() !!}</span>
+                            <button type="button" class="btn btn-primary" class="reload" id="reload">
+                                &#x21bb;
+                            </button>
+                        </div>
+                    </div>
+
 
                     <br><br>
 
                     <div class="form-group row mb-0 justify-content-center">
-                        <button type="button" class="btn btn-primary px-5" id="run">
+                        <button type="button" class="btn btn-primary radius px-5" id="run">
                             繼續
                         </button>
                     </div>
