@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', '融鎰數位科技') }}</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -39,17 +39,42 @@
     .right-addon i.bi { right: 0px;}
     .left-addon input  { padding-left:  30px; }
     .right-addon input { padding-right: 30px; }
+
+    .inner-addon i.bi.password-visible {
+        z-index: 999;
+        display: inline-block;
+        margin-right: 4px;
+    }
+
+    .loading-mask {
+        position: fixed;
+        z-index: 9999;
+        background-color: #111;
+        width: 100%;
+        height: 100%;
+        top: 0px;
+        opacity: 0.8;
+        display: none;
+    }
+    .loading-mask .spinner-border {
+        margin: -1rem 0 0 -1rem;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+    }
     </style>
 
     <script type="text/javascript">
         $(document).ready(function () {
-            $(".inner-addon i.bi").click(function() {
+            {{-- 文字方塊叉叉圖示處理 --}}
+            $(".inner-addon.reset-icon i.bi").click(function() {
                 $(this).hide().parent().children("input").val("").focus();
             });
 
-            $(".inner-addon input").on('keyup',function(e) {
+            $(".inner-addon.reset-icon input").on('keyup',function(e) {
                 if ($(this).val() != "") {
-                    $(this).parent().children("i.bi").show();
+                    $(this).parent().children("i.bi").fadeIn();
+                    $(this).css("background-image", "none");
                 } else {
                     $(this).parent().children("i.bi").hide();
                 }
@@ -64,6 +89,14 @@
 
         function hideMessageModal() {
             $("#messageModal").modal("hide");
+        }
+
+        {{-- Loading Mask Function --}}
+        function showLoadingMask() {
+            $(".loading-mask").fadeIn(100);
+        }
+        function hideLoadingMask() {
+            $(".loading-mask").fadeOut(100);
         }
     </script>
 </head>
@@ -131,14 +164,21 @@
     </div>
 
     {{-- 訊息提示視窗  --}}
-    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-body text-danger"></div>
                 <div class="modal-footer justify-content-center">
                     <button type="button" class="btn btn-primary" onclick="hideMessageModal();">確認</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    {{-- Loading 遮罩 --}}
+    <div class="loading-mask justify-content-center">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
         </div>
     </div>
 </body>

@@ -4,21 +4,23 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $.ajaxSetup({
-            headers: {
-                "X-CSRF-TOKEN": $("meta[name='csrf-token']").attr("content")
-            }
-        });
-
         $("#reload").click(function () {
             refreshCaptcha();
         });
 
-        $("#showPassword").click(function () {
+        $("#show_password").click(function () {
             if($(this).is(":checked")) {
                 $("#user_password").attr("type", "text");
             } else {
                 $("#user_password").attr("type", "password");
+            }
+        });
+
+        $("#user_number, #user_password, #captcha").on('keyup',function(e) {
+            if ($(this).val() != "") {
+                $("#run").prop("disabled", false);
+            } else {
+                $("#run").prop("disabled", true);
             }
         });
 
@@ -29,7 +31,7 @@
                     $("#user_number_label").html("請輸入帳號").addClass("text-danger");
                     return false;
                 }
-
+                $("#run").prop("disabled", true);
                 $(".step1, .step3").addClass("d-none");
                 $(".step2").removeClass("d-none");
                 $("#user_password").focus();
@@ -39,7 +41,7 @@
                     $("#user_password_label").html("請輸入密碼").addClass("text-danger");
                     return false;
                 }
-
+                $("#run").prop("disabled", true);
                 $(".step1, .step2").addClass("d-none");
                 $(".step3").removeClass("d-none");
                 $("#captcha").focus();
@@ -49,12 +51,12 @@
                     $("#captcha_label").html("請輸入驗證碼").addClass("text-danger");
                     return false;
                 }
-
+                showLoadingMask();
                 $("form.login-form").submit();
             }
         });
 
-        $(document).on('keypress',function(e) {
+        $("#user_number, #user_password, #captcha").on("keypress",function(e) {
             if(e.which == 13) {
                 $("#run").trigger("click");
             }
@@ -70,6 +72,10 @@
         $(".step1, .step2").addClass("d-none");
         $(".step3").removeClass("d-none");
         $("#captcha").focus();
+        @enderror
+
+        @error('user_lock')
+        showMessageModal("{{ $message }}");
         @enderror
     });
 
@@ -87,7 +93,7 @@
             <div class="row justify-content-center mt-2">
                 <img src="/images/logo-128.png">
             </div>
-            <h1 class="text-center mt-1">融鎰數位科技</h1>
+            <h1 class="text-center mt-1">{{ config('app.name', '融鎰數位科技') }}</h1>
 
             <div class="card-body">
                 <form class="login-form" method="POST" action="/login" novalidate>
@@ -97,16 +103,16 @@
                         <label id="user_number_label" for="user_number" class="col-md-4 col-form-label text-md-right">請輸入帳號</label>
 
                         <div class="col-md-6">
-                            <div class="inner-addon right-addon">
+                            <div class="inner-addon right-addon reset-icon">
                                 <i class="bi bi-x-circle-fill text-danger"></i>
-                                <input type="text " class="form-control @error('user_number') is-invalid @enderror" id="user_number" name="user_number" value="{{ old('user_number') }}" required autocomplete="email" autofocus>
-                            </div>
+                                <input type="text" class="form-control @error('user_number') is-invalid @enderror" id="user_number" name="user_number" value="{{ old('user_number') }}" required autofocus>
 
-                            @error('user_number')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
+                                @error('user_number')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
                         </div>
                     </div>
 
@@ -114,22 +120,22 @@
                         <label id="user_password_label" for="user_password" class="col-md-4 col-form-label text-md-right">請輸入密碼</label>
 
                         <div class="col-md-6">
-                            <div class="inner-addon right-addon">
+                            <div class="inner-addon right-addon reset-icon">
                                 <i class="bi bi-x-circle-fill text-danger"></i>
-                                <input type="password" class="form-control @error('user_password') is-invalid @enderror" id="user_password"  name="user_password" value="{{ old('user_password') }}" required autocomplete="current-password">
-                            </div>
+                                <input type="password" class="form-control @error('user_password') is-invalid @enderror" id="user_password" name="user_password" value="{{ old('user_password') }}" required autocomplete="current-password">
 
-                            @error('user_password')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
+                                @error('user_password')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
                         </div>
                     
                         <label class="col-md-4 col-form-label text-md-right"></label>
                         <div class="col-md-6">
                             <div class="form-check form-check-inline">
-                                <label class="form-check-label" for="showPassword"><input type="checkbox" class="form-check-input" id="showPassword"> 顯示密碼</label>
+                                <label class="form-check-label" for="show_password"><input type="checkbox" class="form-check-input" id="show_password"> 顯示密碼</label>
                             </div>
                         </div>
                     </div>
@@ -160,7 +166,7 @@
                     <br><br>
 
                     <div class="form-group row mb-0 justify-content-center">
-                        <button type="button" class="btn btn-primary radius px-5" id="run">
+                        <button type="button" class="btn btn-primary radius px-5" id="run" disabled="disabled">
                             繼續
                         </button>
                     </div>
