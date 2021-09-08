@@ -74,16 +74,14 @@ class LoginController extends Controller
             }
 
             if (Hash::check($request->input('user_password'), $user->user_password)) {
-                session(['user_number' => $user->user_number]);
-                session(['user_id' => $user->user_id]);
+                Auth::loginUsingId($user->user_id);
+                Auth::logoutOtherDevices($request->input('user_password'), 'user_password');
   
                 // 記錄使用者最後登入時間
                 DB::table('user')
                     ->where('user_id', $user->user_id)
                     ->update(['login_time' => date('Y/m/d H:i:s'), 'sign_out_time' => date('Y-m-d H:i:s')]);
             } else {
-                $request->session()->forget('user_number');
-
                 // 紀錄使用者密碼錯誤紀錄
                 DB::table('authentication_log')->insert([
                     'user_id' => $user->user_id,
@@ -94,8 +92,6 @@ class LoginController extends Controller
                 return redirect()->back()->withInput()->withErrors(['user_password' => '密碼錯誤']);
             }
         } else {
-            $request->session()->forget('user_number');
-
             return redirect()->back()->withInput()->withErrors(['user_number' => '帳號錯誤']);
         }
 
@@ -105,7 +101,7 @@ class LoginController extends Controller
     // 登出
     public function logout(Request $request)
     {
-        $request->session()->forget('user_number');
+        Auth::logout();
 
         return redirect('/login');
     }
