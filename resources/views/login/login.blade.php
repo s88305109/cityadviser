@@ -32,7 +32,7 @@
                     return false;
                 }
 
-                if (("#user_password").val() == "") 
+                if ($("#user_password").val() == "") 
                     $("#run").prop("disabled", true);
 
                 $(".step1, .step3").addClass("d-none");
