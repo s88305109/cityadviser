@@ -5,28 +5,34 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     // 主頁
     public function index(Request $request)
     {
-        return view('/user/user');
+        return view('user.user');
     }
 
     // 個人資料頁面
     public function show(Request $request)
     {
-        $user = User::where('user_id', $request->session()->get('user_id'))->first();
+        $user = Auth::user();
 
-        return view('/user/information', ['user' => $user]);
+        return view('user.information', ['user' => $user]);
     }
 
     // 修改密碼
     public function changePassword(Request $request)
     {
-        $user = User::where('user_id', $request->session()->get('user_id'))->first();
+        $user = Auth::user();
 
         if (empty($request->input('old_password'))) {
             return redirect()->back()->withInput()->withErrors(['modify_failed' => "請輸入目前密碼"]);
@@ -41,7 +47,7 @@ class UserController extends Controller
         }
 
         DB::table('user')
-            ->where('user_id', $request->session()->get('user_id'))
+            ->where('user_id', $user->user_id)
             ->update(['user_password' => Hash::make($request->input('new_password'))]);
 
         return redirect('/user');

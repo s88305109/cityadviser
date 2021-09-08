@@ -39,14 +39,9 @@ class User extends Authenticatable
      *
      * @var array
      */
-    /*
+    
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
-    */
 
-    public function getAuthPassword()
-    {
-        return $this->user_password;
-    }
 }

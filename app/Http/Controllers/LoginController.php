@@ -14,7 +14,7 @@ class LoginController extends Controller
     // 登入畫面首頁
     public function show()
     {
-        return view('login/login');
+        return view('login.login');
     }
 
     // 使用者登入帳號驗證
@@ -74,6 +74,10 @@ class LoginController extends Controller
             }
 
             if (Hash::check($request->input('user_password'), $user->user_password)) {
+                if ($user->status <> 1) {
+                    return redirect()->back()->withInput()->withErrors(['user_number' => '此帳號已停用']);
+                }
+
                 Auth::loginUsingId($user->user_id);
                 Auth::logoutOtherDevices($request->input('user_password'), 'user_password');
   
