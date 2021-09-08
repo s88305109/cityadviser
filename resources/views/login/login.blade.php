@@ -31,7 +31,10 @@
                     $("#user_number_label").html("請輸入帳號").addClass("text-danger");
                     return false;
                 }
-                $("#run").prop("disabled", true);
+
+                if (("#user_password").val() == "") 
+                    $("#run").prop("disabled", true);
+
                 $(".step1, .step3").addClass("d-none");
                 $(".step2").removeClass("d-none");
                 $("#user_password").focus();
@@ -166,7 +169,7 @@
                     <br><br>
 
                     <div class="form-group row mb-0 justify-content-center">
-                        <button type="button" class="btn btn-primary radius px-5" id="run" disabled="disabled">
+                        <button type="button" class="btn btn-primary radius px-5" id="run" {{ old('user_number') ? ''  : 'disabled="disabled"' }}>
                             繼續
                         </button>
                     </div>
