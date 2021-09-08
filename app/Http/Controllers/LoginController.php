@@ -17,6 +17,31 @@ class LoginController extends Controller
         return view('login.login');
     }
 
+    public function check(Request $request) 
+    {
+        $rules = ['user_number' => 'required'];
+        $messages = ['user_number.required' => '請輸入帳號'];
+        $validated = $request->validate($rules, $messages);
+
+        $user = User::where('user_number', $request->input('user_number'))->first();
+
+        $response = ['status' => 'fail', 'message' => ''];
+
+        if (empty($user)) {
+            $response['message'] = '帳號錯誤';
+            echo json_encode($response, true);
+            die;
+        } else if ($user->status <> 1)  {
+            $response['message'] = '此帳號已停用';
+            echo json_encode($response, true);
+            die;
+        }
+
+        $response['status'] = 'ok';
+        $response['message'] = '';
+        echo json_encode($response, true);
+    }
+
     // 使用者登入帳號驗證
     public function verification(Request $request) 
     {

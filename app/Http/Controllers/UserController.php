@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 
 class UserController extends Controller
 {
@@ -22,7 +21,7 @@ class UserController extends Controller
     }
 
     // 個人資料頁面
-    public function show(Request $request)
+    public function information(Request $request)
     {
         $user = Auth::user();
 

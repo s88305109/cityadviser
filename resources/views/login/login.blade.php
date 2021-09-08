@@ -2,8 +2,16 @@
 
 @section('content')
 
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <script type="text/javascript">
     $(document).ready(function () {
+        $.ajaxSetup({
+            headers: {
+                "X-CSRF-TOKEN": $("meta[name='csrf-token']").attr("content")
+            }
+        });
+
         $("#reload").click(function () {
             refreshCaptcha();
         });
@@ -32,12 +40,7 @@
                     return false;
                 }
 
-                if ($("#user_password").val() == "") 
-                    $("#run").prop("disabled", true);
-
-                $(".step1, .step3").addClass("d-none");
-                $(".step2").removeClass("d-none");
-                $("#user_password").focus();
+                checkUsername();
             } else if($(".step2").is(":visible")) {
                 if ($("#user_password").val() == "") {
                     $("#user_password").addClass("is-invalid");
@@ -81,6 +84,36 @@
         showMessageModal("{{ $message }}");
         @enderror
     });
+
+    function checkUsername() {
+        $.ajax({
+            type: "POST",
+            url: "/check",
+            data: $(".login-form").serialize(),
+            dataType: "json",
+            success: function (response) {
+                if (response.status == "ok") {
+                    if ($("#user_password").val() == "") 
+                        $("#run").prop("disabled", true);
+
+                    $(".step1, .step3").addClass("d-none");
+                    $(".step2").removeClass("d-none");
+                    $("#user_password").focus();
+                } else {
+                    $("#user_number").addClass("is-invalid");
+
+                    if ($("#user_number").parent().find("span.invalid-feedback").length == 0) {
+                        $("#user_number").parent().append('<span class="invalid-feedback" role="alert"><strong>' + response.message + '</strong></span>');
+                    } else {
+                        $("#user_number").parent().find("span.invalid-feedback > strong").html(response.message);
+                    }
+                }
+            },
+            error: function (thrownError) {
+                console.log(thrownError);
+            }
+        });
+    }
 
     function refreshCaptcha() {
         $.get("/reload-captcha").done(function(data){

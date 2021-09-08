@@ -22,7 +22,8 @@ use App\Http\Controllers\UserController;
 Route::get('/dump', function () {
     echo '<pre>';
 
-    echo "User ID is : ".Auth::user()->user_id."<br>";
+    if (Auth::check())
+        echo "User ID is : ".Auth::user()->user_id."<br>";
 
     echo "<hr>Session Dump :<br><br>";
     $data = session()->all();
@@ -45,11 +46,12 @@ Route::get('/', [HomeController::class, 'index']);
 
 // Login 登入系統
 Route::get('/login', [LoginController::class, 'show'])->name('login');              // 登入介面
-Route::post('/login', [LoginController::class, 'verification']);                    // 驗證帳號
+Route::post('/check', [LoginController::class, 'check']);                           // 檢查帳號
+Route::post('/login', [LoginController::class, 'verification']);                    // 驗證登入資訊
 Route::get('/logout', [LoginController::class, 'logout']);                          // 登出
 Route::get('/reload-captcha', [CaptchaServiceController::class, 'reloadCaptcha']);  // 重刷驗證碼
 
 // User 使用者頁面：個人資料、登出
-Route::get('/user', [UserController::class, 'index']);                        // 個人資料頁面
-Route::get('/user/information', [UserController::class, 'show']);             // 個人資料頁面
-Route::post('/user/information', [UserController::class, 'changePassword']);  // 修改密碼
+Route::get('/user', [UserController::class, 'index']);                              // 個人資料頁面
+Route::get('/user/information', [UserController::class, 'information']);            // 個人資料頁面
+Route::post('/user/information', [UserController::class, 'changePassword']);        // 修改密碼
