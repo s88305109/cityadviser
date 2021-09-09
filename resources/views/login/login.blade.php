@@ -47,10 +47,14 @@
                     $("#user_password_label").html("請輸入密碼").addClass("text-danger");
                     return false;
                 }
+
+                checkPassword();
+                /*
                 $("#run").prop("disabled", true);
                 $(".step1, .step2").addClass("d-none");
                 $(".step3").removeClass("d-none");
                 $("#captcha").focus();
+                */
             } else if($(".step3").is(":visible")) {
                 if ($("#captcha").val() == "") {
                     $("#captcha").addClass("is-invalid");
@@ -92,25 +96,51 @@
             data: $(".login-form").serialize(),
             dataType: "json",
             success: function (response) {
-                if (response.status == "ok") {
-                    if ($("#user_password").val() == "") 
-                        $("#run").prop("disabled", true);
+                if ($("#user_password").val() == "") 
+                    $("#run").prop("disabled", true);
 
-                    $(".step1, .step3").addClass("d-none");
-                    $(".step2").removeClass("d-none");
-                    $("#user_password").focus();
-                } else {
-                    $("#user_number").addClass("is-invalid");
-
-                    if ($("#user_number").parent().find("span.invalid-feedback").length == 0) {
-                        $("#user_number").parent().append('<span class="invalid-feedback" role="alert"><strong>' + response.message + '</strong></span>');
-                    } else {
-                        $("#user_number").parent().find("span.invalid-feedback > strong").html(response.message);
-                    }
-                }
+                $(".step1, .step3").addClass("d-none");
+                $(".step2").removeClass("d-none");
+                $("#user_password").focus();
             },
             error: function (thrownError) {
-                console.log(thrownError);
+                $("#user_number").addClass("is-invalid");
+
+                if (thrownError.responseJSON.code == "40003") {
+                    $("#user_number").parent().find("span.invalid-feedback").remove();
+                    showMessageModal(thrownError.responseJSON.message);
+                } else if ($("#user_number").parent().find("span.invalid-feedback").length == 0) {
+                    $("#user_number").parent().append('<span class="invalid-feedback" role="alert"><strong>' + thrownError.responseJSON.message + '</strong></span>');
+                } else {
+                    $("#user_number").parent().find("span.invalid-feedback > strong").html(thrownError.responseJSON.message);
+                }
+            }
+        });
+    }
+
+    function checkPassword() {
+        $.ajax({
+            type: "POST",
+            url: "/check2",
+            data: $(".login-form").serialize(),
+            dataType: "json",
+            success: function (response) {
+                $("#run").prop("disabled", true);
+                $(".step1, .step2").addClass("d-none");
+                $(".step3").removeClass("d-none");
+                $("#captcha").focus();
+            },
+            error: function (thrownError) {
+                $("#user_password").addClass("is-invalid");
+
+                if (thrownError.responseJSON.code == "40003") {
+                    $("#user_password").parent().find("span.invalid-feedback").remove();
+                    showMessageModal(thrownError.responseJSON.message);
+                } else if ($("#user_password").parent().find("span.invalid-feedback").length == 0) {
+                    $("#user_password").parent().append('<span class="invalid-feedback" role="alert"><strong>' + thrownError.responseJSON.message + '</strong></span>');
+                } else {
+                    $("#user_password").parent().find("span.invalid-feedback > strong").html(thrownError.responseJSON.message);
+                }
             }
         });
     }

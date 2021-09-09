@@ -2,136 +2,214 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
-class LoginController extends Controller
-{
-    // 登入畫面首頁
-    public function show()
-    {
-        return view('login.login');
-    }
+class LoginController extends Controller {
+	// 登入畫面首頁
+	public function show() {
+		return view('login.login');
+	}
 
-    public function check(Request $request) 
-    {
-        $rules = ['user_number' => 'required'];
-        $messages = ['user_number.required' => '請輸入帳號'];
-        $validated = $request->validate($rules, $messages);
+	// 檢查是否短時間內密碼錯誤超過限制次數
+	public function checkLock($user) {
+		$incorrect_count = DB::table('system_setting')
+			->where('code', 'error_locked_account')
+			->first();
 
-        $user = User::where('user_number', $request->input('user_number'))->first();
+		$lock_minutes = DB::table('system_setting')
+			->where('code', 'error_locked_time')
+			->first();
 
-        $response = ['status' => 'fail', 'message' => ''];
+		$lock_check = DB::table('authentication_log')
+			->where('user_id', $user->user_id)
+			->where('action', 'user_lock')
+			->where('log_time', '>=', date('Y-m-d H:i:s', strtotime("-{$lock_minutes->value} minutes")))
+			->count();
 
-        if (empty($user)) {
-            $response['message'] = '帳號錯誤';
-            echo json_encode($response, true);
-            die;
-        } else if ($user->status <> 1)  {
-            $response['message'] = '此帳號已停用';
-            echo json_encode($response, true);
-            die;
-        }
+		if ($lock_check > 0) {
+			return true;
+		} else {
+			$incorrect_check = DB::table('authentication_log')
+				->where('user_id', $user->user_id)
+				->where('action', 'incorrect_password')
+				->where('log_time', '>=', date('Y-m-d H:i:s', strtotime('-10 minutes')))
+				->count();
 
-        $response['status'] = 'ok';
-        $response['message'] = '';
-        echo json_encode($response, true);
-    }
+			if ($incorrect_check >= $incorrect_count->value) {
+				DB::table('authentication_log')->insert([
+					'user_id' => $user->user_id,
+					'action' => 'user_lock',
+					'log_time' => date('Y-m-d H:i:s'),
+				]);
 
-    // 使用者登入帳號驗證
-    public function verification(Request $request) 
-    {
-        $rules = [
-            'user_number' => 'required',
-            'user_password' => 'required',
-            'captcha' => 'required|captcha'
-        ];
+				return true;
+			}
+		}
 
-        $messages = [
-            'user_number.required' => '請輸入帳號',
-            'user_password.required' => '請輸入密碼',
-            'captcha.required' => '請輸入驗證碼',
-            'captcha.captcha' => '驗證碼錯誤',
-        ];
+		return false;
+	}
 
-        $validated = $request->validate($rules, $messages);
+	public function check(Request $request) {
+		$rules = ['user_number' => 'required'];
+		$messages = ['user_number.required' => '請輸入帳號'];
+		$validated = $request->validate($rules, $messages);
 
-        $user = User::where('user_number', $request->input('user_number'))->first();
+		$user = User::where('user_number', $request->input('user_number'))->first();
 
-        if (! empty($user)) {
-            $incorrect_count = DB::table('system_setting')
-                ->where('code', 'error_locked_account')
-                ->first();
+		if (empty($user)) {
+			return response()->json([
+				'status' => 'fail', 
+				'message' => '帳號錯誤', 
+				'code' => 40001
+			], 400);
+		} else if ($user->status != 1) {
+			return response()->json([
+				'status' => 'fail', 
+				'message' => '此帳號已停用', 
+				'code' => 40002
+			], 400);
+		} else if ($this->checkLock($user)) {
+			$lock_minutes = DB::table('system_setting')->where('code', 'error_locked_time')->first();
 
-            $lock_minutes = DB::table('system_setting')
-                ->where('code', 'error_locked_time')
-                ->first();
+			return response()->json([
+				'status' => 'fail', 
+				'code' => 40003,
+				'message' => "輸入錯誤次數過多，將鎖定{$lock_minutes->value}分鐘。"
+			], 400);
+		}
 
-            // 檢查是否短時間內密碼錯誤超過限制次數
-            $lock_check = DB::table('authentication_log')
-                ->where('user_id', $user->user_id)
-                ->where('action', 'user_lock')
-                ->where('log_time', '>=', date('Y-m-d H:i:s', strtotime("-{$lock_minutes->value} minutes")))
-                ->count();
+		return response()->json([
+			'status' => 'success', 
+			'message' => '', 
+			'code' => 20000
+		], 200);
+	}
 
-            if ($lock_check > 0) {
-                return redirect()->back()->withInput()->withErrors(['user_lock' => "輸入錯誤次數過多，將鎖定{$lock_minutes->value}分鐘。"]);
-            } else {
-                $incorrect_check = DB::table('authentication_log')
-                    ->where('user_id', $user->user_id)
-                    ->where('action', 'incorrect_password')
-                    ->where('log_time', '>=', date('Y-m-d H:i:s', strtotime('-10 minutes')))
-                    ->count();
+	public function check2(Request $request) {
+		$rules = [
+			'user_number' => 'required',
+			'user_password' => 'required',
+		];
+		$messages = [
+			'user_number.required' => '請輸入帳號',
+			'user_password.required' => '請輸入密碼',
+		];
+		$validated = $request->validate($rules, $messages);
 
-                if ($incorrect_check >= $incorrect_count->value) {
-                    DB::table('authentication_log')->insert([
-                        'user_id' => $user->user_id,
-                        'action' => 'user_lock',
-                        'log_time' => date('Y-m-d H:i:s')
-                    ]);
+		$user = User::where('user_number', $request->input('user_number'))->first();
 
-                    return redirect()->back()->withInput()->withErrors(['user_lock' => "輸入錯誤次數過多，將鎖定{$lock_minutes->value}分鐘。"]);
-                }
-            }
+		$response = ['status' => 'fail', 'message' => ''];
 
-            if (Hash::check($request->input('user_password'), $user->user_password)) {
-                if ($user->status <> 1) {
-                    return redirect()->back()->withInput()->withErrors(['user_number' => '此帳號已停用']);
-                }
+		if (empty($user)) {
+			return response()->json([
+				'status' => 'fail', 
+				'code' => 40001,
+				'message' => '帳號錯誤'
+			], 400);
+		} else if ($user->status != 1) {
+			return response()->json([
+				'status' => 'fail', 
+				'code' => 40002,
+				'message' => '此帳號已停用'
+			], 400);
+		} else if ($this->checkLock($user)) {
+			$lock_minutes = DB::table('system_setting')->where('code', 'error_locked_time')->first();
 
-                Auth::loginUsingId($user->user_id);
-                Auth::logoutOtherDevices($request->input('user_password'), 'user_password');
-  
-                // 記錄使用者最後登入時間
-                DB::table('user')
-                    ->where('user_id', $user->user_id)
-                    ->update(['login_time' => date('Y/m/d H:i:s'), 'sign_out_time' => date('Y-m-d H:i:s')]);
-            } else {
-                // 紀錄使用者密碼錯誤紀錄
-                DB::table('authentication_log')->insert([
-                    'user_id' => $user->user_id,
-                    'action' => 'incorrect_password',
-                    'log_time' => date('Y-m-d H:i:s')
-                ]);
+			return response()->json([
+				'status' => 'fail', 
+				'code' => 40003,
+				'message' => "輸入錯誤次數過多，將鎖定{$lock_minutes->value}分鐘。"
+			], 400);
+		}
 
-                return redirect()->back()->withInput()->withErrors(['user_password' => '密碼錯誤']);
-            }
-        } else {
-            return redirect()->back()->withInput()->withErrors(['user_number' => '帳號錯誤']);
-        }
+		if (! Hash::check($request->input('user_password'), $user->user_password)) {
+			// 紀錄使用者密碼錯誤紀錄
+			DB::table('authentication_log')->insert([
+				'user_id' => $user->user_id,
+				'action' => 'incorrect_password',
+				'log_time' => date('Y-m-d H:i:s'),
+			]);
 
-        return redirect('/');
-    }
+			return response()->json([
+				'status' => 'fail', 
+				'code' => 40004,
+				'message' => '密碼錯誤'
+			], 400);
+		}
 
-    // 登出
-    public function logout(Request $request)
-    {
-        Auth::logout();
+		return response()->json([
+			'status' => 'success', 
+			'code' => 20000,
+			'message' => '' 
+		], 200);
+	}
 
-        return redirect('/login');
-    }
+	// 使用者登入帳號驗證
+	public function verification(Request $request) {
+		$rules = [
+			'user_number' => 'required',
+			'user_password' => 'required',
+			'captcha' => 'required|captcha',
+		];
+
+		$messages = [
+			'user_number.required' => '請輸入帳號',
+			'user_password.required' => '請輸入密碼',
+			'captcha.required' => '請輸入驗證碼',
+			'captcha.captcha' => '驗證碼錯誤',
+		];
+
+		$validated = $request->validate($rules, $messages);
+
+		$user = User::where('user_number', $request->input('user_number'))->first();
+
+		if (empty($user)) {
+			return redirect()->back()->withInput()->withErrors(['user_number' => '帳號錯誤']);
+		}
+
+		$incorrect_count = DB::table('system_setting')
+			->where('code', 'error_locked_account')
+			->first();
+
+		$lock_minutes = DB::table('system_setting')
+			->where('code', 'error_locked_time')
+			->first();
+
+		if ($this->checkLock($user)) {		// 檢查是否短時間內密碼錯誤超過限制次數
+			$lock_minutes = DB::table('system_setting')->where('code', 'error_locked_time')->first();
+			return redirect()->back()->withInput()->withErrors(['user_lock' => "輸入錯誤次數過多，將鎖定{$lock_minutes->value}分鐘。"]);
+		} else if (! Hash::check($request->input('user_password'), $user->user_password)) {		// 檢查密碼是否正確
+			// 紀錄使用者密碼錯誤紀錄
+			DB::table('authentication_log')->insert([
+				'user_id' => $user->user_id,
+				'action' => 'incorrect_password',
+				'log_time' => date('Y-m-d H:i:s'),
+			]);
+
+			return redirect()->back()->withInput()->withErrors(['user_password' => '密碼錯誤']);
+		} else if ($user->status != 1) {
+			return redirect()->back()->withInput()->withErrors(['user_number' => '此帳號已停用']);
+		}
+
+		Auth::loginUsingId($user->user_id);
+		Auth::logoutOtherDevices($request->input('user_password'), 'user_password');
+
+		// 記錄使用者最後登入時間
+		DB::table('user')
+			->where('user_id', $user->user_id)
+			->update(['login_time' => date('Y/m/d H:i:s'), 'sign_out_time' => date('Y-m-d H:i:s')]);
+
+		return redirect('/');
+	}
+
+	// 登出
+	public function logout(Request $request) {
+		Auth::logout();
+
+		return redirect('/login');
+	}
 }

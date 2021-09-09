@@ -47,6 +47,7 @@ Route::get('/', [HomeController::class, 'index']);
 // Login 登入系統
 Route::get('/login', [LoginController::class, 'show'])->name('login');              // 登入介面
 Route::post('/check', [LoginController::class, 'check']);                           // 檢查帳號
+Route::post('/check2', [LoginController::class, 'check2']);                         // 檢查密碼
 Route::post('/login', [LoginController::class, 'verification']);                    // 驗證登入資訊
 Route::get('/logout', [LoginController::class, 'logout']);                          // 登出
 Route::get('/reload-captcha', [CaptchaServiceController::class, 'reloadCaptcha']);  // 重刷驗證碼
