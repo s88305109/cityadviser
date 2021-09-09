@@ -21,6 +21,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
     <style>
+    /* Input 內嵌圖示 */
     button.btn.radius {
         border-radius:20px;
         font-size: 120%;
@@ -33,6 +34,8 @@
         font-size: 20px;
         position: absolute;
         padding: 4px;
+    }
+    .inner-addon.reset-icon i.bi {
         display: none;
     }
     .left-addon i.bi  { left:  0px;}
@@ -46,6 +49,7 @@
         margin-right: 4px;
     }
 
+    /* Loading Mask */
     .loading-mask {
         position: fixed;
         z-index: 9999;
@@ -61,6 +65,14 @@
         position: absolute;
         top: 50%;
         left: 50%;
+    }
+    /* Float Navbar */
+    .float-navbar {
+        background-color: #EEE;
+        border-top: 1px solid #CCC;;
+    }
+    .float-navbar .back-icon {
+        font-size: 24px;
     }
     </style>
 
@@ -181,5 +193,9 @@
             <span class="sr-only">Loading...</span>
         </div>
     </div>
+
+    @if (Route::currentRouteAction() != 'App\Http\Controllers\LoginController@show')
+    @include('layouts.navbar')
+    @endif
 </body>
 </html>

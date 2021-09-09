@@ -24,7 +24,7 @@
             }
         });
 
-        $("#user_number, #user_password, #captcha").on('keyup',function(e) {
+        $("#user_number, #user_password, #captcha").on("keyup",function(e) {
             if ($(this).val() != "") {
                 $("#run").prop("disabled", false);
             } else {
@@ -49,12 +49,6 @@
                 }
 
                 checkPassword();
-                /*
-                $("#run").prop("disabled", true);
-                $(".step1, .step2").addClass("d-none");
-                $(".step3").removeClass("d-none");
-                $("#captcha").focus();
-                */
             } else if($(".step3").is(":visible")) {
                 if ($("#captcha").val() == "") {
                     $("#captcha").addClass("is-invalid");
