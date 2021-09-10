@@ -17,7 +17,7 @@ class UserController extends Controller
     // 主頁
     public function index(Request $request)
     {
-        return view('user.user', ['levelRoot' => '/']);
+        return view('user.user');
     }
 
     // 個人資料頁面
@@ -25,7 +25,7 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-        return view('user.information', ['user' => $user, 'levelRoot' => '/user']);
+        return view('user.information', ['user' => $user]);
     }
 
     // 修改密碼

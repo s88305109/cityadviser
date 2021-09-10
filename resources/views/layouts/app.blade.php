@@ -137,6 +137,14 @@
     </script>
 </head>
 <body>
+    <?php 
+    // 取得系統結構上一層的連結
+    $navlink = "/";
+    for($i = 1; $i <= count(Request::segments()); $i++) {
+        if($i < count(Request::segments()) & $i > 0)
+            $navlink .= ($navlink == "/") ? Request::segment($i) : "/" . Request::segment($i);
+    }
+    ?>
     <div id="app">
         @if (! in_array(Route::currentRouteName(), array('login', 'error')))
             {{-- Fixed Headerbar --}}
@@ -162,7 +170,7 @@
                             <a class="nav-link" href="/"><img src="/images/logo-32.png"></a>
                         </li>
                         <li class="nav-item form-inline">
-                            <a class="nav-link" href="@isset($levelRoot) {{ $levelRoot }} @else / @endisset"><i class="bi bi-tags back-icon"></i></a>
+                            <a class="nav-link" href="{{ $navlink }}"><i class="bi bi-tags back-icon"></i></a>
                         </li>
                         <li class="nav-item form-inline">
                             <div class="inner-addon right-addon">
