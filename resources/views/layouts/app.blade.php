@@ -114,63 +114,44 @@
 </head>
 <body>
     <div id="app">
-        {{--
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
-                </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+        @if (Route::currentRouteAction() != 'App\Http\Controllers\LoginController@show')
+            {{-- Fixed Headerbar --}}
+            <nav class="navbar navbar-default navbar-fixed-top">
+                <div class="container">
+                    <div class="navbar-header row">
+                        <i class="bi bi-person-fill"></i> 
+                        <span>{{ Auth::user()->user_number }}</span>
+                    </div>
+                </div>
+            </nav>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
+            {{-- Fixed Bottom Navbar --}}
+            <nav class="navbar fixed-bottom navbar-expand navbar-light float-navbar">
+                <div class="collapse navbar-collapse" id="navbarCollapse">
                     <ul class="navbar-nav mr-auto">
-
-                    </ul>
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ml-auto">
-                        <!-- Authentication Links -->
-                        @guest
-                            @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
-                            @endif
-
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
-                        @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
-                                </a>
-
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
+                        <li class="nav-item form-inline">
+                            <button class="btn border btn-dark navbar-dark px-2" type="button">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                        </li>
+                        <li class="nav-item form-inline">
+                            <a class="nav-link" href="/"><img src="/images/logo-32.png"></a>
+                        </li>
+                        <li class="nav-item form-inline">
+                            <a class="nav-link" href="@isset($levelRoot) {{ $levelRoot }} @else / @endisset"><i class="bi bi-tags back-icon"></i></a>
+                        </li>
+                        <li class="nav-item form-inline">
+                            <div class="inner-addon right-addon">
+                                <i class="bi bi-search"></i>
+                                <input class="form-control" type="search" placeholder="{{ __('請輸入關鍵字') }}">
+                            </div>
+                        </li>
                     </ul>
                 </div>
-            </div>
-        </nav>
-        --}}
+            </nav>
+        @endif
 
-        <main class="py-4">
+        <main class="py-2">
             @yield('content')
         </main>
     </div>
@@ -193,9 +174,5 @@
             <span class="sr-only">Loading...</span>
         </div>
     </div>
-
-    @if (Route::currentRouteAction() != 'App\Http\Controllers\LoginController@show')
-    @include('layouts.navbar')
-    @endif
 </body>
 </html>

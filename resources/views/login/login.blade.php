@@ -2,16 +2,8 @@
 
 @section('content')
 
-<meta name="csrf-token" content="{{ csrf_token() }}">
-
 <script type="text/javascript">
     $(document).ready(function () {
-        $.ajaxSetup({
-            headers: {
-                "X-CSRF-TOKEN": $("meta[name='csrf-token']").attr("content")
-            }
-        });
-
         $("#reload").click(function () {
             refreshCaptcha();
         });
@@ -100,7 +92,10 @@
             error: function (thrownError) {
                 $("#user_number").addClass("is-invalid");
 
-                if (thrownError.responseJSON.code == "40003") {
+                if (thrownError.status == "419") {
+                    $("#user_number").parent().find("span.invalid-feedback").remove();
+                    showMessageModal("{{ __('頁面閒置過久請重新整理網頁') }}");
+                } else if (thrownError.responseJSON.code == "40003") {
                     $("#user_number").parent().find("span.invalid-feedback").remove();
                     showMessageModal(thrownError.responseJSON.message);
                 } else if ($("#user_number").parent().find("span.invalid-feedback").length == 0) {
@@ -127,7 +122,10 @@
             error: function (thrownError) {
                 $("#user_password").addClass("is-invalid");
 
-                if (thrownError.responseJSON.code == "40003") {
+                if (thrownError.status == "419") {
+                    $("#user_number").parent().find("span.invalid-feedback").remove();
+                    showMessageModal("{{ __('頁面閒置過久請重新整理網頁') }}");
+                } else if (thrownError.responseJSON.code == "40003") {
                     $("#user_password").parent().find("span.invalid-feedback").remove();
                     showMessageModal(thrownError.responseJSON.message);
                 } else if ($("#user_password").parent().find("span.invalid-feedback").length == 0) {
@@ -160,7 +158,7 @@
                     @csrf
 
                     <div class="form-group row step1">
-                        <label id="user_number_label" for="user_number" class="col-md-4 col-form-label text-md-right">請輸入帳號</label>
+                        <label id="user_number_label" for="user_number" class="col-md-4 col-form-label text-md-right">{{ __('請輸入帳號') }}</label>
 
                         <div class="col-md-6">
                             <div class="inner-addon right-addon reset-icon">
@@ -177,7 +175,7 @@
                     </div>
 
                     <div class="form-group row step2 d-none">
-                        <label id="user_password_label" for="user_password" class="col-md-4 col-form-label text-md-right">請輸入密碼</label>
+                        <label id="user_password_label" for="user_password" class="col-md-4 col-form-label text-md-right">{{ __('請輸入密碼') }}</label>
 
                         <div class="col-md-6">
                             <div class="inner-addon right-addon reset-icon">
@@ -195,13 +193,13 @@
                         <label class="col-md-4 col-form-label text-md-right"></label>
                         <div class="col-md-6">
                             <div class="form-check form-check-inline">
-                                <label class="form-check-label" for="show_password"><input type="checkbox" class="form-check-input" id="show_password"> 顯示密碼</label>
+                                <label class="form-check-label" for="show_password"><input type="checkbox" class="form-check-input" id="show_password">{{ __('顯示密碼') }}</label>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group row step3 d-none">
-                        <label id="captcha_label" for="captcha" class="col-md-4 col-form-label text-md-right">請輸入驗證碼</label>
+                        <label id="captcha_label" for="captcha" class="col-md-4 col-form-label text-md-right">{{ __('請輸入驗證碼') }}</label>
 
                         <div class="col-md-6">
                             <input type="text" class="form-control @error('captcha') is-invalid @enderror" id="captcha" name="captcha" required autocomplete="off">
@@ -227,7 +225,7 @@
 
                     <div class="form-group row mb-0 justify-content-center">
                         <button type="button" class="btn btn-primary radius px-5" id="run" {{ old('user_number') ? ''  : 'disabled="disabled"' }}>
-                            繼續
+                            {{ __('繼續') }}
                         </button>
                     </div>
                 </form>

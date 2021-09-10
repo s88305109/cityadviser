@@ -54,6 +54,10 @@
         showMessageModal("{{ $message }}");
         @enderror
 
+        @error('new_password')
+        showMessageModal("{{ $message }}");
+        @enderror
+
         @error('old_password')
         showMessageModal("{{ $message }}");
         @enderror
@@ -71,7 +75,7 @@
                         <!--
                         <div class="form-group">
                             <label for="user_number">使用者帳號</label>
-                            <input type="text" class="form-control" id="user_number" value="{{ $user->user_number }}" readonly>
+                            <input type="text" class="form-control" id="user_number" value="{{ Auth::user()->user_number }}" readonly>
                         </div>
                         -->
 
@@ -103,10 +107,10 @@
                         <div class="form-group">
                             <div class="input-group mb-2 inner-addon right-addon">
                                 <div class="input-group-prepend">
-                                    <div class="input-group-text password-change-text">新密碼</div>
+                                    <div class="input-group-text password-change-text @error('new_password') text-danger @enderror">新密碼</div>
                                 </div>
                                 <i class="bi bi-eye-fill password-visible"></i>
-                                <input type="password" class="form-control" id="new_password" name="new_password" value="{{ old('new_password') }}">
+                                <input type="password" class="form-control @error('new_password') text-danger @enderror" id="new_password" name="new_password" value="{{ old('new_password') }}">
                             </div>
                         </div>
 

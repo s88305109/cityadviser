@@ -20,6 +20,8 @@ use App\Http\Controllers\UserController;
 */
 
 Route::get('/dump', function () {
+    //DB::table('user')->where('user_number', 'user01')->update(['user_password' => Hash::make('12345678')]);
+
     echo '<pre>';
 
     if (Auth::check())
