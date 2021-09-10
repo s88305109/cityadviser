@@ -124,7 +124,7 @@ class LoginController extends Controller {
 			return response()->json([
 				'status' => 'fail', 
 				'code' => 40003,
-				'message' => __('輸入錯誤次數過多，將鎖定{$lock_minutes->value}分鐘。')
+				'message' => __("輸入錯誤次數過多，將鎖定{$lock_minutes->value}分鐘。")
 			], 400);
 		}
 

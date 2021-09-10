@@ -22,20 +22,25 @@
 
             if($(obj).attr("type") == "password") {
                 $("#old_password, #new_password, #confirm_password").attr("type", "text");
+                $("#show_password").val(1);
             } else {
                 $("#old_password, #new_password, #confirm_password").attr("type", "password");
+                $("#show_password").val(0);
             }
         });
 
         $("#doCheck").click(function () {
             if ($("#old_password").val() == "") {
                 showMessageModal("請輸入目前密碼");
+                objectShake($("#old_password").parent());
                 return false;
             } else if ($("#new_password").val() == "") {
                 showMessageModal("請輸入新密碼");
+                objectShake($("#new_password").parent());
                 return false;
             } else if ($("#confirm_password").val() == "") {
                 showMessageModal("請輸入確認新密碼");
+                objectShake($("#confirm_password").parent());
                 return false;
             }
 
@@ -52,15 +57,22 @@
 
         @error('confirm_password')
         showMessageModal("{{ $message }}");
+        objectShake($("#confirm_password").parent());
         @enderror
 
         @error('new_password')
         showMessageModal("{{ $message }}");
+        objectShake($("#new_password").parent());
         @enderror
 
         @error('old_password')
         showMessageModal("{{ $message }}");
+        objectShake($("#old_password").parent());
         @enderror
+
+        @if(old('show_password') == 1)
+        $("#old_password, #new_password, #confirm_password").attr("type", "text");
+        @endif
     });
 </script>
 <div class="container">
@@ -110,7 +122,7 @@
                                     <div class="input-group-text password-change-text @error('new_password') text-danger @enderror">新密碼</div>
                                 </div>
                                 <i class="bi bi-eye-fill password-visible"></i>
-                                <input type="password" class="form-control @error('new_password') text-danger @enderror" id="new_password" name="new_password" value="{{ old('new_password') }}">
+                                <input type="password" class="form-control @error('new_password') text-danger @enderror" id="new_password" name="new_password" value="{{ old('new_password') }}" placeholder="8-25位數密碼，請區分大小寫">
                             </div>
                         </div>
 
@@ -120,7 +132,7 @@
                                     <div class="input-group-text password-change-text @error('confirm_password') text-danger @enderror">確認新密碼</div>
                                 </div>
                                 <i class="bi bi-eye-fill password-visible"></i>
-                                <input type="password" class="form-control @error('confirm_password') is-invalid @enderror" id="confirm_password" name="confirm_password" value="{{ old('confirm_password') }}">
+                                <input type="password" class="form-control @error('confirm_password') is-invalid @enderror" id="confirm_password" name="confirm_password" value="{{ old('confirm_password') }}"  placeholder="8-25位數密碼，請區分大小寫">
                             </div>
                         </div>
 
@@ -129,6 +141,8 @@
                                 修改密碼
                             </button>
                         </div>
+
+                        <input type="hidden" id="show_password" name="show_password" value="{{ old('show_password') }}">
                     </form>
                 </div>
             </div>

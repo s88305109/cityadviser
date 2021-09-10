@@ -17,7 +17,7 @@ class UserController extends Controller
     // 主頁
     public function index(Request $request)
     {
-        return view('user.user', ['levelRoot' => '/user']);
+        return view('user.user', ['levelRoot' => '/']);
     }
 
     // 個人資料頁面

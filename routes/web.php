@@ -20,6 +20,15 @@ use App\Http\Controllers\UserController;
 */
 
 Route::get('/dump', function () {
+    /*
+    DB::table('user')->insert([
+        'user_uid' => 'VTfgy5y8dvrTaztA',
+        'user_number' => 'user02',
+        'user_password' => Hash::make('a12345678'),
+        'status' => '1'
+    ]);
+    */
+    
     //DB::table('user')->where('user_number', 'user01')->update(['user_password' => Hash::make('12345678')]);
 
     echo '<pre>';
@@ -41,7 +50,7 @@ Route::get('/dump', function () {
         echo 'not login';
     }
 });
-Route::view('style', 'style');
+Route::view('/style', 'style');
 
 // 首頁
 Route::get('/', [HomeController::class, 'index']);
@@ -58,3 +67,6 @@ Route::get('/reload-captcha', [CaptchaServiceController::class, 'reloadCaptcha']
 Route::get('/user', [UserController::class, 'index']);                              // 個人資料頁面
 Route::get('/user/information', [UserController::class, 'information']);            // 個人資料頁面
 Route::post('/user/information', [UserController::class, 'changePassword']);        // 修改密碼
+
+// Error 錯誤控制頁面
+Route::view('/error/unauthorized', 'error.unauthorized')->name('error');

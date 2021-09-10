@@ -74,6 +74,25 @@
     .float-navbar .back-icon {
         font-size: 24px;
     }
+
+    .obj-shake {
+        animation: shake 0.5s;
+        animation-iteration-count: infinite;
+    }
+
+    @keyframes shake {
+        0% { transform: translate(1px, 1px) rotate(0deg); }
+        10% { transform: translate(-1px, -2px) rotate(-1deg); }
+        20% { transform: translate(-3px, 0px) rotate(1deg); }
+        30% { transform: translate(3px, 2px) rotate(0deg); }
+        40% { transform: translate(1px, -1px) rotate(1deg); }
+        50% { transform: translate(-1px, 2px) rotate(-1deg); }
+        60% { transform: translate(-3px, 1px) rotate(0deg); }
+        70% { transform: translate(3px, 1px) rotate(-1deg); }
+        80% { transform: translate(-1px, -1px) rotate(1deg); }
+        90% { transform: translate(1px, 2px) rotate(0deg); }
+        100% { transform: translate(1px, -2px) rotate(-1deg); }
+    }
     </style>
 
     <script type="text/javascript">
@@ -110,11 +129,16 @@
         function hideLoadingMask() {
             $(".loading-mask").fadeOut(100);
         }
+
+        function objectShake(obj) {
+            $(obj).addClass("obj-shake");
+            setTimeout(function(){ $(obj).removeClass("obj-shake"); }, 500);
+        }
     </script>
 </head>
 <body>
     <div id="app">
-        @if (Route::currentRouteAction() != 'App\Http\Controllers\LoginController@show')
+        @if (! in_array(Route::currentRouteName(), array('login', 'error')))
             {{-- Fixed Headerbar --}}
             <nav class="navbar navbar-default navbar-fixed-top">
                 <div class="container">
@@ -151,7 +175,7 @@
             </nav>
         @endif
 
-        <main class="py-2">
+        <main id="main" class="py-2">
             @yield('content')
         </main>
     </div>

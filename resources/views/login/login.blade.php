@@ -62,12 +62,14 @@
         $(".step1, .step3").addClass("d-none");
         $(".step2").removeClass("d-none");
         $("#user_password").focus();
+        objectShake($("#user_password"));
         @enderror
 
         @error('captcha')
         $(".step1, .step2").addClass("d-none");
         $(".step3").removeClass("d-none");
         $("#captcha").focus();
+        objectShake($("#captcha"));
         @enderror
 
         @error('user_lock')
@@ -100,8 +102,10 @@
                     showMessageModal(thrownError.responseJSON.message);
                 } else if ($("#user_number").parent().find("span.invalid-feedback").length == 0) {
                     $("#user_number").parent().append('<span class="invalid-feedback" role="alert"><strong>' + thrownError.responseJSON.message + '</strong></span>');
+                    objectShake($("#user_number"));
                 } else {
                     $("#user_number").parent().find("span.invalid-feedback > strong").html(thrownError.responseJSON.message);
+                    objectShake($("#user_number"));
                 }
             }
         });
@@ -130,8 +134,10 @@
                     showMessageModal(thrownError.responseJSON.message);
                 } else if ($("#user_password").parent().find("span.invalid-feedback").length == 0) {
                     $("#user_password").parent().append('<span class="invalid-feedback" role="alert"><strong>' + thrownError.responseJSON.message + '</strong></span>');
+                    objectShake($("#user_password"));
                 } else {
                     $("#user_password").parent().find("span.invalid-feedback > strong").html(thrownError.responseJSON.message);
+                    objectShake($("#user_password"));
                 }
             }
         });
@@ -180,7 +186,7 @@
                         <div class="col-md-6">
                             <div class="inner-addon right-addon reset-icon">
                                 <i class="bi bi-x-circle-fill text-danger"></i>
-                                <input type="password" class="form-control @error('user_password') is-invalid @enderror" id="user_password" name="user_password" value="{{ old('user_password') }}" required autocomplete="current-password">
+                                <input type="password" class="form-control @error('user_password') is-invalid obj-shake @enderror" id="user_password" name="user_password" value="{{ old('user_password') }}" required autocomplete="current-password" placeholder="8-25位數密碼，請區分大小寫">
 
                                 @error('user_password')
                                 <span class="invalid-feedback" role="alert">
