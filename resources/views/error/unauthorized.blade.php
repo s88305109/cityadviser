@@ -15,7 +15,7 @@
                 <h1>Oops!</h1>
                 <h2>401 Unauthorized</h2>
                 <div class="error-details">
-                    閒置過久，請重新登入。
+                    閒置過久或有其他使用者持相同帳號密碼進行登入，請確認帳號安全。
                 </div>
                 <div class="error-actions">
                     <a href="/login" class="btn btn-primary btn-lg px-4">確認</a>
