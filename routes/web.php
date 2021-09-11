@@ -29,7 +29,7 @@ Route::get('/dump', function () {
     ]);
     */
     
-    //DB::table('user')->where('user_number', 'user01')->update(['user_password' => Hash::make('12345678')]);
+    DB::table('user')->where('user_number', 'user02')->update(['user_password' => Hash::make('user02')]);
 
     echo '<pre>';
 
