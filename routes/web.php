@@ -53,7 +53,15 @@ Route::get('/dump', function () {
 Route::view('/style', 'style');
 
 // 首頁
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect()->route('home');
+    } else {
+        return redirect()->route('login');
+    }
+});
+
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 // Login 登入系統
 Route::get('/login', [LoginController::class, 'show'])->name('login');              // 登入介面
