@@ -32,7 +32,7 @@
             else
                 $("ul.check-list li i.bi:eq(0)").hide();
             
-            if (/^[A-Za-z0-9]+$/.test($(this).val()))
+            if (/^((?=.*[0-9])(?=.*[a-z|A-Z])(?!.*[^a-z|A-Z|0-9]))^.*$/.test($(this).val()))
                 $("ul.check-list li i.bi:eq(1)").show();
             else
                 $("ul.check-list li i.bi:eq(1)").hide();
