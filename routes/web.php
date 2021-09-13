@@ -78,4 +78,4 @@ Route::get('/user/information', [UserController::class, 'information']);        
 Route::post('/user/information', [UserController::class, 'changePassword']);        // 修改密碼
 
 // Error 錯誤控制頁面
-Route::view('/error/unauthorized', 'error.unauthorized')->name('error');
+Route::view('/errors/unauthorized', 'errors.unauthorized')->name('error');

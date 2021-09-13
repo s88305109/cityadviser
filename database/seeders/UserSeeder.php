@@ -21,5 +21,12 @@ class UserSeeder extends Seeder
             'user_password' => Hash::make('user01'),
             'status' => '1'
         ]);
+
+        DB::table('user')->insert([
+            'user_uid' => 'VTfgy5y8dvrTaztA',
+            'user_number' => 'user02',
+            'user_password' => Hash::make('user02'),
+            'status' => '1'
+        ]);
     }
 }

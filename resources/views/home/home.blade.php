@@ -61,14 +61,20 @@
 </div>
 
 <script>
-    new Splide( '.splide', {
-        type   : 'loop',
+    var splide = new Splide( '.splide', {
+        type : 'loop',
         padding: {
-            right: '3rem',
+            right : '3rem',
             left : '3rem',
         },
         pagination : false,
         arrows : false,
     }).mount();
+
+    /*
+    console.log( splide.index ); // 0
+    splide.go('3'); 
+    console.log( splide.index ); // 1
+    */
 </script>
 @endsection
