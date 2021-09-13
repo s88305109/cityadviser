@@ -62,6 +62,7 @@ Route::get('/', function () {
 });
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/home2', [HomeController::class, 'home2'])->name('home2');
 
 // Login 登入系統
 Route::get('/login', [LoginController::class, 'show'])->name('login');              // 登入介面

@@ -75,6 +75,11 @@
         font-size: 24px;
     }
 
+    .navbar-header { 
+        font-size: 18px;
+    }
+
+    /* Shake Effect */
     .obj-shake {
         animation: shake 0.5s;
         animation-iteration-count: infinite;
@@ -92,6 +97,12 @@
         80% { transform: translate(-1px, -1px) rotate(1deg); }
         90% { transform: translate(1px, 2px) rotate(0deg); }
         100% { transform: translate(1px, -2px) rotate(-1deg); }
+    }
+
+    .home-link {
+        padding: 6px 8px 2px 8px;
+        color: #FFF;
+        margin-right: 8px;
     }
     </style>
 
@@ -138,39 +149,54 @@
 </head>
 <body>
     <?php 
+    // 回到首頁的連結
+    $navlink1 = (Route::currentRouteName() == 'home2') ? '/home2' : '/home';
+
     // 取得系統結構上一層的連結
-    $navlink = "/";
-    for($i = 1; $i <= count(Request::segments()); $i++) {
+    $navlink2 = '/';
+    for($i = 1; $i <= count(Request::segments()); $i++)
         if($i < count(Request::segments()) & $i > 0)
-            $navlink .= ($navlink == "/") ? Request::segment($i) : "/" . Request::segment($i);
-    }
+            $navlink2 .= ($navlink2 == '/') ? Request::segment($i) : '/' . Request::segment($i);
+
+    if ($navlink2 == '/')
+        $navlink2 = $navlink1;
     ?>
     <div id="app">
         @if (! in_array(Route::currentRouteName(), array('login', 'error')))
             {{-- Fixed Headerbar --}}
             <nav class="navbar navbar-default navbar-fixed-top">
-                <div class="container">
-                    <div class="navbar-header row">
-                        <i class="bi bi-person-fill"></i> 
-                        <span>{{ Auth::user()->user_number }}</span>
+                <div class="container px-0">
+                    <div class="navbar-header row w-100 d-block mx-0">
+                        <a href="/user">
+                            <i class="bi bi-person-fill"></i> 
+                            <span>{{ Auth::user()->user_number }}</span>
+                        </a>
+
+                        <div class="float-right"><i class="bi bi-bell-fill"></i><!--<img src="/images/service64.png" height="32">--></div>
                     </div>
                 </div>
             </nav>
 
             {{-- Fixed Bottom Navbar --}}
-            <nav class="navbar fixed-bottom navbar-expand navbar-light float-navbar">
+            <nav class="navbar fixed-bottom navbar-expand navbar-light float-navbar py-0">
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item form-inline">
-                            <button class="btn border btn-dark navbar-dark px-2" type="button">
-                                <span class="navbar-toggler-icon"></span>
-                            </button>
+                            @if (Route::currentRouteName() == 'home2')
+                            <a class="bg-primary rounded home-link" href="/home">
+                                <i class="bi bi-back"></i>
+                            </a>
+                            @else
+                            <a class="bg-dark rounded home-link" href="/home2">
+                                <i class="bi bi-list-ul"></i>
+                            </a>
+                            @endif
                         </li>
                         <li class="nav-item form-inline">
-                            <a class="nav-link" href="/"><img src="/images/logo-32.png"></a>
+                            <a class="nav-link" href="{{ $navlink1 }}"><img src="/images/logo-32.png"></a>
                         </li>
                         <li class="nav-item form-inline">
-                            <a class="nav-link" href="{{ $navlink }}"><i class="bi bi-tags back-icon"></i></a>
+                            <a class="nav-link" href="{{ $navlink2 }}"><i class="bi bi-tags back-icon"></i></a>
                         </li>
                         <li class="nav-item form-inline">
                             <div class="inner-addon right-addon">
