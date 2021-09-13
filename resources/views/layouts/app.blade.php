@@ -104,6 +104,18 @@
         color: #FFF;
         margin-right: 8px;
     }
+
+    ul.check-list li {
+        background-color: transparent;
+        border: 0px;
+        padding: 0px;
+        padding-left: 1.2em;
+    }
+    ul.check-list li i.bi {
+        position: absolute;
+        margin-left: -1.2em;
+        display: none;
+    }
     </style>
 
     <script type="text/javascript">

@@ -16,11 +16,43 @@
             }
         });
 
-        $("#user_number, #user_password, #captcha").on("keyup",function(e) {
+        $("#user_number, #captcha").on("keyup",function(e) {
+            $("#run").removeClass("btn-danger");
+
             if ($(this).val() != "") {
                 $("#run").prop("disabled", false);
             } else {
                 $("#run").prop("disabled", true);
+            }
+        });
+
+        $("#user_password").on("keyup",function(e) {
+            if ($(this).val().length >= 8 && $(this).val().length <= 25) 
+                $("ul.check-list li i.bi:eq(0)").show();
+            else
+                $("ul.check-list li i.bi:eq(0)").hide();
+            
+            if (/^[A-Za-z0-9]+$/.test($(this).val()))
+                $("ul.check-list li i.bi:eq(1)").show();
+            else
+                $("ul.check-list li i.bi:eq(1)").hide();
+
+            if (/^(?=.*[a-z|A-Z])^.*$/.test($(this).val()))
+                $("ul.check-list li i.bi:eq(2)").show();
+            else
+                $("ul.check-list li i.bi:eq(2)").hide();
+
+            if (/^[A-Za-z0-9]+$/.test($(this).val()))
+                $("ul.check-list li i.bi:eq(3)").show();
+            else
+                $("ul.check-list li i.bi:eq(3)").hide();
+            
+            if ($("ul.check-list li i.bi:visible").length == 4) {
+                $("#run").prop("disabled", false);
+                $("#run").removeClass("btn-danger");
+            } else {
+                $("#run").prop("disabled", true);
+                $("#run").addClass("btn-danger");
             }
         });
 
@@ -29,6 +61,7 @@
                 if ($("#user_number").val() == "") {
                     $("#user_number").addClass("is-invalid");
                     $("#user_number_label").html("請輸入帳號").addClass("text-danger");
+                    objectShake($("#user_number"));
                     return false;
                 }
 
@@ -37,6 +70,7 @@
                 if ($("#user_password").val() == "") {
                     $("#user_password").addClass("is-invalid");
                     $("#user_password_label").html("請輸入密碼").addClass("text-danger");
+                    objectShake($("#user_password"));
                     return false;
                 }
 
@@ -45,6 +79,7 @@
                 if ($("#captcha").val() == "") {
                     $("#captcha").addClass("is-invalid");
                     $("#captcha_label").html("請輸入驗證碼").addClass("text-danger");
+                    objectShake($("#captcha"));
                     return false;
                 }
                 showLoadingMask();
@@ -84,8 +119,10 @@
             data: $(".login-form").serialize(),
             dataType: "json",
             success: function (response) {
-                if ($("#user_password").val() == "") 
+                if ($("#user_password").val() == "") {
                     $("#run").prop("disabled", true);
+                    $("#run").addClass("btn-danger");
+                }
 
                 $(".step1, .step3").addClass("d-none");
                 $(".step2").removeClass("d-none");
@@ -93,6 +130,7 @@
             },
             error: function (thrownError) {
                 $("#user_number").addClass("is-invalid");
+                $("#run").addClass("btn-danger");
 
                 if (thrownError.status == "419") {
                     $("#user_number").parent().find("span.invalid-feedback").remove();
@@ -125,6 +163,7 @@
             },
             error: function (thrownError) {
                 $("#user_password").addClass("is-invalid");
+                $("#run").addClass("btn-danger");
 
                 if (thrownError.status == "419") {
                     $("#user_number").parent().find("span.invalid-feedback").remove();
@@ -186,7 +225,7 @@
                         <div class="col-md-6">
                             <div class="inner-addon right-addon reset-icon">
                                 <i class="bi bi-x-circle-fill text-danger"></i>
-                                <input type="password" class="form-control @error('user_password') is-invalid obj-shake @enderror" id="user_password" name="user_password" value="{{ old('user_password') }}" required autocomplete="current-password" placeholder="8-25位數密碼，請區分大小寫">
+                                <input type="password" class="form-control @error('user_password') is-invalid obj-shake @enderror" id="user_password" name="user_password" value="{{ old('user_password') }}" required autocomplete="current-password" placeholder="8-25位數密碼，請區分大小寫" maxlength="25">
 
                                 @error('user_password')
                                 <span class="invalid-feedback" role="alert">
@@ -200,6 +239,17 @@
                         <div class="col-md-6">
                             <div class="form-check form-check-inline">
                                 <label class="form-check-label" for="show_password"><input type="checkbox" class="form-check-input" id="show_password">{{ __('顯示密碼') }}</label>
+                            </div>
+                        </div>
+
+                        <label class="col-md-4 col-form-label text-md-right"></label>
+                            <div class="col-md-6">
+                                <ul class="list-group check-list">
+                                    <li class="list-group-item"><i class="bi bi-check-circle-fill text-success"></i> 密碼長度8-25個字元</li>
+                                    <li class="list-group-item"><i class="bi bi-check-circle-fill text-success"></i> 英文與數字的組合</li>
+                                    <li class="list-group-item"><i class="bi bi-check-circle-fill text-success"></i> 包含一個大小或小寫字母</li>
+                                    <li class="list-group-item"><i class="bi bi-check-circle-fill text-success"></i> 沒有使用符號</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -226,11 +276,8 @@
                         </div>
                     </div>
 
-
-                    <br><br>
-
                     <div class="form-group row mb-0 justify-content-center">
-                        <button type="button" class="btn btn-primary radius px-5" id="run" {{ old('user_number') ? ''  : 'disabled="disabled"' }}>
+                        <button type="button" class="btn btn-primary radius px-5 @error('captcha') btn-danger @enderror" id="run" {{ old('user_number') ? ''  : 'disabled="disabled"' }}>
                             {{ __('繼續') }}
                         </button>
                     </div>
