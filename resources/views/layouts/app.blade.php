@@ -102,7 +102,7 @@
     .home-link {
         padding: 6px 8px 2px 8px;
         color: #FFF;
-        margin-right: 8px;
+        margin-right: 10px;
     }
 
     ul.check-list li {
@@ -127,7 +127,7 @@
         $(document).ready(function () {
             {{-- 文字方塊叉叉圖示處理 --}}
             $(".inner-addon.reset-icon i.bi").click(function() {
-                $(this).hide().parent().children("input").val("").focus();
+                $(this).hide().parent().children("input").val("").focus().trigger("keyup");
             });
 
             $(".inner-addon.reset-icon input").on('keyup',function(e) {

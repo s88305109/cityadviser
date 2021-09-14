@@ -225,7 +225,7 @@
                         <div class="col-md-6">
                             <div class="inner-addon right-addon reset-icon">
                                 <i class="bi bi-x-circle-fill text-danger"></i>
-                                <input type="password" class="form-control @error('user_password') is-invalid obj-shake @enderror" id="user_password" name="user_password" value="{{ old('user_password') }}" required autocomplete="current-password" placeholder="8-25位數密碼，請區分大小寫" maxlength="25">
+                                <input type="password" class="form-control @error('user_password') is-invalid obj-shake @enderror" id="user_password" name="user_password" value="{{ old('user_password') }}" required autocomplete="current-password" maxlength="25">
 
                                 @error('user_password')
                                 <span class="invalid-feedback" role="alert">
@@ -243,14 +243,13 @@
                         </div>
 
                         <label class="col-md-4 col-form-label text-md-right"></label>
-                            <div class="col-md-6">
-                                <ul class="list-group check-list">
-                                    <li class="list-group-item"><i class="bi bi-check-circle-fill text-success"></i> 密碼長度8-25個字元</li>
-                                    <li class="list-group-item"><i class="bi bi-check-circle-fill text-success"></i> 英文與數字的組合</li>
-                                    <li class="list-group-item"><i class="bi bi-check-circle-fill text-success"></i> 包含一個大小或小寫字母</li>
-                                    <li class="list-group-item"><i class="bi bi-check-circle-fill text-success"></i> 沒有使用符號</li>
-                                </ul>
-                            </div>
+                        <div class="col-md-6">
+                            <ul class="list-group check-list">
+                                <li class="list-group-item"><i class="bi bi-check-circle-fill text-success"></i> 密碼長度8-25個字元</li>
+                                <li class="list-group-item"><i class="bi bi-check-circle-fill text-success"></i> 英文與數字的組合</li>
+                                <li class="list-group-item"><i class="bi bi-check-circle-fill text-success"></i> 包含一個大小或小寫字母</li>
+                                <li class="list-group-item"><i class="bi bi-check-circle-fill text-success"></i> 沒有使用符號</li>
+                            </ul>
                         </div>
                     </div>
 
