@@ -8,14 +8,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class LoginController extends Controller {
+class LoginController extends Controller 
+{
 	// 登入畫面首頁
-	public function show() {
+	public function show() 
+	{
 		return view('login.login');
 	}
 
 	// 檢查是否短時間內密碼錯誤超過限制次數
-	public function checkLock($user) {
+	public function checkLock($user) 
+	{
 		$incorrect_count = DB::table('system_setting')
 			->where('code', 'error_locked_account')
 			->first();
@@ -54,7 +57,8 @@ class LoginController extends Controller {
 	}
 
 	// 檢查帳號
-	public function check(Request $request) {
+	public function check(Request $request) 
+	{
 		$rules = ['user_number' => 'required'];
 		$messages = ['user_number.required' =>  __('請輸入帳號')];
 		$validated = $request->validate($rules, $messages);
@@ -91,7 +95,8 @@ class LoginController extends Controller {
 	}
 
 	// 檢查密碼
-	public function check2(Request $request) {
+	public function check2(Request $request) 
+	{
 		$rules = [
 			'user_number' => 'required',
 			'user_password' => 'required',
@@ -151,7 +156,8 @@ class LoginController extends Controller {
 	}
 
 	// 使用者登入帳號驗證
-	public function verification(Request $request) {
+	public function verification(Request $request) 
+	{
 		$rules = [
 			'user_number' => 'required',
 			'user_password' => 'required',
@@ -206,7 +212,7 @@ class LoginController extends Controller {
 		// 記錄使用者最後登入時間
 		Auth::user()->update(['login_time' => date('Y/m/d H:i:s'), 'sign_out_time' => date('Y-m-d H:i:s')]);
 
-		return redirect('/');
+		return redirect('/home');
 	}
 
 	// 登出

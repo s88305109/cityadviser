@@ -7,11 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
+    // 主畫面
     public function index()
     {
         $sysList = [
@@ -24,6 +20,7 @@ class HomeController extends Controller
         return view('home.home', ['sysList' => $sysList]);
     }
 
+    // 副畫面
     public function home2()
     {
         $sysList = [

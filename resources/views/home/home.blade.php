@@ -9,12 +9,16 @@
     html, body, #app, #main, .splide, .splide__track, .splide__list, .inner-page, .inner-container  {
         height: calc(100% - 10px);
     }
-    .inner-page h2 {
-        text-align: center;
-        margin-top: 0.5em;
+    .splide__slide {
+        margin-top: 1em;
+        margin-bottom: 1em;
+    }
+    .splide__slide.is-active {
+        margin-top: 0;
+        margin-bottom: 0;
     }
     .inner-page .inner-container {
-        height: calc(100% - 74px);
+        height: calc(100% - 70px);
         padding: 1em;
         margin: 0.5em;
         border: 1px solid #CCC;
@@ -48,7 +52,7 @@
                         @foreach ($sysList as $key => $data)
                         <li class="splide__slide">
                             <div class="inner-page">
-                                <h2 class="mt-0">{!! $data['icon'] !!} {{ $data['title'] }}</h2>
+                                <h3 class="mt-0 text-center"><span>{!! $data['icon'] !!}</span> {{ $data['title'] }}</h3>
                                 <div class="inner-container {{ $key }}">Content</div>
                             </div>
                         </li>
@@ -61,20 +65,15 @@
 </div>
 
 <script>
-    var splide = new Splide( '.splide', {
-        type : 'loop',
+    var splide = new Splide(".splide", {
+        type : "loop",
         padding: {
-            right : '3rem',
-            left : '3rem',
+            right : "3rem",
+            left : "3rem",
         },
         pagination : false,
         arrows : false,
     }).mount();
-
-    /*
-    console.log( splide.index ); // 0
-    splide.go('3'); 
-    console.log( splide.index ); // 1
-    */
 </script>
+
 @endsection

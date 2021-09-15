@@ -174,7 +174,7 @@
 <body>
 <?php 
 // 回到首頁的連結
-$navlink1 = (Route::currentRouteName() == 'home2') ? '/home2' : '/home';
+$navlink1 = (Route::currentRouteName() == 'auth.home2') ? '/home2' : '/home';
 
 // 取得系統結構上一層的連結
 $navlink2 = '/';
@@ -186,8 +186,7 @@ if ($navlink2 == '/')
     $navlink2 = $navlink1;
 ?>
     <div id="app">
-    @if (Auth::check())
-        @if (! in_array(Route::currentRouteName(), array('login', 'error')))
+        @if (substr(Route::currentRouteName(), 0, 5) == 'auth.')
         {{-- Fixed Headerbar --}}
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container px-0">
@@ -207,7 +206,7 @@ if ($navlink2 == '/')
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item form-inline">
-                        @if (Route::currentRouteName() == 'home2')
+                        @if (Route::currentRouteName() == 'auth.home2')
                         <a class="bg-primary rounded home-link" href="/home">
                             <i class="bi bi-back"></i>
                         </a>
@@ -235,7 +234,6 @@ if ($navlink2 == '/')
             </div>
         </nav>
         @endif
-    @endif
     
         <main id="main" class="py-2">
             @yield('content')

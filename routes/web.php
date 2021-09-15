@@ -29,7 +29,7 @@ Route::get('/dump', function () {
     ]);
     */
     
-    DB::table('user')->where('user_number', 'user02')->update(['user_password' => Hash::make('user02')]);
+    // DB::table('user')->where('user_number', 'user02')->update(['user_password' => Hash::make('user02')]);
 
     echo '<pre>';
 
@@ -55,14 +55,11 @@ Route::view('/style', 'style');
 // 首頁
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect()->route('home');
+        return redirect()->route('auth.home');
     } else {
         return redirect()->route('login');
     }
 });
-
-Route::get('/home', [HomeController::class, 'index'])->name('home');
-Route::get('/home2', [HomeController::class, 'home2'])->name('home2');
 
 // Login 登入系統
 Route::get('/login', [LoginController::class, 'show'])->name('login');              // 登入介面
@@ -72,10 +69,17 @@ Route::post('/login', [LoginController::class, 'verification']);                
 Route::get('/logout', [LoginController::class, 'logout']);                          // 登出
 Route::get('/reload-captcha', [CaptchaServiceController::class, 'reloadCaptcha']);  // 重刷驗證碼
 
-// User 使用者頁面：個人資料、登出
-Route::get('/user', [UserController::class, 'index']);                              // 個人資料頁面
-Route::get('/user/information', [UserController::class, 'information']);            // 個人資料頁面
-Route::post('/user/information', [UserController::class, 'changePassword']);        // 修改密碼
-
 // Error 錯誤控制頁面
-Route::view('/errors/unauthorized', 'errors.unauthorized')->name('error');
+Route::view('/errors/unauthorized', 'errors.unauthorized');
+
+// 需登入驗證頁面
+Route::middleware(['auth'])->name('auth.')->group(function () {
+    // Home 主畫面 & 副畫面 選單
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/home2', [HomeController::class, 'home2'])->name('home2');
+
+    // User 使用者頁面：個人資料、登出
+    Route::get('/user', [UserController::class, 'index']);                           // 個人資料頁面
+    Route::get('/user/information', [UserController::class, 'information']);         // 個人資料頁面
+    Route::post('/user/information', [UserController::class, 'changePassword']);     // 修改密碼
+});

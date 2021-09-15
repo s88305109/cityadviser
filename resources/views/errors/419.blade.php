@@ -13,9 +13,9 @@
         <div class="col-md-6">
             <div class="error-template">
                 <h1>Oops!</h1>
-                <h2>404</h2>
+                <h2>419</h2>
                 <div class="error-details">
-                    找不到網頁。
+                    頁面閒置過久已失效，請重新整理網頁。
                 </div>
                 <div class="error-actions">
                     <a href="/" class="btn btn-primary btn-lg px-4">確認</a>
