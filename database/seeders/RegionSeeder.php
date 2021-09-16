@@ -31,12 +31,12 @@ class RegionSeeder extends Seeder
             [ 'region_id' => '10013', 'area' => '南部', 'title' => '屏東縣', 'sort' => 13 ],
             [ 'region_id' => '10014', 'area' => '東部', 'title' => '臺東縣', 'sort' => 14 ],
             [ 'region_id' => '10015', 'area' => '東部', 'title' => '花蓮縣', 'sort' => 15 ],
-            [ 'region_id' => '10016', 'area' => '外島', 'title' => '澎湖縣', 'sort' => 16 ],
+            [ 'region_id' => '10016', 'area' => '離島', 'title' => '澎湖縣', 'sort' => 16 ],
             [ 'region_id' => '10017', 'area' => '北部', 'title' => '基隆市', 'sort' => 17 ],
             [ 'region_id' => '10018', 'area' => '北部', 'title' => '新竹市', 'sort' => 18 ],
             [ 'region_id' => '10020', 'area' => '北部', 'title' => '嘉義市', 'sort' => 19 ],
-            [ 'region_id' => '09007', 'area' => '外島', 'title' => '連江縣', 'sort' => 20 ],
-            [ 'region_id' => '09020', 'area' => '外島', 'title' => '金門縣', 'sort' => 21 ]
+            [ 'region_id' => '09007', 'area' => '離島', 'title' => '連江縣', 'sort' => 20 ],
+            [ 'region_id' => '09020', 'area' => '離島', 'title' => '金門縣', 'sort' => 21 ]
         ]);
     }
 }
