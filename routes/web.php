@@ -7,6 +7,7 @@ use App\Http\Controllers\CaptchaServiceController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\OrganizationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,14 +35,14 @@ Route::get('/dump', function () {
     echo '<pre>';
 
     if (Auth::check())
-        echo "User ID is : ".Auth::user()->user_id."<br>";
+        echo 'User ID is : '.Auth::user()->user_id.'<br>';
 
-    echo "<hr>Session Dump :<br><br>";
+    echo '<hr>Session Dump :<br><br>';
     $data = session()->all();
     print_r($data);
 
 
-    echo "<hr>Auth User Dump :<br><br>";
+    echo '<hr>Auth User Dump :<br><br>';
     print_r(Auth::user());
 
     if (Auth::check()) {
@@ -82,4 +83,9 @@ Route::middleware(['auth'])->name('auth.')->group(function () {
     Route::get('/user', [UserController::class, 'index']);                           // 個人資料頁面
     Route::get('/user/information', [UserController::class, 'information']);         // 個人資料頁面
     Route::post('/user/information', [UserController::class, 'changePassword']);     // 修改密碼
+
+    // Organization 組織
+    Route::get('/organization', [OrganizationController::class, 'index']);
+    Route::get('/organization/employee', [OrganizationController::class, 'employee']);
+    Route::get('/organization/company', [OrganizationController::class, 'company']);
 });

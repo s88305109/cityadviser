@@ -7,15 +7,11 @@
         min-width: 100px;
         display: inline-block;
     }
-    #old_password, #confirm_password {
-        background-image: none;
-    }
-    .password-change-text.text-danger{
-        border-color: #e3342f;
-    }
+    #old_password, #confirm_password { background-image: none; }
+    .password-change-text.text-danger{ border-color: #e3342f; }
 </style>
 
-<script type="text/javascript">
+<script>
     $(document).ready(function () {
         $("i.password-visible").click(function () {
             var obj = $(this).parent().find("input");
@@ -84,24 +80,17 @@
                     <form class="change-password" method="POST" action="/user/information" novalidate>
                         @csrf
 
-                        <!--
-                        <div class="form-group">
-                            <label for="user_number">使用者帳號</label>
-                            <input type="text" class="form-control" id="user_number" value="{{ Auth::user()->user_number }}" readonly>
-                        </div>
-                        -->
-
                         <div class="form-group">
                             <label for="fullname">姓名</label>
-                            <input type="text" class="form-control" id="fullname" readonly>
+                            <input class="form-control" type="text" readonly>
                         </div>
                         <div class="form-group">
                             <label for="phone">手機號碼</label>
-                            <input type="text" class="form-control" id="phone" readonly>
+                            <input class="form-control" type="text" readonly>
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="text" class="form-control" id="email" readonly>
+                            <input class="form-control" type="text" readonly>
                         </div>
 
                         <hr>
@@ -112,7 +101,7 @@
                                     <div class="input-group-text password-change-text @error('old_password') text-danger @enderror">目前密碼</div>
                                 </div>
                                 <i class="bi bi-eye-fill password-visible"></i>
-                                <input type="password" class="form-control @error('old_password') is-invalid @enderror" id="old_password" name="old_password" value="{{ old('old_password') }}">
+                                <input class="form-control @error('old_password') is-invalid @enderror" id="old_password" name="old_password" type="password" value="{{ old('old_password') }}">
                             </div>
                         </div>
 
@@ -122,7 +111,7 @@
                                     <div class="input-group-text password-change-text @error('new_password') text-danger @enderror">新密碼</div>
                                 </div>
                                 <i class="bi bi-eye-fill password-visible"></i>
-                                <input type="password" class="form-control @error('new_password') text-danger @enderror" id="new_password" name="new_password" value="{{ old('new_password') }}" placeholder="8-25位數密碼，請區分大小寫">
+                                <input class="form-control @error('new_password') text-danger @enderror" id="new_password" name="new_password" type="password" value="{{ old('new_password') }}" placeholder="8-25位數密碼，請區分大小寫">
                             </div>
                         </div>
 
@@ -132,7 +121,7 @@
                                     <div class="input-group-text password-change-text @error('confirm_password') text-danger @enderror">確認新密碼</div>
                                 </div>
                                 <i class="bi bi-eye-fill password-visible"></i>
-                                <input type="password" class="form-control @error('confirm_password') is-invalid @enderror" id="confirm_password" name="confirm_password" value="{{ old('confirm_password') }}"  placeholder="8-25位數密碼，請區分大小寫">
+                                <input class="form-control @error('confirm_password') is-invalid @enderror" id="confirm_password" name="confirm_password" type="password" value="{{ old('confirm_password') }}"  placeholder="8-25位數密碼，請區分大小寫">
                             </div>
                         </div>
 
@@ -142,7 +131,7 @@
                             </button>
                         </div>
 
-                        <input type="hidden" id="show_password" name="show_password" value="{{ old('show_password') }}">
+                        <input id="show_password" name="show_password" type="hidden" value="{{ old('show_password') }}">
                     </form>
                 </div>
             </div>
@@ -157,9 +146,9 @@
                 確定修改密碼？
             </div>
             <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-primary" id="modifyPassword">　是　</button>
+                <button class="btn btn-primary untrigger" id="modifyPassword" type="button">　是　</button>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">　否　</button>
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">　否　</button>
             </div>
         </div>
     </div>

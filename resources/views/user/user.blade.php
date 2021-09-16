@@ -2,7 +2,7 @@
 
 @section('content')
 
-<script type="text/javascript">
+<script>
     $(document).ready(function () {
         $(".information").click(function () {
             window.location.href = "/user/information";
@@ -25,12 +25,16 @@
             </div>
             <h2 class="text-center mt-1">{{ config('app.name', '融鎰數位科技') }}</h2>
 
-            <div class="card pt-3 pb-3">
-                <div class="card-body information"><strong>個人資料</strong></div>
+            <div class="card pt-3">
+                <div class="card-body information">
+                    <h3><i class="bi bi-person-lines-fill"></i> 個人資料</h3>
+                </div>
             </div>
 
-            <div class="card pt-3 pb-3 text-right logout">
-                <div class="card-body"><strong>登出系統</strong></div>
+            <div class="card pt-3 text-right logout">
+                <div class="card-body">
+                    <h3><i class="bi bi-door-closed-fill"></i> 登出系統</h3>
+                </div>
             </div>
         </div>
     </div>

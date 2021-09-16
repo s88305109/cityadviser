@@ -1,12 +1,9 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
     <title>{{ config('app.name', '融鎰數位科技') }}</title>
 
     <!-- Scripts -->
@@ -20,26 +17,25 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <style>
     /* Input 內嵌圖示 */
     button.btn.radius {
-        border-radius:20px;
+        border-radius: 20px;
         font-size: 120%;
     }
-    .inner-addon { 
-        position: relative; 
-    }
+    .inner-addon { position: relative; }
     .inner-addon i.bi {
         font-size: 20px;
         position: absolute;
         padding: 4px;
     }
-    .inner-addon.reset-icon i.bi {
-        display: none;
-    }
-    .left-addon i.bi  { left:  0px;}
-    .right-addon i.bi { right: 0px;}
-    .left-addon input  { padding-left:  30px; }
+    .inner-addon.reset-icon i.bi { display: none; }
+    .left-addon i.bi  { left:  0px; }
+    .right-addon i.bi { right: 0px; }
+    .left-addon input { padding-left:  30px; }
     .right-addon input { padding-right: 30px; }
 
     .inner-addon i.bi.password-visible {
@@ -71,13 +67,8 @@
         background-color: #EEE;
         border-top: 1px solid #CCC;;
     }
-    .float-navbar .back-icon {
-        font-size: 24px;
-    }
-
-    .navbar-header { 
-        font-size: 18px;
-    }
+    .float-navbar .back-icon { font-size: 24px; }
+    .navbar-header { font-size: 18px; }
 
     /* Shake Effect */
     .obj-shake {
@@ -118,12 +109,10 @@
     }
 
     #search_str.is-invalid { background-image: none; }
-    #search_str.is-invalid::placeholder {
-        color: #e3342f;
-    }
+    #search_str.is-invalid::placeholder { color: #e3342f; }
     </style>
 
-    <script type="text/javascript">
+    <script>
         $(document).ready(function () {
             {{-- 文字方塊叉叉圖示處理 --}}
             $(".inner-addon.reset-icon i.bi").click(function() {
@@ -169,6 +158,31 @@
                 return false;
             }
         }
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        @if (substr(Route::currentRouteName(), 0, 5) == 'auth.')
+        var isChanged = false;
+        $(document).ready(function () {
+            $('input, textarea, select').not('.skip-change-validate input').not('.skip-change-validate').change(function () {
+                isChanged = true;
+            });
+            $('.untrigger').bind('click', function () {
+                isChanged = false;
+            }).bind('change', function () {
+                isChanged = false;
+            });
+        });
+        window.onbeforeunload = function () {
+            if (isChanged) {                
+                return "您尚未儲存修改的資料";
+            }
+        }
+        @endif
     </script>
 </head>
 <body>
@@ -226,7 +240,7 @@ if ($navlink2 == '/')
                         <div class="inner-addon right-addon">
                             <form class="search-form">
                                 <i class="bi bi-search" onclick="searchContent();"></i>
-                                <input class="form-control" type="search" id="search_str" name="search_str" placeholder="{{ __('請輸入關鍵字') }}">
+                                <input class="form-control skip-change-validate" type="search" id="search_str" name="search_str" placeholder="{{ __('請輸入關鍵字') }}">
                             </form>
                         </div>
                     </li>

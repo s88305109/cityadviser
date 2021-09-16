@@ -2,7 +2,7 @@
 
 @section('content')
 
-<script type="text/javascript">
+<script>
     $(document).ready(function () {
         $("#reload").click(function () {
             refreshCaptcha();
@@ -31,7 +31,7 @@
                 $("ul.check-list li i.bi:eq(0)").show();
             else
                 $("ul.check-list li i.bi:eq(0)").hide();
-            
+
             if (/^((?=.*[0-9])(?=.*[a-z|A-Z])(?!.*[^a-z|A-Z|0-9]))^.*$/.test($(this).val()))
                 $("ul.check-list li i.bi:eq(1)").show();
             else
@@ -46,7 +46,7 @@
                 $("ul.check-list li i.bi:eq(3)").show();
             else
                 $("ul.check-list li i.bi:eq(3)").hide();
-            
+
             if ($("ul.check-list li i.bi:visible").length == 4) {
                 $("#run").prop("disabled", false);
                 $("#run").removeClass("btn-danger");
@@ -203,12 +203,12 @@
                     @csrf
 
                     <div class="form-group row step1">
-                        <label id="user_number_label" for="user_number" class="col-md-4 col-form-label text-md-right">{{ __('請輸入帳號') }}</label>
+                        <label class="col-md-4 col-form-label text-md-right" id="user_number_label" for="user_number">{{ __('請輸入帳號') }}</label>
 
                         <div class="col-md-6">
                             <div class="inner-addon right-addon reset-icon">
                                 <i class="bi bi-x-circle-fill text-danger"></i>
-                                <input type="text" class="form-control @error('user_number') is-invalid @enderror" id="user_number" name="user_number" value="{{ old('user_number') }}" required autofocus>
+                                <input class="form-control @error('user_number') is-invalid @enderror" id="user_number" name="user_number" type="text" value="{{ old('user_number') }}" required autofocus>
 
                                 @error('user_number')
                                 <span class="invalid-feedback" role="alert">
@@ -220,12 +220,12 @@
                     </div>
 
                     <div class="form-group row step2 d-none">
-                        <label id="user_password_label" for="user_password" class="col-md-4 col-form-label text-md-right">{{ __('請輸入密碼') }}</label>
+                        <label class="col-md-4 col-form-label text-md-right" id="user_password_label" for="user_password">{{ __('請輸入密碼') }}</label>
 
                         <div class="col-md-6">
                             <div class="inner-addon right-addon reset-icon">
                                 <i class="bi bi-x-circle-fill text-danger"></i>
-                                <input type="password" class="form-control @error('user_password') is-invalid obj-shake @enderror" id="user_password" name="user_password" value="{{ old('user_password') }}" required autocomplete="current-password" maxlength="25">
+                                <input class="form-control @error('user_password') is-invalid obj-shake @enderror" id="user_password" name="user_password" type="password" value="{{ old('user_password') }}" required autocomplete="current-password" maxlength="25">
 
                                 @error('user_password')
                                 <span class="invalid-feedback" role="alert">
@@ -234,11 +234,11 @@
                                 @enderror
                             </div>
                         </div>
-                    
+
                         <label class="col-md-4 col-form-label text-md-right"></label>
                         <div class="col-md-6">
                             <div class="form-check form-check-inline">
-                                <label class="form-check-label" for="show_password"><input type="checkbox" class="form-check-input" id="show_password">{{ __('顯示密碼') }}</label>
+                                <label class="form-check-label" for="show_password"><input class="form-check-input" id="show_password" type="checkbox">{{ __('顯示密碼') }}</label>
                             </div>
                         </div>
 
@@ -254,11 +254,11 @@
                     </div>
 
                     <div class="form-group row step3 d-none">
-                        <label id="captcha_label" for="captcha" class="col-md-4 col-form-label text-md-right">{{ __('請輸入驗證碼') }}</label>
+                        <label class="col-md-4 col-form-label text-md-right" id="captcha_label" for="captcha">{{ __('請輸入驗證碼') }}</label>
 
                         <div class="col-md-6">
-                            <input type="text" class="form-control @error('captcha') is-invalid @enderror" id="captcha" name="captcha" required autocomplete="off">
-                            
+                            <input class="form-control @error('captcha') is-invalid @enderror" id="captcha" name="captcha" type="text" required autocomplete="off">
+
                             @error('captcha')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -269,14 +269,14 @@
                         <label class="col-md-4 col-form-label"></label>
                         <div class="captcha col-md-6">
                             <span>{!! captcha_img() !!}</span>
-                            <button type="button" class="btn btn-primary" class="reload" id="reload">
+                            <button class="btn btn-primary reload" id="reload" type="button">
                                 &#x21bb;
                             </button>
                         </div>
                     </div>
 
                     <div class="form-group row mb-0 justify-content-center">
-                        <button type="button" class="btn btn-primary radius px-5 @error('captcha') btn-danger @enderror" id="run" {{ old('user_number') ? ''  : 'disabled="disabled"' }}>
+                        <button class="btn btn-primary radius px-5 @error('captcha') btn-danger @enderror" id="run" type="button" {{ old('user_number') ? ''  : 'disabled' }}>
                             {{ __('繼續') }}
                         </button>
                     </div>
