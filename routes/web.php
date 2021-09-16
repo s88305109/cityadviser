@@ -85,7 +85,10 @@ Route::middleware(['auth'])->name('auth.')->group(function () {
     Route::post('/user/information', [UserController::class, 'changePassword']);     // 修改密碼
 
     // Organization 組織
-    Route::get('/organization', [OrganizationController::class, 'index']);
-    Route::get('/organization/employee', [OrganizationController::class, 'employee']);
-    Route::get('/organization/company', [OrganizationController::class, 'company']);
+    Route::get('/organization', [OrganizationController::class, 'index']);                                  // 組織管理
+    Route::get('/organization/employee', [OrganizationController::class, 'employee']);                      // 員工管理
+    Route::get('/organization/employee/newEmployee', [OrganizationController::class, 'newEmployee']);       // 新增員工
+    Route::get('/organization/employee/employeeList', [OrganizationController::class, 'employeeList']);     // 員工列表
+    Route::get('/organization/employee/permissions', [OrganizationController::class, 'permissions']);       // 權限設定
+    Route::get('/organization/company', [OrganizationController::class, 'company']);                        // 公司管理
 });

@@ -32,7 +32,10 @@
         position: absolute;
         padding: 4px;
     }
-    .inner-addon.reset-icon i.bi { display: none; }
+    .inner-addon.reset-icon i.bi { 
+        display: none; 
+        z-index: 10;
+    }
     .left-addon i.bi  { left:  0px; }
     .right-addon i.bi { right: 0px; }
     .left-addon input { padding-left:  30px; }
@@ -70,6 +73,28 @@
     .float-navbar .back-icon { font-size: 24px; }
     .navbar-header { font-size: 18px; }
 
+    .home-link {
+        padding: 6px 8px 2px 8px;
+        color: #FFF;
+        margin-right: 10px;
+    }
+
+    ul.check-list li {
+        background-color: transparent;
+        border: 0px;
+        padding: 0px;
+        padding-left: 1.2em;
+    }
+    ul.check-list li i.bi {
+        position: absolute;
+        margin-left: -1.2em;
+        display: none;
+    }
+
+    /* Navbar 搜尋元件 */
+    #search_str.is-invalid { background-image: none; }
+    #search_str.is-invalid::placeholder { color: #e3342f; }
+
     /* Shake Effect */
     .obj-shake {
         animation: shake 0.5s;
@@ -90,36 +115,20 @@
         100% { transform: translate(1px, -2px) rotate(-1deg); }
     }
 
-    .home-link {
-        padding: 6px 8px 2px 8px;
-        color: #FFF;
-        margin-right: 10px;
-    }
-
-    ul.check-list li {
-        background-color: transparent;
-        border: 0px;
-        padding: 0px;
-        padding-left: 1.2em;
-    }
-    ul.check-list li i.bi {
-        position: absolute;
-        margin-left: -1.2em;
-        display: none;
-    }
-
-    #search_str.is-invalid { background-image: none; }
-    #search_str.is-invalid::placeholder { color: #e3342f; }
+    /*  主畫面 > 功能頁選單 */
+    .block-inner-page { font-size: 1.5em; }
+    .block-inner-page .two-column { width: calc(50% - 6px); }
+    .block-inner-page .card-title { font-size: 2.5em; }
     </style>
 
     <script>
         $(document).ready(function () {
             {{-- 文字方塊叉叉圖示處理 --}}
             $(".inner-addon.reset-icon i.bi").click(function() {
-                $(this).hide().parent().children("input").val("").focus().trigger("keyup");
+                $(this).hide().parent().children("input, textarea").val("").focus().trigger("keyup");
             });
 
-            $(".inner-addon.reset-icon input").on('keyup',function(e) {
+            $(".inner-addon.reset-icon input, .inner-addon.reset-icon textarea").on('keyup',function(e) {
                 if ($(this).val() != "") {
                     $(this).parent().children("i.bi").fadeIn();
                     $(this).css("background-image", "none");
