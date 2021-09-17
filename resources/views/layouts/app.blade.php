@@ -35,6 +35,7 @@
     .inner-addon.reset-icon i.bi { 
         display: none; 
         z-index: 10;
+        margin-right:  .2em;
     }
     .left-addon i.bi  { left:  0px; }
     .right-addon i.bi { right: 0px; }

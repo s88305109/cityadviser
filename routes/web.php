@@ -79,17 +79,17 @@ Route::middleware(['auth'])->name('auth.')->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/home2', [HomeController::class, 'home2'])->name('home2');
 
-    Route::name('user.')->group(function() {
-        // User 使用者頁面：個人資料、登出
-        Route::get('/user', [UserController::class, 'index']);                           // 個人資料頁面
-        Route::get('/user/information', [UserController::class, 'information']);         // 個人資料頁面
-        Route::post('/user/information', [UserController::class, 'changePassword']);     // 修改密碼
-    });
+    // User 使用者頁面：個人資料、登出
+    Route::get('/user', [UserController::class, 'index']);                           // 個人資料頁面
+    Route::get('/user/information', [UserController::class, 'information']);         // 個人資料頁面
+    Route::post('/user/information', [UserController::class, 'changePassword']);     // 修改密碼
 
     // Organization 組織
     Route::get('/organization', [OrganizationController::class, 'index']);                                  // 組織管理
+
     Route::get('/organization/employee', [OrganizationController::class, 'employee']);                      // 員工管理
     Route::get('/organization/employee/newEmployee', [OrganizationController::class, 'newEmployee']);       // 新增員工
+    Route::post('/organization/employee/newEmployee', [OrganizationController::class, 'addEmployee']);      // 新增員工 (保存)
     Route::get('/organization/employee/employeeList', [OrganizationController::class, 'employeeList']);     // 員工列表
     Route::get('/organization/employee/permissions', [OrganizationController::class, 'permissions']);       // 權限設定
     Route::get('/organization/company', [OrganizationController::class, 'company']);                        // 公司管理
