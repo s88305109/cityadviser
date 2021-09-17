@@ -197,7 +197,7 @@
 <body>
 <?php 
 // 回到首頁的連結
-$navlink1 = (Route::currentRouteName() == 'auth.home2') ? '/home2' : '/home';
+$navlink1 = (session('pageBlock') !== null) ? session('pageBlock') : '/home';
 
 // 取得系統結構上一層的連結
 $navlink2 = '/';

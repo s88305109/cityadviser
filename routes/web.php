@@ -79,10 +79,12 @@ Route::middleware(['auth'])->name('auth.')->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/home2', [HomeController::class, 'home2'])->name('home2');
 
-    // User 使用者頁面：個人資料、登出
-    Route::get('/user', [UserController::class, 'index']);                           // 個人資料頁面
-    Route::get('/user/information', [UserController::class, 'information']);         // 個人資料頁面
-    Route::post('/user/information', [UserController::class, 'changePassword']);     // 修改密碼
+    Route::name('user.')->group(function() {
+        // User 使用者頁面：個人資料、登出
+        Route::get('/user', [UserController::class, 'index']);                           // 個人資料頁面
+        Route::get('/user/information', [UserController::class, 'information']);         // 個人資料頁面
+        Route::post('/user/information', [UserController::class, 'changePassword']);     // 修改密碼
+    });
 
     // Organization 組織
     Route::get('/organization', [OrganizationController::class, 'index']);                                  // 組織管理

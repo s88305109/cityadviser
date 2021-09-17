@@ -88,7 +88,7 @@
 </div>
 
 <script>
-    const pageIndex = (getCookie("pageIndex") == null) ? 0 : getCookie("pageIndex");
+    const pageIndex = (getCookie("pageIndex") == null | getCookie("pageBlock") != "{{ $pageBlock }}") ? 0 : getCookie("pageIndex");
     const splide = new Splide(".splide", {
         type: "loop",
         padding: {
@@ -104,6 +104,7 @@
         $(".float-bar .float-left").html($(".splide__slide.is-active").prev().find(".inner-page h3 span").html()).show(100);
         $(".float-bar .float-right").html($(".splide__slide.is-active").next().find(".inner-page h3 span").html()).show(100);
         document.cookie = "pageIndex=" + splide.index;
+        document.cookie = "pageBlock={{ $pageBlock }}";
     }).on('drag', function() {
         $(".float-bar .float-left").hide();
         $(".float-bar .float-right").hide();

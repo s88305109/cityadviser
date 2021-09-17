@@ -17,7 +17,9 @@ class HomeController extends Controller
             'organization' => ['title' => '組織管理', 'icon' => '<i class="bi bi-diagram-3"></i>'],
         ];
 
-        return view('home.home', ['sysList' => $sysList]);
+        session(['pageBlock' => '/home']);
+
+        return view('home.home', ['sysList' => $sysList, 'pageBlock' => 'home']);
     }
 
     // 副畫面
@@ -29,6 +31,8 @@ class HomeController extends Controller
             'sys03' => ['title' => '副畫面三', 'icon' => '<i class="bi bi-file-person"></i>'],
         ];
 
-        return view('home.home', ['sysList' => $sysList]);
+        session(['pageBlock' => '/home2']);
+
+        return view('home.home', ['sysList' => $sysList, 'pageBlock' => 'home2']);
     }
 }
