@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\SystemSetting;
+use App\Models\AuthenticationLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -19,16 +21,10 @@ class LoginController extends Controller
 	// 檢查是否短時間內密碼錯誤超過限制次數
 	public function checkLock($user) 
 	{
-		$incorrect_count = DB::table('system_setting')
-			->where('code', 'error_locked_account')
-			->first();
+		$incorrect_count = SystemSetting::where('code', 'error_locked_account')->first();
+		$lock_minutes = SystemSetting::where('code', 'error_locked_time')->first();
 
-		$lock_minutes = DB::table('system_setting')
-			->where('code', 'error_locked_time')
-			->first();
-
-		$lock_check = DB::table('authentication_log')
-			->where('user_id', $user->user_id)
+		$lock_check = AuthenticationLog::where('user_id', $user->user_id)
 			->where('action', 'user_lock')
 			->where('log_time', '>=', date('Y-m-d H:i:s', strtotime("-{$lock_minutes->value} minutes")))
 			->count();
@@ -36,14 +32,13 @@ class LoginController extends Controller
 		if ($lock_check > 0) {
 			return true;
 		} else {
-			$incorrect_check = DB::table('authentication_log')
-				->where('user_id', $user->user_id)
+			$incorrect_check = AuthenticationLog::where('user_id', $user->user_id)
 				->where('action', 'incorrect_password')
 				->where('log_time', '>=', date('Y-m-d H:i:s', strtotime('-10 minutes')))
 				->count();
 
 			if ($incorrect_check >= $incorrect_count->value) {
-				DB::table('authentication_log')->insert([
+				AuthenticationLog::insert([
 					'user_id' => $user->user_id,
 					'action' => 'user_lock',
 					'log_time' => date('Y-m-d H:i:s'),
@@ -78,7 +73,7 @@ class LoginController extends Controller
 				'code' => 40002
 			], 400);
 		} else if ($this->checkLock($user)) {
-			$lock_minutes = DB::table('system_setting')->where('code', 'error_locked_time')->first();
+			$lock_minutes = SystemSetting::where('code', 'error_locked_time')->first();
 
 			return response()->json([
 				'status' => 'fail', 
@@ -124,7 +119,7 @@ class LoginController extends Controller
 				'message' => __('此帳號已停用')
 			], 400);
 		} else if ($this->checkLock($user)) {
-			$lock_minutes = DB::table('system_setting')->where('code', 'error_locked_time')->first();
+			$lock_minutes = SystemSetting::where('code', 'error_locked_time')->first();
 
 			return response()->json([
 				'status' => 'fail', 
@@ -135,7 +130,7 @@ class LoginController extends Controller
 
 		if (! Hash::check($request->input('user_password'), $user->user_password)) {
 			// 紀錄使用者密碼錯誤紀錄
-			DB::table('authentication_log')->insert([
+			AuthenticationLog::insert([
 				'user_id' => $user->user_id,
 				'action' => 'incorrect_password',
 				'log_time' => date('Y-m-d H:i:s'),
@@ -179,13 +174,8 @@ class LoginController extends Controller
 			return redirect()->back()->withInput()->withErrors(['user_number' => __('帳號錯誤')]);
 		}
 
-		$incorrect_count = DB::table('system_setting')
-			->where('code', 'error_locked_account')
-			->first();
-
-		$lock_minutes = DB::table('system_setting')
-			->where('code', 'error_locked_time')
-			->first();
+		$incorrect_count = SystemSetting::where('code', 'error_locked_account')->first();
+		$lock_minutes = SystemSetting::where('code', 'error_locked_time')->first();
 
 		if ($this->checkLock($user)) {		
 			// 檢查是否短時間內密碼錯誤超過限制次數
@@ -193,7 +183,7 @@ class LoginController extends Controller
 			return redirect()->back()->withInput()->withErrors(['user_lock' => __("輸入錯誤次數過多，將鎖定{$lock_minutes->value}分鐘。")]);
 		} else if (! Hash::check($request->input('user_password'), $user->user_password)) {		
 			// 檢查密碼是否正確若錯誤紀錄使用者密碼錯誤紀錄
-			DB::table('authentication_log')->insert([
+			AuthenticationLog::insert([
 				'user_id' => $user->user_id,
 				'action' => 'incorrect_password',
 				'log_time' => date('Y-m-d H:i:s'),
