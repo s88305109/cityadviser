@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Region;
+use App\Models\Job;
 
 class OrganizationController extends Controller
 {
@@ -23,8 +24,14 @@ class OrganizationController extends Controller
     public function newEmployee(Request $request)
     {
         $region = Region::orderBy('sort')->get();
+        $job1 = Job::where('type', 1)->orderBy('sort')->get();
+        $job2 = Job::where('type', 2)->orderBy('sort')->get();
 
-        return view('organization.employee.newEmployee', ['region' => $region]);
+        return view('organization.employee.newEmployee', [
+            'region' => $region, 
+            'job1' => $job1, 
+            'job2' => $job2
+        ]);
     }
 
     // 員工列表

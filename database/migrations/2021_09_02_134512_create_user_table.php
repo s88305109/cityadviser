@@ -22,6 +22,8 @@ class CreateUserTable extends Migration
             $table->datetime('sign_out_time')->nullable()->comment('使用者最後登出時間');
             $table->tinyInteger('status')->comment('帳號狀態');
             $table->rememberToken()->comment('記住登入狀態');
+            $table->dateTime('created_at', $precision = 0)->nullable()->comment('資料建立時間');
+            $table->dateTime('updated_at', $precision = 0)->nullable()->comment('最後更新時間');
         });
 
         DB::statement("ALTER TABLE `user` comment '使用者帳號資料'");

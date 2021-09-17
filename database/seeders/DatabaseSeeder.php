@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             SystemSettingSeeder::class,
+            JobSeeder::class,
+            RegionSeeder::class,
             UserSeeder::class
         ]);
     }

@@ -19,7 +19,8 @@ class CreateJobTable extends Migration
             $table->string('job_title', 20)->comment('職稱');
             $table->integer('sort')->comment('排序');
             $table->tinyInteger('status')->comment('狀態');
-            $table->timestamps();
+            $table->dateTime('created_at', $precision = 0)->nullable()->comment('資料建立時間');
+            $table->dateTime('updated_at', $precision = 0)->nullable()->comment('最後更新時間');
         });
 
         DB::statement("ALTER TABLE `job` comment '職位資料'");
