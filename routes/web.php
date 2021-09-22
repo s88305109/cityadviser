@@ -21,6 +21,7 @@ use App\Http\Controllers\OrganizationController;
 */
 
 Route::get('/dump', function () {
+    echo Str::random(16);
     /*
     DB::table('user')->insert([
         'user_uid' => 'VTfgy5y8dvrTaztA',

@@ -27,7 +27,13 @@
 <script>
     $(document).ready(function () {
         $("#saveBtn").click(function () {
+            allowRedirect = true;
             $(".new-employee").submit();
+        });
+
+        $(".btn.btn-outline-secondary").click(function () {
+            $(".btn.btn-outline-secondary").removeClass('active');
+            $(this).addClass('active');
         });
     });
 </script>
@@ -43,10 +49,16 @@
 
                         <div class="form-group input-group inner-addon right-addon reset-icon">
                             <div class="input-group-prepend">
-                                <div class="input-group-text @error('fullname') text-danger border-danger @enderror">姓名</div>
+                                <div class="input-group-text @error('name') text-danger border-danger @enderror">姓名</div>
                             </div>
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('fullname') is-invalid @enderror" id="fullname" name="fullname" type="text" value="{{ old('fullname') }}">
+                            <input class="form-control @error('name') is-invalid @enderror" id="name" name="name" type="text" value="{{ old('name') }}">
+
+                            @error('name')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
 
                         <div class="form-group input-group inner-addon right-addon reset-icon">
@@ -55,6 +67,12 @@
                             </div>
                             <i class="bi bi-x-circle-fill text-danger"></i>
                             <input class="form-control @error('id_card') is-invalid @enderror" id="id_card" name="id_card" type="text" value="{{ old('id_card') }}">
+
+                            @error('id_card')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
 
                         <div class="form-group input-group inner-addon right-addon reset-icon">
@@ -63,6 +81,12 @@
                             </div>
                             <i class="bi bi-x-circle-fill text-danger"></i>
                             <input class="form-control @error('phone_number') is-invalid @enderror" id="phone_number" name="phone_number" type="text" value="{{ old('phone_number') }}">
+
+                            @error('phone_number')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
 
                         <div class="form-group input-group-top inner-addon right-addon reset-icon">
@@ -71,6 +95,12 @@
                             </div>
                             <i class="bi bi-x-circle-fill text-danger"></i>
                             <textarea class="form-control @error('email') is-invalid @enderror" id="email" name="email" rows="2">{{ old('email') }}</textarea>
+
+                            @error('email')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
 
                         <div class="form-group input-group">
@@ -78,18 +108,30 @@
                                 <div class="input-group-text password-change-text @error('date_employment') text-danger border-danger @enderror">到職日期</div>
                             </div>
                             <input class="form-control @error('date_employment') is-invalid @enderror" id="date_employment" name="date_employment" type="date" value="{{ old('date_employment') }}">
+
+                            @error('date_employment')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
 
                         <div class="form-group mb-2">
                             <label class="form-label gender-label @error('gender_type') text-danger @enderror">性別</label>
                             <div class="form-check form-check-inline ml-1">
-                                <input class="form-check-input @error('gender_type') is-invalid @enderror" id="gender_type1" name="gender_type" type="radio" value="1">
+                                <input class="form-check-input @error('gender_type') is-invalid @enderror" id="gender_type1" name="gender_type" type="radio" value="1" @if(old('gender_type') == '1') checked @endif>
                                 <label class="form-check-label" for="gender_type1">男</label>
                             </div>
                             <div class="form-check form-check-inline ml-1">
-                                <input class="form-check-input @error('gender_type') is-invalid @enderror" id="gender_type0" name="gender_type" type="radio" value="0">
+                                <input class="form-check-input @error('gender_type') is-invalid @enderror" id="gender_type0" name="gender_type" type="radio" value="0" @if(old('gender_type') == '0') checked @endif>
                                 <label class="form-check-label" for="gender_type0">女</label>
                             </div>
+
+                            @error('gender_type')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
 
                         <div class="form-group input-group">
@@ -97,11 +139,17 @@
                                 <label class="input-group-text @error('counties_city_type') text-danger border-danger @enderror" for="counties_city_type">縣市</label>
                             </div>
                             <select class="custom-select @error('counties_city_type') is-invalid @enderror" id="counties_city_type" name="counties_city_type">
-                                <option selected></option>
+                                <option></option>
                                 @foreach ($region as $row)
-                                <option value="{{ $row->region_id }}">{{ $row->title }}</option>
+                                <option value="{{ $row->region_id }}" @if(old('counties_city_type') == $row->region_id) selected @endif>{{ $row->title }}</option>
                                 @endforeach
                             </select>
+
+                            @error('counties_city_type')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
 
                         <div class="form-group input-group">
@@ -109,32 +157,52 @@
                                 <label class="input-group-text @error('company_id') text-danger border-danger @enderror" for="company_id">所屬公司</label>
                             </div>
                             <select class="custom-select @error('company_id') is-invalid @enderror" id="company_id" name="company_id">
-                                <option selected></option>
+                                <option></option>
                                 @foreach ($company as $row)
-                                <option value="{{ $row->company_id }}" data-type="{{ $row->type }}">{{ $row->company_name }}</option>
+                                <option value="{{ $row->company_id }}" data-type="{{ $row->type }}" @if(old('company_id') == $row->company_id) selected @endif>{{ $row->company_name }}</option>
                                 @endforeach
                             </select>
+
+                            @error('company_id')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
 
-                        <div class="card mb-3 job-set @error('job_id') text-danger border-danger @enderror">
-                            <div class="card-header @error('job_id') border-danger @enderror">總公司職位設定</div>
+                        <div class="card mb-3 job-set text-center @error('job_id') text-danger border-danger @enderror">
+                            <div class="card-header @error('job_id') is-invalid border-danger @enderror">總公司職位設定</div>
+
+                            @error('job_id')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+
                             <div class="row p-2">
                                 @foreach ($job1 as $row)                                
                                 <div class="col-6 text-center">
-                                    <input class="btn-check d-none" id="job{{ $row->job_id }}" name="job_id" type="radio" value="{{ $row->job_id }}">
-                                    <label class="btn btn-outline-secondary" for="job{{ $row->job_id }}">{{ $row->job_title }}</label>
+                                    <input class="d-none" id="job{{ $row->job_id }}" name="job_id" type="radio" value="{{ $row->job_id }}" @if(old('job_id') == $row->job_id) checked @endif autocomplete="off">
+                                    <label class="btn btn-outline-secondary @if(old('job_id') == $row->job_id) active @endif" for="job{{ $row->job_id }}">{{ $row->job_title }}</label>
                                 </div>
                                 @endforeach
                             </div>
                         </div>
 
-                        <div class="card mb-3 job-set @error('job_id') text-danger border-danger @enderror">
-                            <div class="card-header @error('job_id') border-danger @enderror">分公司職位設定</div>
+                        <div class="card mb-3 job-set text-center @error('job_id') text-danger border-danger @enderror">
+                            <div class="card-header @error('job_id') is-invalid border-danger @enderror">分公司職位設定</div>
+
+                            @error('job_id')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+
                             <div class="row p-2">
                                 @foreach ($job2 as $row)                                
                                 <div class="col-6 text-center">
-                                    <input class="btn-check d-none" id="job{{ $row->job_id }}" name="job" type="radio" value="{{ $row->job_id }}">
-                                    <label class="btn btn-outline-secondary" for="job{{ $row->job_id }}">{{ $row->job_title }}</label>
+                                    <input class="d-none" id="job{{ $row->job_id }}" name="job_id" type="radio" value="{{ $row->job_id }}" @if(old('job_id') == $row->job_id) checked @endif autocomplete="off">
+                                    <label class="btn btn-outline-secondary @if(old('job_id') == $row->job_id) active @endif" for="job{{ $row->job_id }}">{{ $row->job_title }}</label>
                                 </div>
                                 @endforeach
                             </div>
@@ -144,10 +212,16 @@
 
                         <div class="form-group input-group-top inner-addon right-addon reset-icon">
                             <div class="input-group">
-                                <div class="input-group-text @error('user_name') text-danger border-danger @enderror">平台帳號</div>
+                                <div class="input-group-text @error('user_number') text-danger border-danger @enderror">平台帳號</div>
                             </div>
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('user_name') is-invalid @enderror" id="user_name" name="user_name" type="text" value="{{ old('user_name') }}">
+                            <input class="form-control @error('user_number') is-invalid @enderror" id="user_number" name="user_number" type="text" value="{{ old('user_number') }}">
+
+                            @error('user_number')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
 
                         <div class="form-group input-group-top inner-addon right-addon reset-icon">
@@ -156,6 +230,12 @@
                             </div>
                             <i class="bi bi-x-circle-fill text-danger"></i>
                             <input class="form-control @error('user_password') is-invalid @enderror" id="user_password" name="user_password" type="password" value="{{ old('user_password') }}">
+
+                            @error('user_password')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
 
                         <div class="mb-3">

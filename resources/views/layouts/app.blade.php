@@ -118,8 +118,10 @@
 
     /*  主畫面 > 功能頁選單 */
     .block-inner-page { font-size: 1.5em; }
-    .block-inner-page .two-column { width: calc(50% - 6px); }
     .block-inner-page .card-title { font-size: 2.5em; }
+    @media (max-width: 576px) {
+        .block-inner-page .two-column { width: calc(50% - 7px); }
+    }
     </style>
 
     <script>
@@ -136,7 +138,7 @@
                 } else {
                     $(this).parent().children("i.bi").hide();
                 }
-            });
+            }).on('blur',function(e){ $(this).parent().children("i.bi").hide(); });
         });
 
         {{-- 訊息提示視窗Function --}}
@@ -177,6 +179,8 @@
 
         @if (substr(Route::currentRouteName(), 0, 5) == 'auth.')
         var isChanged = false;
+        var allowRedirect = false;
+
         $(document).ready(function () {
             $('input, textarea, select').not('.skip-change-validate input').not('.skip-change-validate').change(function () {
                 isChanged = true;
@@ -187,8 +191,9 @@
                 isChanged = false;
             });
         });
+
         window.onbeforeunload = function () {
-            if (isChanged) {                
+            if (isChanged & ! allowRedirect) {                
                 return "您尚未儲存修改的資料";
             }
         }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class UserController extends Controller
 {    
@@ -38,13 +39,12 @@ class UserController extends Controller
             return redirect()->back()->withInput()->withErrors(['old_password' => __('目前密碼輸入錯誤')]);
         } else if ($request->input('new_password') <> $request->input('confirm_password')) {
             return redirect()->back()->withInput()->withErrors(['confirm_password' => __('新密碼與確認新密碼不相同')]);
-        } else if (! preg_match('/^[A-Za-z0-9]+$/', $request->input('new_password'))) {
-            return redirect()->back()->withInput()->withErrors(['new_password' => __('密碼只能輸入英文跟數字')]);
-        } else if (! preg_match('/^((?=.*[0-9])(?=.*[a-z|A-Z]))^.*$/', $request->input('new_password'))) {
-            return redirect()->back()->withInput()->withErrors(['new_password' => __('密碼必須包含最少一個英文字母跟最少一個數字')]);
-        } else if (strlen($request->input('new_password')) < 8) {
-            return redirect()->back()->withInput()->withErrors(['new_password' => __('密碼必須8個字以上')]);
-        }
+        } 
+
+        // 密碼格式驗證
+        $verifyMsg = User::passwordRuleVerify($request->input('new_password'));
+        if ($verifyMsg != 'OK')
+            return redirect()->back()->withInput()->withErrors(['new_password' => $verifyMsg]);
 
         Auth::user()->update(['user_password' => Hash::make($request->input('new_password'))]);
         Auth::logoutOtherDevices($request->input('new_password'), 'user_password');

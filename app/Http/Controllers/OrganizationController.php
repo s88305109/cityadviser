@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 use App\Models\Region;
 use App\Models\Job;
 use App\Models\Company;
@@ -24,10 +27,10 @@ class OrganizationController extends Controller
     // 新增員工
     public function newEmployee(Request $request)
     {
-        $company = Company::orderBy('sort')->get();
-        $region = Region::orderBy('sort')->get();
-        $job1 = Job::where('type', 1)->orderBy('sort')->get();
-        $job2 = Job::where('type', 2)->orderBy('sort')->get();
+        $company = Company::orderBy('sort')->get();             // 公司資料
+        $region = Region::orderBy('sort')->get();               // 縣市資料
+        $job1 = Job::where('type', 1)->orderBy('sort')->get();  // 總公司職務
+        $job2 = Job::where('type', 2)->orderBy('sort')->get();  // 分公司職務
 
         return view('organization.employee.newEmployee', [
             'region' => $region,
@@ -42,8 +45,8 @@ class OrganizationController extends Controller
     {
         $errors = [];
 
-        if (empty($request->input('fullname')))
-            $errors['fullname'] = __('請輸入姓名');
+        if (empty($request->input('name')))
+            $errors['name'] = __('請輸入姓名');
         if (empty($request->input('id_card')))
             $errors['id_card'] = __('請輸入身分證');
         if (empty($request->input('phone_number')))
@@ -52,7 +55,7 @@ class OrganizationController extends Controller
             $errors['email'] = __('請輸入Email');
         if (empty($request->input('date_employment')))
             $errors['date_employment'] =  __('請輸入到職日期');
-        if (empty($request->input('gender_type')))
+        if (is_null($request->input('gender_type')))
             $errors['gender_type'] = __('請選擇性別');
         if (empty($request->input('counties_city_type'))) 
             $errors['counties_city_type'] = __('請選擇縣市');
@@ -60,20 +63,49 @@ class OrganizationController extends Controller
             $errors['company_id'] = __('請選擇所屬公司');
         if (empty($request->input('job_id'))) 
             $errors['job_id'] = __('請選擇職位');
-        if (empty($request->input('user_name'))) 
-            $errors['user_name'] = __('請輸入平台帳號');
+        if (empty($request->input('user_number'))) 
+            $errors['user_number'] = __('請輸入平台帳號');
+
+        if (User::where('user_number', $request->input('user_number'))->count() > 0)
+            $errors['user_number'] = __('此帳號已存在，請使用不同的帳號名稱。');
+
+        // 密碼格式驗證
+        $verifyMsg = User::passwordRuleVerify($request->input('user_password'));
+        if ($verifyMsg != 'OK')
+            $errors['user_password'] = $verifyMsg;
 
         if (count($errors) > 0)
             return redirect()->back()->withInput()->withErrors($errors);
 
+        do {
+            $uid = Str::random(16);
+        } while(User::where('user_uid', $uid)->count() > 0);
 
-        return redirect('//organization/employee/employeeList');
+        $user = new User;
+        $user->user_uid = $uid;
+        $user->user_number = $request->input('user_number');
+        $user->user_password = Hash::make($request->input('user_password'));
+        $user->name = $request->input('name');
+        $user->id_card = $request->input('id_card');
+        $user->phone_number = $request->input('phone_number');
+        $user->email = $request->input('email');
+        $user->date_employment = $request->input('date_employment');
+        $user->gender_type = $request->input('gender_type');
+        $user->counties_city_type = $request->input('counties_city_type');
+        $user->company_id = $request->input('company_id');
+        $user->job_id = $request->input('job_id');
+        $user->status = 1;
+        $user->save();
+
+        return redirect('/organization/employee/employeeList');
     }
 
     // 員工列表
     public function employeeList(Request $request)
     {
-        return view('organization.employee.employeeList');
+        $users = User::all();
+
+        return view('organization.employee.employeeList', ['users' => $users]);
     }
 
     // 權限設定
