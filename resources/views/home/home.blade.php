@@ -101,7 +101,6 @@
     }).mount();
 
     splide.on('active', function() {
-        console.log($(".splide__slide.is-active").prev().find(".inner-page h3 span").html());
         $(".float-bar .float-start").html($(".splide__slide.is-active").prev().find(".inner-page h3 span").html()).show(100);
         $(".float-bar .float-end").html($(".splide__slide.is-active").next().find(".inner-page h3 span").html()).show(100);
         document.cookie = "pageIndex=" + splide.index;

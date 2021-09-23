@@ -13,7 +13,7 @@
 					</div>
 				</a>
 			</div>
-			<div class="card py-3 d-inline-block two-column mr-2">
+			<div class="card py-3 d-inline-block two-column mt-2 me-2">
 				<a href="/organization/employee/employeeList">
 					<div class="card-body">
 						<h5 class="card-title"><i class="bi bi-person-lines-fill"></i></h5>

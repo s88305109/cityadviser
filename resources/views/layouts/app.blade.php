@@ -7,8 +7,7 @@
     <title>{{ config('app.name', '融鎰數位科技') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -21,9 +20,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <style>
-    .btn-primary,
-    .btn-primary:disabled,
-    .btn-primary:active { color: #fff; }
     .no-underline { text-decoration:none; }
     img.logo128 { 
         max-width: 128px; 
@@ -140,8 +136,36 @@
     /*  主畫面 > 功能頁選單 */
     .block-inner-page { font-size: 1.5em; }
     .block-inner-page .card-title { font-size: 2.5em; }
-    @media (max-width: 576px) {
-        .block-inner-page .two-column { width: calc(50% - 7px); }
+    .block-inner-page .two-column { width: calc(50% - 7px); }
+
+    /* Form Input Group */
+    .input-group-text {
+        border-bottom-right-radius: 0;
+        border-top-right-radius: 0;
+    }
+    .input-group-top .input-group, .input-group-top .input-group-text { 
+        width: 100%; 
+        border-bottom: 0;
+    }
+    .input-group-top .input-group-text { border-radius: 0.25em 0.25em 0 0; }
+    .input-group-top > input.form-control,
+    .input-group-top > textarea.form-control { border-radius: 0 0 0.25em 0.25em; }
+    .input-group-top.inner-addon.reset-icon i.bi { margin-top: -1.8em; }
+    .job-set .btn { min-width: 88px; }
+    .job-set .card-header { text-align: center; }
+    .input-group-text, .gender-label { 
+        min-width: 88px; 
+        display: inline-block;
+        text-align: center;
+    }
+    .bottom-tabs {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1030;
+        background-color: #fff;
+        margin-bottom: 54px;
     }
     </style>
 
@@ -152,21 +176,21 @@
                 $(this).hide().parent().children("input, textarea").val("").focus().trigger("keyup");
             });
 
-            $(".inner-addon.reset-icon input, .inner-addon.reset-icon textarea").on('keyup',function(e) {
+            $(".inner-addon.reset-icon input, .inner-addon.reset-icon textarea").on("keyup",function(e) {
                 if ($(this).val() != "") {
                     $(this).parent().children("i.bi").fadeIn();
                     $(this).css("background-image", "none");
                 } else {
                     $(this).parent().children("i.bi").hide();
                 }
-            }).on('focus',function(e){
+            }).on("focus",function(e){
                 if ($(this).val() != "") {
                     $(this).parent().children("i.bi").fadeIn();
                     $(this).css("background-image", "none");
                 } else {
                     $(this).parent().children("i.bi").hide();
                 }
-            }).on('blur',function(e){ $(this).parent().children("i.bi").hide(); });
+            }).on("blur",function(e){ $(this).parent().children("i.bi").hide(); });
         });
 
         {{-- 訊息提示視窗Function --}}
@@ -187,11 +211,13 @@
             $(".loading-mask").fadeOut(100);
         }
 
+        {{-- 物件抖動效果 --}}
         function objectShake(obj) {
             $(obj).addClass("obj-shake");
             setTimeout(function(){ $(obj).removeClass("obj-shake"); }, 500);
         }
 
+        {{-- 全站搜尋 --}}
         function searchContent() {
             if ($("#search_str").val().length < 2) {
                 $("#search_str").val("").addClass("is-invalid").attr("placeholder", "至少輸入2個字");
@@ -210,12 +236,12 @@
         var allowRedirect = false;
 
         $(document).ready(function () {
-            $('input, textarea, select').not('.skip-change-validate input').not('.skip-change-validate').change(function () {
+            $("input, textarea, select").not(".skip-change-validate input").not(".skip-change-validate").change(function () {
                 isChanged = true;
             });
-            $('.untrigger').bind('click', function () {
+            $(".untrigger").bind("click", function () {
                 isChanged = false;
-            }).bind('change', function () {
+            }).bind("change", function () {
                 isChanged = false;
             });
         });
@@ -244,7 +270,7 @@ if ($navlink2 == '/')
 ?>
     <div id="app">
         @if (substr(Route::currentRouteName(), 0, 5) == 'auth.')
-        {{-- Fixed Headerbar --}}
+        {{-- Fixed HeaderBar --}}
         <nav class="navbar navbar-fixed-top">
             <div class="container px-0 col-md-6">
                 <div class="w-100 fs-4 px-3">
@@ -258,7 +284,7 @@ if ($navlink2 == '/')
             </div>
         </nav>
 
-        {{-- Fixed Bottom Navbar --}}
+        {{-- Fixed BottomBar --}}
         <nav class="navbar fixed-bottom navbar-light float-navbar justify-content-center">
             <div class="col-md-6">
                 <ul class="bottomNavUl">
@@ -308,7 +334,7 @@ if ($navlink2 == '/')
     {{-- Loading 遮罩 --}}
     <div class="loading-mask justify-content-center">
         <div class="spinner-border text-primary" role="status">
-            <span class="sr-only"></span>
+            <span class="visually-hidden">Loading...</span>
         </div>
     </div>
 </body>

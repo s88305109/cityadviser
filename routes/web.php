@@ -91,7 +91,12 @@ Route::middleware(['auth'])->name('auth.')->group(function () {
     Route::get('/organization/employee', [OrganizationController::class, 'employee']);                      // 員工管理
     Route::get('/organization/employee/newEmployee', [OrganizationController::class, 'newEmployee']);       // 新增員工
     Route::post('/organization/employee/newEmployee', [OrganizationController::class, 'addEmployee']);      // 新增員工 (保存)
-    Route::get('/organization/employee/employeeList', [OrganizationController::class, 'employeeList']);     // 員工列表
+    Route::get('/organization/employee/employeeList', [OrganizationController::class, 'employeeList']);     // 員工列表 (在職中)
+    Route::get('/organization/employee/leaversList', [OrganizationController::class, 'leaversList']);       // 員工列表 (已離職)
+    Route::get('/organization/employee/employeeList/{userId}', [OrganizationController::class, 'modifyEmployee']);  // 編輯員工資料 (在職中)
+    Route::get('/organization/employee/leaversList/{userId}', [OrganizationController::class, 'modifyEmployee']);   // 編輯員工資料 (已離職)
+    Route::post('/organization/employee/modifyEmployee', [OrganizationController::class, 'saveModify']);        // 編輯員工資料 (保存)
     Route::get('/organization/employee/permissions', [OrganizationController::class, 'permissions']);       // 權限設定
+
     Route::get('/organization/company', [OrganizationController::class, 'company']);                        // 公司管理
 });
