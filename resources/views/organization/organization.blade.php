@@ -17,7 +17,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="row justify-content-center mt-2">
-                <img src="/images/logo-128.png">
+                <img class="logo128" src="/images/logo-128.png">
             </div>
             <h2 class="text-center mt-1">{{ config('app.name', '融鎰數位科技') }}</h2>
 

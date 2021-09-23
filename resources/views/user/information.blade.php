@@ -82,15 +82,15 @@
 
                         <div class="form-group">
                             <label for="fullname">姓名</label>
-                            <input class="form-control" type="text" readonly>
+                            <input class="form-control" type="text" value="{{ $user->name }}" readonly>
                         </div>
                         <div class="form-group">
                             <label for="phone">手機號碼</label>
-                            <input class="form-control" type="text" readonly>
+                            <input class="form-control" type="text" value="{{ $user->phone_number }}" readonly>
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input class="form-control" type="text" readonly>
+                            <input class="form-control" type="text" value="{{ $user->email }}" readonly>
                         </div>
 
                         <hr>
@@ -125,8 +125,8 @@
                             </div>
                         </div>
 
-                        <div class="form-group row mb-0 justify-content-center">
-                            <button type="button" class="btn btn-primary px-5" id="doCheck">
+                        <div class="form-group mb-0 justify-content-center">
+                            <button type="button" class="btn btn-primary w-100 px-5" id="doCheck">
                                 修改密碼
                             </button>
                         </div>

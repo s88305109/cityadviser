@@ -192,47 +192,43 @@
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-3">
             <div class="row justify-content-center mt-2">
-                <img src="/images/logo-128.png">
+                <img class="logo128" src="/images/logo-128.png">
             </div>
-            <h1 class="text-center mt-1">{{ config('app.name', '融鎰數位科技') }}</h1>
+            <h1 class="text-center mt-2">{{ config('app.name', '融鎰數位科技') }}</h1>
 
             <div class="card-body">
                 <form class="login-form" method="POST" action="/login" novalidate>
                     @csrf
 
                     <div class="form-group row step1">
-                        <label class="col-md-4 col-form-label text-md-right" id="user_number_label" for="user_number">{{ __('請輸入帳號') }}</label>
+                        <label class="col-form-label text-md-right" id="user_number_label" for="user_number">{{ __('請輸入帳號') }}</label>
 
-                        <div class="col-md-6">
-                            <div class="inner-addon right-addon reset-icon">
-                                <i class="bi bi-x-circle-fill text-danger"></i>
-                                <input class="form-control @error('user_number') is-invalid @enderror" id="user_number" name="user_number" type="text" value="{{ old('user_number') }}" required autofocus>
+                        <div class="inner-addon right-addon reset-icon">
+                            <i class="bi bi-x-circle-fill text-danger"></i>
+                            <input class="form-control @error('user_number') is-invalid @enderror" id="user_number" name="user_number" type="text" value="{{ old('user_number') }}" required autofocus>
 
-                                @error('user_number')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
+                            @error('user_number')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
                     </div>
 
                     <div class="form-group row step2 d-none">
-                        <label class="col-md-4 col-form-label text-md-right" id="user_password_label" for="user_password">{{ __('請輸入密碼') }}</label>
+                        <label class="col-form-label text-md-right" id="user_password_label" for="user_password">{{ __('請輸入密碼') }}</label>
 
-                        <div class="col-md-6">
-                            <div class="inner-addon right-addon reset-icon">
-                                <i class="bi bi-x-circle-fill text-danger"></i>
-                                <input class="form-control @error('user_password') is-invalid obj-shake @enderror" id="user_password" name="user_password" type="password" value="{{ old('user_password') }}" required autocomplete="current-password" maxlength="25">
+                        <div class="inner-addon right-addon reset-icon">
+                            <i class="bi bi-x-circle-fill text-danger"></i>
+                            <input class="form-control @error('user_password') is-invalid obj-shake @enderror" id="user_password" name="user_password" type="password" value="{{ old('user_password') }}" required autocomplete="current-password" maxlength="25">
 
-                                @error('user_password')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
+                            @error('user_password')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
 
                         <label class="col-md-4 col-form-label text-md-right"></label>
@@ -253,7 +249,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row step3 d-none">
+                    <div class="form-group step3 d-none">
                         <label class="col-md-4 col-form-label text-md-right" id="captcha_label" for="captcha">{{ __('請輸入驗證碼') }}</label>
 
                         <div class="col-md-6">
@@ -275,8 +271,8 @@
                         </div>
                     </div>
 
-                    <div class="form-group row mb-0 justify-content-center">
-                        <button class="btn btn-primary radius px-5 @error('captcha') btn-danger @enderror" id="run" type="button" {{ old('user_number') ? ''  : 'disabled' }}>
+                    <div class="form-group mb-0 justify-content-center">
+                        <button class="btn btn-primary w-100 mt-3 px-5 @error('captcha') btn-danger @enderror" id="run" type="button" {{ old('user_number') ? ''  : 'disabled' }}>
                             {{ __('繼續') }}
                         </button>
                     </div>

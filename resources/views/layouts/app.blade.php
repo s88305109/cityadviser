@@ -21,6 +21,28 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <style>
+    .btn-primary,
+    .btn-primary:disabled,
+    .btn-primary:active { color: #fff; }
+    .no-underline { text-decoration:none; }
+    img.logo128 { 
+        max-width: 128px; 
+        padding: 0;
+    }
+    .bottomNavUl {
+        width: 100%;
+        margin: 2px 0;
+        padding: 0 1em;
+    }
+    .bottomNavUl li {
+        display: inline-block;
+        margin-right: 8px;
+        height: 32px;
+        line-height: 32px;
+        vertical-align: middle;
+    }
+    .bottomNavUl li:nth-child(2) { margin-top: -6px; }
+    .bottomNavUl li:last-child { margin-right: 0; }
     /* Input 內嵌圖示 */
     button.btn.radius {
         border-radius: 20px;
@@ -35,7 +57,7 @@
     .inner-addon.reset-icon i.bi { 
         display: none; 
         z-index: 10;
-        margin-right:  .2em;
+        margin-right: .75em;;
     }
     .left-addon i.bi  { left:  0px; }
     .right-addon i.bi { right: 0px; }
@@ -77,7 +99,6 @@
     .home-link {
         padding: 6px 8px 2px 8px;
         color: #FFF;
-        margin-right: 10px;
     }
 
     ul.check-list li {
@@ -132,6 +153,13 @@
             });
 
             $(".inner-addon.reset-icon input, .inner-addon.reset-icon textarea").on('keyup',function(e) {
+                if ($(this).val() != "") {
+                    $(this).parent().children("i.bi").fadeIn();
+                    $(this).css("background-image", "none");
+                } else {
+                    $(this).parent().children("i.bi").hide();
+                }
+            }).on('focus',function(e){
                 if ($(this).val() != "") {
                     $(this).parent().children("i.bi").fadeIn();
                     $(this).css("background-image", "none");
@@ -217,41 +245,37 @@ if ($navlink2 == '/')
     <div id="app">
         @if (substr(Route::currentRouteName(), 0, 5) == 'auth.')
         {{-- Fixed Headerbar --}}
-        <nav class="navbar navbar-default navbar-fixed-top">
-            <div class="container px-0">
-                <div class="navbar-header row w-100 d-block mx-0">
-                    <a href="/user">
+        <nav class="navbar navbar-fixed-top">
+            <div class="container px-0 col-md-6">
+                <div class="w-100 fs-4 px-3">
+                    <a class="no-underline" href="/user">
                         <i class="bi bi-person-fill"></i> 
-                        <span>{{ Auth::user()->user_number }}</span>
+                        <span>{{ Auth::user()->name }}</span>
                     </a>
 
-                    <div class="float-right"><i class="bi bi-bell-fill"></i><!--<img src="/images/service64.png" height="32">--></div>
+                    <div class="float-end"><i class="bi bi-twitch"></i></div>
                 </div>
             </div>
         </nav>
 
         {{-- Fixed Bottom Navbar --}}
-        <nav class="navbar fixed-bottom navbar-expand navbar-light float-navbar py-0">
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item form-inline">
+        <nav class="navbar fixed-bottom navbar-light float-navbar justify-content-center">
+            <div class="col-md-6">
+                <ul class="bottomNavUl">
+                    <li>
                         @if (Route::currentRouteName() == 'auth.home2')
-                        <a class="bg-primary rounded home-link" href="/home">
-                            <i class="bi bi-back"></i>
-                        </a>
+                        <a class="bg-primary rounded home-link" href="/home"><i class="bi bi-back"></i></a>
                         @else
-                        <a class="bg-dark rounded home-link" href="/home2">
-                            <i class="bi bi-list-ul"></i>
-                        </a>
+                        <a class="bg-dark rounded home-link" href="/home2"><i class="bi bi-list-ul"></i></a>
                         @endif
                     </li>
-                    <li class="nav-item form-inline">
-                        <a class="nav-link" href="{{ $navlink1 }}"><img src="/images/logo-32.png"></a>
+                    <li>
+                        <a href="{{ $navlink1 }}"><img src="/images/logo-32.png"></a>
                     </li>
-                    <li class="nav-item form-inline">
-                        <a class="nav-link" href="{{ $navlink2 }}"><i class="bi bi-tags back-icon"></i></a>
+                    <li>
+                        <a href="{{ $navlink2 }}"><i class="bi bi-tags back-icon"></i></a>
                     </li>
-                    <li class="nav-item form-inline">
+                    <li class="float-end">
                         <div class="inner-addon right-addon">
                             <form class="search-form">
                                 <i class="bi bi-search" onclick="searchContent();"></i>
@@ -284,7 +308,7 @@ if ($navlink2 == '/')
     {{-- Loading 遮罩 --}}
     <div class="loading-mask justify-content-center">
         <div class="spinner-border text-primary" role="status">
-            <span class="sr-only">Loading...</span>
+            <span class="sr-only"></span>
         </div>
     </div>
 </body>

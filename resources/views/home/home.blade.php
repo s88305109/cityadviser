@@ -56,7 +56,7 @@
         width: 100%;
         font-size: 24px;
         padding: 4px;
-        margin-top: 12px;
+        margin-top: 8px;
     }
     .float-bar span { display: none; }
 </style>
@@ -80,8 +80,8 @@
             </div>
 
             <div class="float-bar">
-                <span class="float-left"></span>
-                <span class="float-right"></span>
+                <span class="float-start"></span>
+                <span class="float-end"></span>
             </div>
         </div>
     </div>
@@ -101,13 +101,14 @@
     }).mount();
 
     splide.on('active', function() {
-        $(".float-bar .float-left").html($(".splide__slide.is-active").prev().find(".inner-page h3 span").html()).show(100);
-        $(".float-bar .float-right").html($(".splide__slide.is-active").next().find(".inner-page h3 span").html()).show(100);
+        console.log($(".splide__slide.is-active").prev().find(".inner-page h3 span").html());
+        $(".float-bar .float-start").html($(".splide__slide.is-active").prev().find(".inner-page h3 span").html()).show(100);
+        $(".float-bar .float-end").html($(".splide__slide.is-active").next().find(".inner-page h3 span").html()).show(100);
         document.cookie = "pageIndex=" + splide.index;
         document.cookie = "pageBlock={{ $pageBlock }}";
     }).on('drag', function() {
-        $(".float-bar .float-left").hide();
-        $(".float-bar .float-right").hide();
+        $(".float-bar .float-start").hide();
+        $(".float-bar .float-end").hide();
     });
 </script>
 
