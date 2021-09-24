@@ -9,6 +9,26 @@
             $(".new-employee").submit();
         });
 
+        $("#disableUser").click(function () {
+            $("#confirmDialog").modal("show");
+        });
+
+        $("#confirmDisableUser").click(function () {
+            allowRedirect = true;
+            $(".new-employee").attr("action", "/organization/employee/lockUser");
+            $(".new-employee").submit();
+        });
+
+        $("#enableUser").click(function () {
+            $("#confirmDialog2").modal("show");
+        });
+
+        $("#confirmEnableUser").click(function () {
+            allowRedirect = true;
+            $(".new-employee").attr("action", "/organization/employee/unlockUser");
+            $(".new-employee").submit();
+        });
+
         $(".btn.btn-outline-secondary").click(function () {
             $(".btn.btn-outline-secondary").removeClass("active");
             $(this).addClass("active");
@@ -18,27 +38,42 @@
             $(".job-set").find("input:checked").prop("checked", false);
             $(".job-set").find(".btn").removeClass("active");
 
-            if ($(this).children("option:selected").data("type") == "2") {
-                $(".job-set").eq(0).hide();
-                $(".job-set").eq(1).show();
-            } else {
-                $(".job-set").eq(0).show();
-                $(".job-set").eq(1).hide();
-            }
+            checkCompanyType();
+        });
+
+        checkCompanyType();
+
+        $("ul.dropdown-menu li").click(function () {
+            $(this).parent().parent().find("input").val($(this).html());
         });
 
         @if($errors->any())
         $(".is-invalid").eq(0).focus();
         @endif
 
-        @error('staff_code')
-        $("#confirmDialog").modal("show");
+        @error('user_id')
+        showMessageModal("{{ $message }}");
         @enderror
     });
+
+
+    function checkCompanyType() {
+        if ($("#company_id").children("option:selected").data("type") == "2") {
+            $(".job-set").eq(0).hide();
+            $(".job-set").eq(1).show();
+            $(".staff-code-set").hide();
+        } else {
+            $(".job-set").eq(0).show();
+            $(".job-set").eq(1).hide();
+            $(".staff-code-set").show();
+        }
+    }
 </script>
 
 <style>
-.job-set { display: none; }
+.job-set, 
+.staff-code-set { display: none; }
+.input-group-text  { min-width: 92px; }
 </style>
 
 <div class="container">
@@ -47,10 +82,11 @@
             <h4><i class="bi bi-person-plus"></i> 員工管理（編輯資料）</h4>
             <div class="card">
                 <div class="card-body">
-                    <form class="new-employee" method="POST" action="/organization/employee/newEmployee" novalidate>
+                    <form class="new-employee" method="POST" action="/organization/employee/modifyEmployee" novalidate>
                         @csrf
 
                         <input type="hidden" name="user_id" value="{{ $user->user_id }}">
+                        <input type="hidden" name="routeName" value="{{ Route::currentRouteName() }}">
 
                         <div class="input-group inner-addon right-addon reset-icon mb-2">
                             <div class="input-group-prepend">
@@ -115,6 +151,39 @@
                             <input class="form-control @error('date_employment') is-invalid @enderror" id="date_employment" name="date_employment" type="date" value="{{ old('date_employment') ?? $user->date_employment }}">
 
                             @error('date_employment')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text password-change-text @error('date_resignation') text-danger border-danger @enderror">離職日期</div>
+                            </div>
+                            <input class="form-control @error('date_resignation') is-invalid @enderror" id="date_resignation" name="date_resignation" type="date" min="{{ old('date_employment') ?? $user->date_employment }}" value="{{ old('date_resignation') ?? $user->date_resignation }}">
+
+                            @error('date_resignation')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text @error('reason') text-danger border-danger @enderror" for="reason">離職原因</label>
+                            </div>
+                            <input class="form-control @error('reason') is-invalid @enderror" id="reason" name="reason" type="text" value="{{ old('reason') ?? $user->reason }}">
+
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>生涯規劃</li>
+                                <li>健康因素</li>
+                                <li>不適任</li>
+                            </ul>
+
+                            @error('reason')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
@@ -227,7 +296,7 @@
                             @enderror
                         </div>
 
-                        <div class="input-group-top inner-addon right-addon reset-icon mb-3">
+                        <div class="input-group-top inner-addon right-addon reset-icon mb-2">
                             <div class="input-group">
                                 <div class="input-group-text @error('user_password') text-danger border-danger @enderror">平台密碼</div>
                             </div>
@@ -241,9 +310,29 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3">
-                            <button type="button" class="btn btn-danger px-5 w-100">凍結帳號</button>
+                        <div class="staff-code-set input-group-top inner-addon right-addon reset-icon mb-3">
+                            <div class="input-group">
+                                <div class="input-group-text @error('staff_code') text-danger border-danger @enderror">員工編號</div>
+                            </div>
+                            <i class="bi bi-x-circle-fill text-danger"></i>
+                            <input class="form-control @error('staff_code') is-invalid @enderror" id="staff_code" name="staff_code" type="text" value="{{ old('staff_code') ?? $user->staff_code }}">
+
+                            @error('staff_code')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
+
+                        @if ($user->status == 1)
+                        <div class="mb-3">
+                            <button id="disableUser" type="button" class="btn btn-danger px-5 w-100">凍結帳號</button>
+                        </div>
+                        @else
+                        <div class="mb-3">
+                            <button id="enableUser" type="button" class="btn btn-success px-5 w-100">解除凍結</button>
+                        </div>
+                        @endif
 
                         <div class="mb-3">
                             <button type="button" class="btn btn-primary px-5 w-100">客製化權限</button>
@@ -254,6 +343,36 @@
                         </div>
                     </form>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmDialog" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                確定凍結此帳號嗎？
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button class="btn btn-primary untrigger" id="confirmDisableUser" type="button">　是　</button>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">　否　</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmDialog2" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                確定解除凍結嗎？
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button class="btn btn-success untrigger" id="confirmEnableUser" type="button">　是　</button>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">　否　</button>
             </div>
         </div>
     </div>

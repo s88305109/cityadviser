@@ -11,4 +11,9 @@ class Region extends Model
 
     protected $table = 'region';
     protected $primaryKey = 'region_id';
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'company_city');
+    }
 }

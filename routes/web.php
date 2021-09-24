@@ -20,47 +20,16 @@ use App\Http\Controllers\OrganizationController;
 |
 */
 
-Route::get('/dump', function () {
-    echo Str::random(16);
-    /*
-    DB::table('user')->insert([
-        'user_uid' => 'VTfgy5y8dvrTaztA',
-        'user_number' => 'user02',
-        'user_password' => Hash::make('a12345678'),
-        'status' => '1'
-    ]);
-    */
-    
-    // DB::table('user')->where('user_number', 'user02')->update(['user_password' => Hash::make('user02')]);
-
-    echo '<pre>';
-
-    if (Auth::check())
-        echo 'User ID is : '.Auth::user()->user_id.'<br>';
-
-    echo '<hr>Session Dump :<br><br>';
-    $data = session()->all();
-    print_r($data);
-
-
-    echo '<hr>Auth User Dump :<br><br>';
-    print_r(Auth::user());
-
-    if (Auth::check()) {
-        echo 'logged in';
-    } else {
-        echo 'not login';
-    }
+Route::get('/test', function () {
+    echo substr('auth.employeeList', 5);
 });
-Route::view('/style', 'style');
 
 // 首頁
 Route::get('/', function () {
-    if (Auth::check()) {
+    if (Auth::check()) 
         return redirect()->route('auth.home');
-    } else {
+    else 
         return redirect()->route('login');
-    }
 });
 
 // Login 登入系統
@@ -91,12 +60,41 @@ Route::middleware(['auth'])->name('auth.')->group(function () {
     Route::get('/organization/employee', [OrganizationController::class, 'employee']);                      // 員工管理
     Route::get('/organization/employee/newEmployee', [OrganizationController::class, 'newEmployee']);       // 新增員工
     Route::post('/organization/employee/newEmployee', [OrganizationController::class, 'addEmployee']);      // 新增員工 (保存)
-    Route::get('/organization/employee/employeeList', [OrganizationController::class, 'employeeList']);     // 員工列表 (在職中)
-    Route::get('/organization/employee/leaversList', [OrganizationController::class, 'leaversList']);       // 員工列表 (已離職)
-    Route::get('/organization/employee/employeeList/{userId}', [OrganizationController::class, 'modifyEmployee']);  // 編輯員工資料 (在職中)
-    Route::get('/organization/employee/leaversList/{userId}', [OrganizationController::class, 'modifyEmployee']);   // 編輯員工資料 (已離職)
-    Route::post('/organization/employee/modifyEmployee', [OrganizationController::class, 'saveModify']);        // 編輯員工資料 (保存)
-    Route::get('/organization/employee/permissions', [OrganizationController::class, 'permissions']);       // 權限設定
 
-    Route::get('/organization/company', [OrganizationController::class, 'company']);                        // 公司管理
+    // 員工列表 (在職中)
+    Route::get('/organization/employee/employeeList', [OrganizationController::class, 'employeeList'])->name("employeeList");
+    // 員工列表 (已離職)
+    Route::get('/organization/employee/leaversList', [OrganizationController::class, 'leaversList'])->name("leaversList");
+    // 編輯員工資料 (在職中)
+    Route::get('/organization/employee/employeeList/{userId}', [OrganizationController::class, 'modifyEmployee'])->name("employeeList");
+    // 編輯員工資料 (已離職)
+    Route::get('/organization/employee/leaversList/{userId}', [OrganizationController::class, 'modifyEmployee'])->name("leaversList");
+
+    Route::post('/organization/employee/modifyEmployee', [OrganizationController::class, 'saveModify']);     // 編輯員工資料 (保存)
+    Route::post('/organization/employee/lockUser', [OrganizationController::class, 'lockUser']);             // 編輯員工資料 (凍結帳號)
+    Route::post('/organization/employee/unlockUser', [OrganizationController::class, 'unlockUser']);         // 編輯員工資料 (解除凍結)
+    Route::get('/organization/employee/permissions', [OrganizationController::class, 'permissions']);        // 權限設定
+
+    Route::get('/organization/company', [OrganizationController::class, 'company']);                         // 公司管理
+    Route::get('/organization/company/newCompany', [OrganizationController::class, 'newCompany']);           // 新增公司
+    Route::post('/organization/company/newCompany', [OrganizationController::class, 'addCompany']);          // 新增公司 (保存)
+    
+    // 公司列表 (北部)
+    Route::get('/organization/company/northList', [OrganizationController::class, 'northList'])->name('northList');
+    Route::get('/organization/company/northList/{companyId}', [OrganizationController::class, 'modifyCompany'])->name('northList');
+    // 公司列表 (中部)
+    Route::get('/organization/company/centralList', [OrganizationController::class, 'centralList'])->name('centralList');
+    Route::get('/organization/company/centralList/{companyId}', [OrganizationController::class, 'modifyCompany'])->name('centralList');
+    // 公司列表 (南部)
+    Route::get('/organization/company/southList', [OrganizationController::class, 'southList'])->name('southList');
+    Route::get('/organization/company/southList/{companyId}', [OrganizationController::class, 'modifyCompany'])->name('southList');
+    // 公司列表 (東部)
+    Route::get('/organization/company/eastList', [OrganizationController::class, 'eastList'])->name('eastList');
+    Route::get('/organization/company/eastList/{companyId}', [OrganizationController::class, 'modifyCompany'])->name('eastList');
+    // 公司列表 (離島)
+    Route::get('/organization/company/islandList', [OrganizationController::class, 'islandList'])->name('islandList');
+    Route::get('/organization/company/islandList/{companyId}', [OrganizationController::class, 'modifyCompany'])->name('islandList');
+    // 編輯公司資料 (保存)
+    Route::post('/organization/company/saveCompany', [OrganizationController::class, 'saveCompany']);
+
 });

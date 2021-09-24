@@ -11,9 +11,9 @@ class HomeController extends Controller
     public function index()
     {
         $sysList = [
-            'sys01' => ['title' => '客戶管理', 'icon' => '<i class="bi bi-people-fill"></i>'],
-            'sys02' => ['title' => '報件管理', 'icon' => '<i class="bi bi-file-text-fill"></i>'],
-            'sys03' => ['title' => '業務管理', 'icon' => '<i class="bi bi-file-person"></i>'],
+            'sys01'        => ['title' => '客戶管理', 'icon' => '<i class="bi bi-people-fill"></i>'],
+            'sys02'        => ['title' => '報件管理', 'icon' => '<i class="bi bi-file-text-fill"></i>'],
+            'sys03'        => ['title' => '業務管理', 'icon' => '<i class="bi bi-file-person"></i>'],
             'organization' => ['title' => '組織管理', 'icon' => '<i class="bi bi-diagram-3"></i>'],
         ];
 

@@ -39,9 +39,9 @@ class LoginController extends Controller
 
 			if ($incorrect_check >= $incorrect_count->value) {
 				AuthenticationLog::insert([
-					'user_id' => $user->user_id,
-					'action' => 'user_lock',
-					'log_time' => date('Y-m-d H:i:s'),
+					'user_id'  => $user->user_id,
+					'action'   => 'user_lock',
+					'log_time' => date('Y-m-d H:i:s')
 				]);
 
 				return true;
@@ -54,38 +54,38 @@ class LoginController extends Controller
 	// 檢查帳號
 	public function check(Request $request) 
 	{
-		$rules = ['user_number' => 'required'];
-		$messages = ['user_number.required' =>  __('請輸入帳號')];
+		$rules     = ['user_number' => 'required'];
+		$messages  = ['user_number.required' =>  __('請輸入帳號')];
 		$validated = $request->validate($rules, $messages);
 
 		$user = User::where('user_number', $request->input('user_number'))->first();
 
 		if (empty($user)) {
 			return response()->json([
-				'status' => 'fail', 
+				'status'  => 'fail', 
 				'message' => __('帳號錯誤'), 
-				'code' => 40001
+				'code'    => 40001
 			], 400);
 		} else if ($user->status != 1) {
 			return response()->json([
-				'status' => 'fail', 
-				'message' => __('此帳號已停用'), 
-				'code' => 40002
+				'status'  => 'fail', 
+				'message' => __('此帳號已被凍結'), 
+				'code'    => 40002
 			], 400);
 		} else if ($this->checkLock($user)) {
 			$lock_minutes = SystemSetting::where('code', 'error_locked_time')->first();
 
 			return response()->json([
-				'status' => 'fail', 
-				'code' => 40003,
+				'status'  => 'fail', 
+				'code'    => 40003,
 				'message' => __("輸入錯誤次數過多，將鎖定{$lock_minutes->value}分鐘。")
 			], 400);
 		}
 
 		return response()->json([
-			'status' => 'success', 
+			'status'  => 'success', 
 			'message' => '', 
-			'code' => 20000
+			'code'    => 20000
 		], 200);
 	}
 
@@ -93,12 +93,12 @@ class LoginController extends Controller
 	public function check2(Request $request) 
 	{
 		$rules = [
-			'user_number' => 'required',
-			'user_password' => 'required',
+			'user_number'   => 'required',
+			'user_password' => 'required'
 		];
 		$messages = [
-			'user_number.required' => __('請輸入帳號'),
-			'user_password.required' => __('請輸入密碼'),
+			'user_number.required'   => __('請輸入帳號'),
+			'user_password.required' => __('請輸入密碼')
 		];
 		$validated = $request->validate($rules, $messages);
 
@@ -108,22 +108,22 @@ class LoginController extends Controller
 
 		if (empty($user)) {
 			return response()->json([
-				'status' => 'fail', 
-				'code' => 40001,
+				'status'  => 'fail', 
+				'code'    => 40001,
 				'message' => __('帳號錯誤')
 			], 400);
 		} else if ($user->status != 1) {
 			return response()->json([
-				'status' => 'fail', 
-				'code' => 40002,
-				'message' => __('此帳號已停用')
+				'status'  => 'fail', 
+				'code'    => 40002,
+				'message' => __('此帳號已被凍結')
 			], 400);
 		} else if ($this->checkLock($user)) {
 			$lock_minutes = SystemSetting::where('code', 'error_locked_time')->first();
 
 			return response()->json([
-				'status' => 'fail', 
-				'code' => 40003,
+				'status'  => 'fail', 
+				'code'    => 40003,
 				'message' => __("輸入錯誤次數過多，將鎖定{$lock_minutes->value}分鐘。")
 			], 400);
 		}
@@ -131,21 +131,21 @@ class LoginController extends Controller
 		if (! Hash::check($request->input('user_password'), $user->user_password)) {
 			// 紀錄使用者密碼錯誤紀錄
 			AuthenticationLog::insert([
-				'user_id' => $user->user_id,
-				'action' => 'incorrect_password',
-				'log_time' => date('Y-m-d H:i:s'),
+				'user_id'  => $user->user_id,
+				'action'   => 'incorrect_password',
+				'log_time' => date('Y-m-d H:i:s')
 			]);
 
 			return response()->json([
-				'status' => 'fail', 
-				'code' => 40004,
+				'status'  => 'fail', 
+				'code'    => 40004,
 				'message' => __('密碼錯誤')
 			], 400);
 		}
 
 		return response()->json([
-			'status' => 'success', 
-			'code' => 20000,
+			'status'  => 'success', 
+			'code'    => 20000,
 			'message' => '' 
 		], 200);
 	}
@@ -154,16 +154,16 @@ class LoginController extends Controller
 	public function verification(Request $request) 
 	{
 		$rules = [
-			'user_number' => 'required',
+			'user_number'   => 'required',
 			'user_password' => 'required',
-			'captcha' => 'required|captcha',
+			'captcha'       => 'required|captcha'
 		];
 
 		$messages = [
-			'user_number.required' => __('請輸入帳號'),
+			'user_number.required'   => __('請輸入帳號'),
 			'user_password.required' => __('請輸入密碼'),
-			'captcha.required' => __('請輸入驗證碼'),
-			'captcha.captcha' => __('驗證碼錯誤'),
+			'captcha.required'       => __('請輸入驗證碼'),
+			'captcha.captcha'        => __('驗證碼錯誤')
 		];
 
 		$validated = $request->validate($rules, $messages);
@@ -184,14 +184,14 @@ class LoginController extends Controller
 		} else if (! Hash::check($request->input('user_password'), $user->user_password)) {		
 			// 檢查密碼是否正確若錯誤紀錄使用者密碼錯誤紀錄
 			AuthenticationLog::insert([
-				'user_id' => $user->user_id,
-				'action' => 'incorrect_password',
-				'log_time' => date('Y-m-d H:i:s'),
+				'user_id'  => $user->user_id,
+				'action'   => 'incorrect_password',
+				'log_time' => date('Y-m-d H:i:s')
 			]);
 
 			return redirect()->back()->withInput()->withErrors(['user_password' => __('密碼錯誤')]);
 		} else if ($user->status != 1) {
-			return redirect()->back()->withInput()->withErrors(['user_number' => __('此帳號已停用')]);
+			return redirect()->back()->withInput()->withErrors(['user_number' => __('此帳號已被凍結')]);
 		}
 
 		// 清空此UserID的Session 強制其他裝置登出

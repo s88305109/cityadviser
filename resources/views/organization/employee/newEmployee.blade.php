@@ -28,14 +28,10 @@
             $(".job-set").find("input:checked").prop("checked", false);
             $(".job-set").find(".btn").removeClass("active");
 
-            if ($(this).children("option:selected").data("type") == "2") {
-                $(".job-set").eq(0).hide();
-                $(".job-set").eq(1).show();
-            } else {
-                $(".job-set").eq(0).show();
-                $(".job-set").eq(1).hide();
-            }
+            checkCompanyType();
         });
+
+        checkCompanyType();
 
         @if($errors->any())
         $(".is-invalid").eq(0).focus();
@@ -45,10 +41,21 @@
         $("#confirmDialog").modal("show");
         @enderror
     });
+
+    function checkCompanyType() {
+        if ($("#company_id").children("option:selected").data("type") == "2") {
+            $(".job-set").eq(0).hide();
+            $(".job-set").eq(1).show();
+        } else {
+            $(".job-set").eq(0).show();
+            $(".job-set").eq(1).hide();
+        }
+    }
 </script>
 
 <style>
 .job-set { display: none; }
+.input-group-text  { min-width: 92px; }
 </style>
 
 <div class="container">
@@ -254,7 +261,7 @@
                         </div>
 
                         <div class="mb-5">
-                            <button type="button" class="btn btn-primary px-5 w-100" id="saveBtn">新增</button>
+                            <button type="button" class="btn btn-primary px-5 w-100" id="saveBtn">儲存</button>
                         </div>
 
                         <div class="modal fade" id="confirmDialog" tabindex="-1" role="dialog" aria-hidden="true">

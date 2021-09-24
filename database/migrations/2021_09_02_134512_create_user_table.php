@@ -26,8 +26,9 @@ class CreateUserTable extends Migration
             $table->string('email')->default('')->comment('信箱');
             $table->date('date_employment')->nullable()->comment('到職日期');
             $table->date('date_resignation')->nullable()->comment('離職日期');
+            $table->string('reason', 100)->nullable()->comment('離職原因');
             $table->tinyInteger('gender_type')->default(0)->comment('性別0=女;1=男');
-            $table->integer('counties_city_type')->default(0)->comment('縣市ID(對應資料表region)');
+            $table->string('counties_city_type', 5)->default('')->comment('縣市ID(對應資料表region)');
             $table->integer('company_id')->default(0)->index()->comment('所屬公司ID(對應資料表company)');
             $table->integer('job_id')->default(0)->comment('職位ID(對應資料表job)');
             $table->string('staff_code', 32)->nullable()->unique()->comment('員工編號');

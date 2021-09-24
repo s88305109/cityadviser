@@ -167,6 +167,7 @@
         background-color: #fff;
         margin-bottom: 54px;
     }
+    .bg-light-red { background-color: hsl(0deg 100% 50% / 10%); }
     </style>
 
     <script>

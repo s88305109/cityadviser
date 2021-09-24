@@ -148,7 +148,7 @@
             <div class="modal-footer justify-content-center">
                 <button class="btn btn-primary untrigger" id="modifyPassword" type="button">　是　</button>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">　否　</button>
+                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">　否　</button>
             </div>
         </div>
     </div>
