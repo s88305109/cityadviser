@@ -22,12 +22,10 @@
 				</a>
 			</div>
 			<div class="card py-3 d-inline-block two-column">
-				<a href="/organization/company">
-					<div class="card-body">
-						<h5 class="card-title"><i class="bi bi-shield-fill-check"></i></h5>
-						<p class="card-text">待審查</p>
-					</div>
-				</a>
+				<div class="card-body">
+					<h5 class="card-title"><i class="bi bi-shield-fill-check"></i></h5>
+					<p class="card-text">待審查</p>
+				</div>
 			</div>
 		</div>
 	</div>

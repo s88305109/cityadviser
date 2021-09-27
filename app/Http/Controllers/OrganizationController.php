@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Region;
 use App\Models\Job;
 use App\Models\Company;
+use App\Models\Permission;
 
 class OrganizationController extends Controller
 {
@@ -27,10 +29,10 @@ class OrganizationController extends Controller
     // 新增員工
     public function newEmployee(Request $request)
     {
-        $company = Company::orderBy('sort')->get();             // 公司資料
-        $region = Region::orderBy('sort')->get();               // 縣市資料
-        $job1 = Job::where('type', 1)->orderBy('sort')->get();  // 總公司職務
-        $job2 = Job::where('type', 2)->orderBy('sort')->get();  // 分公司職務
+        $company = Company::orderBy('sort')->get();                                 // 公司資料
+        $region = Region::orderBy('sort')->get();                                   // 縣市資料
+        $job1 = Job::where('type', 1)->where('status', 1)->orderBy('sort')->get();  // 總公司職務
+        $job2 = Job::where('type', 2)->where('status', 1)->orderBy('sort')->get();  // 分公司職務
 
         return view('organization.employee.newEmployee', [
             'region'  => $region,
@@ -114,7 +116,12 @@ class OrganizationController extends Controller
     // 員工列表 (在職中)
     public function employeeList(Request $request)
     {
-        $users = User::whereNull('date_resignation')->orderBy('date_employment')->get();
+        $users = User::join('company', 'company.company_id', '=', 'user.company_id')
+            ->whereNull('user.date_resignation')
+            ->where('user.company_id', Auth::user()->company_id)
+            ->select('user.*', 'company.company_name')
+            ->orderBy('user.date_employment')
+            ->get();
 
         return view('organization.employee.employeeList', ['users' => $users]);
     }
@@ -122,7 +129,12 @@ class OrganizationController extends Controller
     // 員工列表 (已離職)
     public function leaversList(Request $request)
     {
-        $users = User::whereNotNull('date_resignation')->orderBy('date_resignation', 'desc')->get();
+        $users = User::join('company', 'company.company_id', '=', 'user.company_id')
+            ->whereNotNull('user.date_resignation')
+            ->where('user.company_id', Auth::user()->company_id)
+            ->select('user.*', 'company.company_name')
+            ->orderBy('user.date_resignation', 'desc')
+            ->get();
 
         return view('organization.employee.employeeList', ['users' => $users]);
     }
@@ -132,10 +144,10 @@ class OrganizationController extends Controller
     {
         $user = User::where('user_id', $request->userId)->first();
 
-        $company = Company::orderBy('sort')->get();             // 公司資料
-        $region = Region::orderBy('sort')->get();               // 縣市資料
-        $job1 = Job::where('type', 1)->orderBy('sort')->get();  // 總公司職務
-        $job2 = Job::where('type', 2)->orderBy('sort')->get();  // 分公司職務
+        $company = Company::orderBy('sort')->get();                                  // 公司資料
+        $region = Region::orderBy('sort')->get();                                   // 縣市資料
+        $job1 = Job::where('type', 1)->where('status', 1)->orderBy('sort')->get();  // 總公司職務
+        $job2 = Job::where('type', 2)->where('status', 1)->orderBy('sort')->get();  // 分公司職務
 
         return view('organization.employee.modifyEmployee', [
             'user'    => $user,
@@ -223,7 +235,6 @@ class OrganizationController extends Controller
         $user->counties_city_type = $request->input('counties_city_type');
         $user->company_id         = $request->input('company_id');
         $user->job_id             = $request->input('job_id');
-        $user->status             = 1;
         $user->staff_code         = ($company->type == 1 && ! empty($request->input('staff_code'))) ? $request->input('staff_code') : null;
 
         if (! empty($request->input('user_password')))
@@ -279,10 +290,45 @@ class OrganizationController extends Controller
             return redirect('/organization/employee/employeeList');
     }
 
+    // 個人權限設定
+    public function role(Request $request)
+    {
+        $user = User::where('user_id', $request->userId)->first();
+        $permission = Permission::getUserPermission($request->userId);
+
+        return view('organization.employee.role', ['user' => $user, 'permission' => $permission]);
+    }
+
+    // 個人權限設定 (保存)
+    public function saveRole(Request $request)
+    {
+        Permission::updateUserPermission($request->input('user_id'), $request->input('role'));
+
+        if ($request->input('routeName') == 'auth.leaversList')
+            return redirect('/organization/employee/leaversList/'.$request->input('user_id'));
+        else    
+            return redirect('/organization/employee/employeeList/'.$request->input('user_id'));
+    }
+
     // 權限設定
     public function permissions(Request $request)
     {
-        return view('organization.employee.permissions');
+        $jobId      = $request->jobId;
+        $jobs       = Job::where('status', 1)->orderBy('type')->orderBy('sort')->get();
+        $permission = Permission::getJobPermission($jobId);
+
+        return view('organization.employee.permissions', [
+            'jobId'      => $jobId, 
+            'jobs'       => $jobs,
+            'permission' => $permission
+        ]);
+    }
+
+    public function savePermissions(Request $request)
+    {
+        Permission::updateJobPermission($request->input('job_id'), $request->input('role'));
+
+        return redirect('/organization/employee');
     }
 
     // 公司管理
@@ -344,7 +390,7 @@ class OrganizationController extends Controller
     {
         $companys = Company::getAreaRecord('北部');
 
-        return view('organization.company.companyList', ['companys' => $companys]);
+        return view('organization.company.companyList', ['companys' => $companys])->withModal(User::class);
     }
 
     // 公司列表 (中部)
@@ -360,7 +406,7 @@ class OrganizationController extends Controller
     {
         $companys = Company::getAreaRecord('南部');
 
-        return view('organization.company.companyList', ['companys' => $companys]);
+        return view('organization.company.companyList', ['companys' => $companys])->withModal(User::class);
     }
 
     // 公司列表 (東部)

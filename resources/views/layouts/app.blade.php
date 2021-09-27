@@ -101,11 +101,11 @@
         background-color: transparent;
         border: 0px;
         padding: 0px;
-        padding-left: 1.2em;
+        padding-left: 1.5em;
     }
     ul.check-list li i.bi {
         position: absolute;
-        margin-left: -1.2em;
+        margin-left: -1.5em;
         display: none;
     }
 
@@ -174,6 +174,7 @@
         $(document).ready(function () {
             {{-- 文字方塊叉叉圖示處理 --}}
             $(".inner-addon.reset-icon i.bi").click(function() {
+                isChanged = true;
                 $(this).hide().parent().children("input, textarea").val("").focus().trigger("keyup");
             });
 
@@ -191,7 +192,7 @@
                 } else {
                     $(this).parent().children("i.bi").hide();
                 }
-            }).on("blur",function(e){ $(this).parent().children("i.bi").hide(); });
+            }).on("blur",function(e){ $(this).parent().children("i.bi").fadeOut(); });
         });
 
         {{-- 訊息提示視窗Function --}}

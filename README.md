@@ -1,5 +1,5 @@
 ## 安裝 Composer
-Laravel 框架使用 Composer 來管理其相依性。首先，下載一份 composer.phar 下來。之後，你可以把它放在本地端的專案目錄，或者是搬移至 /usr/local/bin 讓全站皆可使用。在 Windows 下，你可以使用 <a href="https://getcomposer.org/" target="_blank">Composer Windows</a> 安裝工具。
+Laravel 框架使用 Composer 來管理其相依性。首先，下載一份 composer.phar 下來。之後，你可以把它放在本地端的專案目錄，或者是搬移至 /usr/local/bin 讓全站皆可使用。在 Windows 下，你可以使用 <a href="https://getcomposer.org/">Composer Windows</a> 安裝工具。
 
 ## 伺服器需求
 * Laravel 8 框架有一些系統上的需求。需要確保你的伺服器符合下列要求：
@@ -65,4 +65,4 @@ php artisan db:seed
 php artisan migrate:fresh --seed
 ```
 
-* <a href="https://laravel.com/docs/8.x" target="_blank">Laravel 8.x Docs</a>
+* <a href="https://laravel.com/docs/8.x">Laravel 8.x Docs</a>

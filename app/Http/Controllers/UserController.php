@@ -47,7 +47,6 @@ class UserController extends Controller
             return redirect()->back()->withInput()->withErrors(['new_password' => $verifyMsg]);
 
         Auth::user()->update(['user_password' => Hash::make($request->input('new_password'))]);
-        Auth::logoutOtherDevices($request->input('new_password'), 'user_password');
 
         return redirect('/user');
     }

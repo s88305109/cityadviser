@@ -43,7 +43,15 @@
 
         checkCompanyType();
 
+        $("#date_resignation").change(function() {
+            if ($(this).val() == "")
+                $("#reason").val("");
+        });
+
         $("ul.dropdown-menu li").click(function () {
+            if ($(this).parent().parent().find("input").val() != $(this).html())
+                isChanged = true;
+
             $(this).parent().parent().find("input").val($(this).html());
         });
 
@@ -81,7 +89,7 @@
         <div class="col-md-8">
             <h4><i class="bi bi-person-plus"></i> 員工管理（編輯資料）</h4>
             <div class="card">
-                <div class="card-body">
+                <div class="card-body @if($user->status != 1) bg-danger bg-opacity-25 @endif">
                     <form class="new-employee" method="POST" action="/organization/employee/modifyEmployee" novalidate>
                         @csrf
 
@@ -335,7 +343,7 @@
                         @endif
 
                         <div class="mb-3">
-                            <button type="button" class="btn btn-primary px-5 w-100">客製化權限</button>
+                            <button type="button" class="btn btn-primary px-5 w-100" onclick="window.location.href='/organization/employee/{{ substr(Route::currentRouteName(), 5) }}/{{ $user->user_id }}/role'">客製化權限</button>
                         </div>
 
                         <div class="mb-5">

@@ -231,15 +231,13 @@
                             @enderror
                         </div>
 
-                        <label class="col-md-4 col-form-label text-md-right"></label>
-                        <div class="col-md-6">
+                        <div class="mt-2">
                             <div class="form-check form-check-inline">
                                 <label class="form-check-label" for="show_password"><input class="form-check-input" id="show_password" type="checkbox">{{ __('顯示密碼') }}</label>
                             </div>
                         </div>
 
-                        <label class="col-md-4 col-form-label text-md-right"></label>
-                        <div class="col-md-6">
+                        <div>
                             <ul class="list-group check-list">
                                 <li class="list-group-item"><i class="bi bi-check-circle-fill text-success"></i> 密碼長度8-25個字元</li>
                                 <li class="list-group-item"><i class="bi bi-check-circle-fill text-success"></i> 英文與數字的組合</li>
@@ -250,9 +248,9 @@
                     </div>
 
                     <div class="form-group step3 d-none">
-                        <label class="col-md-4 col-form-label text-md-right" id="captcha_label" for="captcha">{{ __('請輸入驗證碼') }}</label>
+                        <label class="col-form-label text-md-right" id="captcha_label" for="captcha">{{ __('請輸入驗證碼') }}</label>
 
-                        <div class="col-md-6">
+                        <div>
                             <input class="form-control @error('captcha') is-invalid @enderror" id="captcha" name="captcha" type="text" required autocomplete="off">
 
                             @error('captcha')
@@ -262,8 +260,7 @@
                             @enderror
                         </div>
 
-                        <label class="col-md-4 col-form-label"></label>
-                        <div class="captcha col-md-6">
+                        <div class="captcha">
                             <span>{!! captcha_img() !!}</span>
                             <button class="btn btn-primary reload" id="reload" type="button">
                                 &#x21bb;

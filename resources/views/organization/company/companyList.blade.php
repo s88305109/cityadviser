@@ -2,6 +2,13 @@
 
 @section('content')
 
+<style>
+	.badge.num-count{
+		margin-top: -2.5em;
+    	margin-right: -0.25em;
+	}
+</style>
+
 <div class="container">
 	<div class="row justify-content-center">
 		<div class="col-md-8 mb-5">
@@ -9,16 +16,22 @@
 
 			<ol class="list-group">
 				@foreach ($companys as $row)
-				<li class="list-group-item d-flex @if($row->status != 1) bg-light-red @endif">
-					<div class="col-1 text-center">
-						<span class="badge rounded-pill @if($row->status == 1) bg-primary @else bg-danger @endif">{{ $loop->iteration }}</span>
+				<div class="card mb-1 bg-light">
+					<div class="card-body py-2">
+						<h4 class="card-title text-center">{{ $row->company_name }}</h4>
+						<span class="badge bg-primary float-end rounded-circle num-count">{{ $row->count }}</span>
+						<h6 class="card-subtitle mb-3 text-muted">
+							<div class="input-group">
+								<span class="input-group-text" id="basic-addon3">負責人</span>
+								<input type="text" class="form-control" value="負責人">
+							</div>
+						</h6>
+						<div class="text-center">
+							<a class="btn btn-primary me-5" href="/organization/company/{{ substr(Route::currentRouteName(), 5) }}/{{ $row->company_id }}">編輯公司</a>
+							<a class="btn btn-primary" href="#">員工列表</a>
+						</div>
 					</div>
-					<div class="ms-3 me-auto fw-bold @if($row->status != 1) text-danger @endif">
-						<a class="no-underline @if($row->status != 1) text-danger @endif" href="/organization/company/{{ substr(Route::currentRouteName(), 5) }}/{{ $row->company_id }}">
-							{{ $row->company_name }}
-						</a>
-					</div>
-				</li>
+				</div>
 				@endforeach
 			</ol>
 		</div>

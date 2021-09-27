@@ -17,6 +17,7 @@ class Company extends Model
         return $this->hasOne(Region::class, 'region_id', 'company_city');
     }
 
+    // 取得區域內公司人數資料
     public static function getAreaRecord($area = '北部')
     {
         $companys = Company::join('region', 'company_city', '=', 'region.region_id')
@@ -24,6 +25,9 @@ class Company extends Model
                 ->where('region.area', $area)
                 ->orderBy('company.sort', 'desc')
                 ->get();
+
+        foreach($companys as $key => $row)
+            $companys[$key]['count'] = User::getCompanyCount($row->company_id);
 
         return $companys;
     }

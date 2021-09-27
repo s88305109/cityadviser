@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -57,6 +58,46 @@ class User extends Authenticatable
         }
 
         return $message;
+    }
+
+    // 取得公司有多少在職員工的人數
+    public static function getCompanyCount($company_id) {
+        $count = User::where('company_id', $company_id)
+            ->whereNull('user.date_resignation')
+            ->count();
+
+        return empty($count) ? 0 : $count;
+    }
+
+    // 頁面權限驗證 
+    public function hasPermission($role, $action = null) {
+        // 檢查是否有設定個人客製化權限 若有則優先採用個人權限設定 否則採用職位通用權限
+        $count = Permission::where('user_id', Auth::user()->user_id)->count();
+
+        if ($count > 0)
+            $field = 'user_id';
+        else
+            $field = 'job_id';
+
+        // 檢查權限
+        $permission = Permission::where($field, Auth::user()->$field)
+            ->where('permission', $role)
+            ->first();
+
+        // 若有傳入行為控制權限 $action 則檢查是否有行為權限
+        if (! empty($permission)) {
+            if (! is_null($action)) {
+                $set = json_decode($permission->action, true);
+
+                if (is_null($set) || ! in_array($action, $set))
+                    return false;
+            }
+
+            return true;
+        }
+
+        return false;
+
     }
 
 }
