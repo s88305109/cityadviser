@@ -6,42 +6,20 @@
     $(document).ready(function () {
         $("#saveBtn").click(function () {
             allowRedirect = true;
-            $(".new-employee").submit();
+            $("form.staff").submit();
         });
 
         $("#disableUser").click(function () {
-            $("#confirmDialog").modal("show");
-        });
-
-        $("#confirmDisableUser").click(function () {
             allowRedirect = true;
-            $(".new-employee").attr("action", "/organization/employee/lockUser");
-            $(".new-employee").submit();
+            $("form.staff").attr("action", "/staff/lockUser");
+            $("form.staff").submit();
         });
 
         $("#enableUser").click(function () {
-            $("#confirmDialog2").modal("show");
-        });
-
-        $("#confirmEnableUser").click(function () {
             allowRedirect = true;
-            $(".new-employee").attr("action", "/organization/employee/unlockUser");
-            $(".new-employee").submit();
+            $("form.staff").attr("action", "/staff/unlockUser");
+            $("form.staff").submit();
         });
-
-        $(".btn.btn-outline-secondary").click(function () {
-            $(".btn.btn-outline-secondary").removeClass("active");
-            $(this).addClass("active");
-        });
-
-        $("#company_id").change(function() {
-            $(".job-set").find("input:checked").prop("checked", false);
-            $(".job-set").find(".btn").removeClass("active");
-
-            checkCompanyType();
-        });
-
-        checkCompanyType();
 
         $("#date_resignation").change(function() {
             if ($(this).val() == "")
@@ -55,46 +33,32 @@
             $(this).parent().parent().find("input").val($(this).html());
         });
 
+        $(".btn.btn-outline-secondary").click(function () {
+            $(".btn.btn-outline-secondary").removeClass("active");
+            $(this).addClass("active");
+        });
+
         @if($errors->any())
         $(".is-invalid").eq(0).focus();
         @endif
-
-        @error('user_id')
-        showMessageModal("{{ $message }}");
-        @enderror
     });
-
-
-    function checkCompanyType() {
-        if ($("#company_id").children("option:selected").data("type") == "2") {
-            $(".job-set").eq(0).hide();
-            $(".job-set").eq(1).show();
-            $(".staff-code-set").hide();
-        } else {
-            $(".job-set").eq(0).show();
-            $(".job-set").eq(1).hide();
-            $(".staff-code-set").show();
-        }
-    }
 </script>
 
 <style>
-.job-set, 
-.staff-code-set { display: none; }
 .input-group-text  { min-width: 92px; }
 </style>
 
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <h4><i class="bi bi-person-plus"></i> 員工管理（編輯資料）</h4>
+            <h4><i class="bi bi-person-plus"></i> 員工管理（新增員工）</h4>
             <div class="card">
-                <div class="card-body @if($user->status != 1) bg-danger bg-opacity-25 @endif">
-                    <form class="new-employee" method="POST" action="/organization/employee/modifyEmployee" novalidate>
+                <div class="card-body @if(! empty($user->user_id) && $user->status != 1) bg-danger bg-opacity-25 @endif"">
+                    <form class="staff" method="POST" action="/staff/save" novalidate>
                         @csrf
 
                         <input type="hidden" name="user_id" value="{{ $user->user_id }}">
-                        <input type="hidden" name="routeName" value="{{ Route::currentRouteName() }}">
+                        <input type="hidden" name="state" value="{{ $state }}">
 
                         <div class="input-group inner-addon right-addon reset-icon mb-2">
                             <div class="input-group-prepend">
@@ -165,7 +129,7 @@
                             @enderror
                         </div>
 
-                        <div class="input-group mb-2">
+                        <div class="input-group mb-2 @if(empty($user->user_id)) d-none @endif">
                             <div class="input-group-prepend">
                                 <div class="input-group-text password-change-text @error('date_resignation') text-danger border-danger @enderror">離職日期</div>
                             </div>
@@ -178,7 +142,7 @@
                             @enderror
                         </div>
 
-                        <div class="input-group mb-2">
+                        <div class="input-group mb-2 @if(empty($user->user_id)) d-none @endif">
                             <div class="input-group-prepend">
                                 <label class="input-group-text @error('reason') text-danger border-danger @enderror" for="reason">離職原因</label>
                             </div>
@@ -232,26 +196,8 @@
                             @enderror
                         </div>
 
-                        <div class="input-group mb-2">
-                            <div class="input-group-prepend">
-                                <label class="input-group-text @error('company_id') text-danger border-danger @enderror" for="company_id">所屬公司</label>
-                            </div>
-                            <select class="form-select @error('company_id') is-invalid @enderror" id="company_id" name="company_id">
-                                <option></option>
-                                @foreach ($company as $row)
-                                <option value="{{ $row->company_id }}" data-type="{{ $row->type }}" @if(old('company_id') == $row->company_id || $user->company_id == $row->company_id) selected @endif>{{ $row->company_name }}</option>
-                                @endforeach
-                            </select>
-
-                            @error('company_id')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-
                         <div class="card mb-2 job-set text-center @error('job_id') text-danger border-danger @enderror">
-                            <div class="card-header @error('job_id') is-invalid border-danger @enderror">總公司職位設定</div>
+                            <div class="card-header @error('job_id') is-invalid border-danger @enderror">職位設定</div>
 
                             @error('job_id')
                             <span class="invalid-feedback" role="alert">
@@ -260,27 +206,8 @@
                             @enderror
 
                             <div class="row p-2">
-                                @foreach ($job1 as $row)                                
-                                <div class="col-6 text-center mb-1">
-                                    <input class="d-none" id="job{{ $row->job_id }}" name="job_id" type="radio" value="{{ $row->job_id }}" @if(old('job_id') == $row->job_id || $user->job_id == $row->job_id) checked @endif autocomplete="off">
-                                    <label class="btn btn-outline-secondary @if(old('job_id') == $row->job_id || $user->job_id == $row->job_id) active @endif" for="job{{ $row->job_id }}">{{ $row->job_title }}</label>
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <div class="card mb-2 job-set text-center @error('job_id') text-danger border-danger @enderror">
-                            <div class="card-header @error('job_id') is-invalid border-danger @enderror">分公司職位設定</div>
-
-                            @error('job_id')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-
-                            <div class="row p-2">
-                                @foreach ($job2 as $row)                                
-                                <div class="col-6 text-center mb-1">
+                                @foreach ($job as $row)                                
+                                <div class="col-6 text-center g-1">
                                     <input class="d-none" id="job{{ $row->job_id }}" name="job_id" type="radio" value="{{ $row->job_id }}" @if(old('job_id') == $row->job_id || $user->job_id == $row->job_id) checked @endif autocomplete="off">
                                     <label class="btn btn-outline-secondary @if(old('job_id') == $row->job_id || $user->job_id == $row->job_id) active @endif" for="job{{ $row->job_id }}">{{ $row->job_title }}</label>
                                 </div>
@@ -304,12 +231,12 @@
                             @enderror
                         </div>
 
-                        <div class="input-group-top inner-addon right-addon reset-icon mb-2">
+                        <div class="input-group-top inner-addon right-addon reset-icon mb-3">
                             <div class="input-group">
                                 <div class="input-group-text @error('user_password') text-danger border-danger @enderror">平台密碼</div>
                             </div>
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('user_password') is-invalid @enderror" id="user_password" name="user_password" type="password" value="{{ old('user_password') }}">
+                            <input class="form-control @error('user_password') is-invalid @enderror" id="user_password" name="user_password" type="password" value="{{ old('user_password') }}" placeholder="8-25位數密碼，請區分大小寫">
 
                             @error('user_password')
                             <span class="invalid-feedback" role="alert">
@@ -318,33 +245,15 @@
                             @enderror
                         </div>
 
-                        <div class="staff-code-set input-group-top inner-addon right-addon reset-icon mb-3">
-                            <div class="input-group">
-                                <div class="input-group-text @error('staff_code') text-danger border-danger @enderror">員工編號</div>
-                            </div>
-                            <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('staff_code') is-invalid @enderror" id="staff_code" name="staff_code" type="text" value="{{ old('staff_code') ?? $user->staff_code }}">
-
-                            @error('staff_code')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-
                         @if ($user->status == 1)
                         <div class="mb-3">
-                            <button id="disableUser" type="button" class="btn btn-danger px-5 w-100">凍結帳號</button>
+                            <button class="btn btn-danger px-5 w-100" type="button" data-bs-toggle="modal" data-bs-target="#confirmDialog">凍結帳號</button>
                         </div>
-                        @else
+                        @elseif(! empty($user->user_id) && empty($user->date_resignation))
                         <div class="mb-3">
-                            <button id="enableUser" type="button" class="btn btn-success px-5 w-100">解除凍結</button>
+                            <button class="btn btn-success px-5 w-100" type="button" data-bs-toggle="modal" data-bs-target="#confirmDialog2">解除凍結</button>
                         </div>
                         @endif
-
-                        <div class="mb-3">
-                            <button type="button" class="btn btn-primary px-5 w-100" onclick="window.location.href='/organization/employee/{{ substr(Route::currentRouteName(), 5) }}/{{ $user->user_id }}/role'">客製化權限</button>
-                        </div>
 
                         <div class="mb-5">
                             <button type="button" class="btn btn-primary px-5 w-100" id="saveBtn">儲存</button>
@@ -363,7 +272,7 @@
                 確定凍結此帳號嗎？
             </div>
             <div class="modal-footer justify-content-center">
-                <button class="btn btn-primary untrigger" id="confirmDisableUser" type="button">　是　</button>
+                <button class="btn btn-primary untrigger" id="disableUser" type="button">　是　</button>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">　否　</button>
             </div>
@@ -378,7 +287,7 @@
                 確定解除凍結嗎？
             </div>
             <div class="modal-footer justify-content-center">
-                <button class="btn btn-success untrigger" id="confirmEnableUser" type="button">　是　</button>
+                <button class="btn btn-success untrigger" id="enableUser" type="button">　是　</button>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">　否　</button>
             </div>

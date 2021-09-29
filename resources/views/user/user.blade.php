@@ -49,7 +49,7 @@
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-primary doLogout">　是　</button>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">　否　</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">　否　</button>
             </div>
         </div>
     </div>

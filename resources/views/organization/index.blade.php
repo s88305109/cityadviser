@@ -27,7 +27,7 @@
                 </div>
             </div>
 
-            <div class="card pt-3 text-right company">
+            <div class="card pt-3 text-end company">
                 <div class="card-body">
                     <h3>公司管理 <i class="bi bi-building"></i></h3>
                 </div>

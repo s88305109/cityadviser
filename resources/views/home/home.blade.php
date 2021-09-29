@@ -33,22 +33,6 @@
         border-radius: 16px;
         background-color: #F8F9FA;
     }
-    .inner-container.sys01 { 
-        background-color: #bff3ff; 
-        border-color: #73E5FF; 
-    }
-    .inner-container.sys02 { 
-        background-color: #ffc6bf; 
-        border-color: #FF8373; 
-    }
-    .inner-container.sys03 { 
-        background-color: #bfffc7; 
-        border-color: #73FF83; 
-    }
-    .inner-container.organization { 
-        background-color: #E1D5E7; 
-        border-color: #CE92EC; 
-    }
     .float-bar {
         position: absolute;
         top: 0;

@@ -10,12 +10,19 @@ class HomeController extends Controller
     // 主畫面
     public function index()
     {
+        // 選單設定
         $sysList = [
-            'sys01'        => ['title' => '客戶管理', 'icon' => '<i class="bi bi-people-fill"></i>'],
-            'sys02'        => ['title' => '報件管理', 'icon' => '<i class="bi bi-file-text-fill"></i>'],
-            'sys03'        => ['title' => '業務管理', 'icon' => '<i class="bi bi-file-person"></i>'],
+            'case'         => ['title' => '報件管理', 'icon' => '<i class="bi bi-briefcase"></i>'],
+            'review'       => ['title' => '報件審查', 'icon' => '<i class="bi bi-zoom-in"></i>'],
             'organization' => ['title' => '組織管理', 'icon' => '<i class="bi bi-diagram-3"></i>'],
+            'staff'        => ['title' => '員工管理', 'icon' => '<i class="bi bi-person-circle"></i>'],
         ];
+
+        // 權限檢查
+        foreach($sysList as $key => $rows) {
+            if (! Auth::user()->hasPermission($key))
+                unset($sysList[$key]);
+        }
 
         session(['pageBlock' => '/home']);
 
@@ -26,9 +33,7 @@ class HomeController extends Controller
     public function home2()
     {
         $sysList = [
-            'sys01' => ['title' => '副畫面一', 'icon' => '<i class="bi bi-people-fill"></i>'],
-            'sys02' => ['title' => '副畫面二', 'icon' => '<i class="bi bi-file-text-fill"></i>'],
-            'sys03' => ['title' => '副畫面三', 'icon' => '<i class="bi bi-file-person"></i>'],
+            'working' => ['title' => '副畫面', 'icon' => '<i class="bi bi-cone"></i>'],
         ];
 
         session(['pageBlock' => '/home2']);

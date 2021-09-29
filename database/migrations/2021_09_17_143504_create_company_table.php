@@ -24,6 +24,8 @@ class CreateCompanyTable extends Migration
             $table->string('company_mail')->default('')->comment('信箱');
             $table->string('company_bank_id')->default('')->comment('公司銀行代號');
             $table->string('company_bank_account')->default('')->comment('公司銀行帳戶');
+            $table->integer('area_manager')->nullable()->index()->comment('通路區經理(對應資料表user job_id=14)');
+            $table->integer('principal')->nullable()->index()->comment('公司負責人(對應資料表user)');
             $table->integer('sort')->default(0)->comment('排序');
             $table->tinyInteger('status')->default(0)->comment('狀態');
             $table->dateTime('created_at', $precision = 0)->nullable()->comment('資料建立時間');

@@ -71,20 +71,20 @@ class User extends Authenticatable
 
     // 頁面權限驗證 
     public function hasPermission($role, $action = null) {
+        // 檢查是否為超級管理員帳號
+        if (Auth::user()->admin == 1)
+            return true;
+
         // 檢查是否有設定個人客製化權限 若有則優先採用個人權限設定 否則採用職位通用權限
         $count = Permission::where('user_id', Auth::user()->user_id)->count();
-
-        if ($count > 0)
-            $field = 'user_id';
-        else
-            $field = 'job_id';
+        $field = ($count > 0) ? 'user_id' : 'job_id';
 
         // 檢查權限
         $permission = Permission::where($field, Auth::user()->$field)
             ->where('permission', $role)
             ->first();
 
-        // 若有傳入行為控制權限 $action 則檢查是否有行為權限
+        // 若有傳入行為控制權限 $action 則檢查是否有行為權限 (以JSON格式保存)
         if (! empty($permission)) {
             if (! is_null($action)) {
                 $set = json_decode($permission->action, true);

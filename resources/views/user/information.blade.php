@@ -4,11 +4,11 @@
 
 <style>
     .password-change-text { 
-        min-width: 100px;
+        min-width: 106px;
         display: inline-block;
     }
     #old_password, #confirm_password { background-image: none; }
-    .password-change-text.text-danger{ border-color: #e3342f; }
+    .password-change-text.text-danger { border-color: #e3342f; }
 </style>
 
 <script>
@@ -121,7 +121,7 @@
                                     <div class="input-group-text password-change-text @error('confirm_password') text-danger @enderror">確認新密碼</div>
                                 </div>
                                 <i class="bi bi-eye-fill password-visible"></i>
-                                <input class="form-control @error('confirm_password') is-invalid @enderror" id="confirm_password" name="confirm_password" type="password" value="{{ old('confirm_password') }}"  placeholder="8-25位數密碼，請區分大小寫">
+                                <input class="form-control @error('confirm_password') is-invalid @enderror" id="confirm_password" name="confirm_password" type="password" value="{{ old('confirm_password') }}" placeholder="8-25位數密碼，請區分大小寫">
                             </div>
                         </div>
 

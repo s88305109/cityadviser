@@ -26,8 +26,10 @@ class Company extends Model
                 ->orderBy('company.sort', 'desc')
                 ->get();
 
-        foreach($companys as $key => $row)
+        foreach($companys as $key => $row) {
             $companys[$key]['count'] = User::getCompanyCount($row->company_id);
+            $companys[$key]['principal_name'] = (! empty($row->principal)) ? User::where('user_id', $row->principal)->first()->name : null;
+        }
 
         return $companys;
     }

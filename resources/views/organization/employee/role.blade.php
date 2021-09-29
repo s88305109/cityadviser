@@ -35,27 +35,27 @@
                         @csrf
 
                         <input type="hidden" name="user_id" value="{{ $user->user_id }}">
-                        <input type="hidden" name="routeName" value="{{ Route::currentRouteName() }}">
+                        <input type="hidden" name="state" value="{{ $state }}">
 
                         <div class="p-3">
                             <div class="card">
                                 <div class="card-header fw-bold">
                                     <div class="form-check form-switch">
-                                        <label class="form-check-label" for="m.organization">組織管理</label>
-                                        <input class="form-check-input" type="checkbox" id="m.organization" name="role[]" value="m.organization" @if(isset($permission['m.organization'])) checked @endif>
+                                        <label class="form-check-label" for="organization">組織管理</label>
+                                        <input class="form-check-input" type="checkbox" id="organization" name="role[]" value="organization" @if(isset($permission['organization'])) checked @endif>
                                     </div>
                                 </div>
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item">
                                         <div class="form-check form-switch">
-                                            <label class="form-check-label" for="m.employee">員工管理</label>
-                                            <input class="form-check-input" type="checkbox" id="m.employee" name="role[]" value="m.employee" @if(isset($permission['m.employee'])) checked @endif>
+                                            <label class="form-check-label" for="employee">員工管理</label>
+                                            <input class="form-check-input" type="checkbox" id="employee" name="role[]" value="employee" @if(isset($permission['employee'])) checked @endif>
                                         </div>
                                     </li>
                                     <li class="list-group-item">
                                         <div class="form-check form-switch">
-                                            <label class="form-check-label" for="m.company">公司管理</label>
-                                            <input class="form-check-input" type="checkbox" id="m.company" name="role[]" value="m.company" @if(isset($permission['m.company'])) checked @endif>
+                                            <label class="form-check-label" for="company">公司管理</label>
+                                            <input class="form-check-input" type="checkbox" id="company" name="role[]" value="company" @if(isset($permission['company'])) checked @endif>
                                         </div>
                                     </li>
                                 </ul>
@@ -66,24 +66,29 @@
                             <div class="card">
                                 <div class="card-header fw-bold">
                                     <div class="form-check form-switch">
-                                        <label class="form-check-label" for="m.case">報件管理</label>
-                                        <input class="form-check-input" type="checkbox" id="m.case" name="role[]" value="m.case" @if(isset($permission['m.case'])) checked @endif>
+                                        <label class="form-check-label" for="case">報件管理</label>
+                                        <input class="form-check-input" type="checkbox" id="case" name="role[]" value="case" @if(isset($permission['case'])) checked @endif>
                                     </div>
                                 </div>
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item">
                                         <div class="form-check form-switch">
-                                            <label class="form-check-label" for="m.present">案件報件</label>
-                                            <input class="form-check-input" type="checkbox" id="m.present" name="role[]" value="m.present" @if(isset($permission['m.present'])) checked @endif>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <div class="form-check form-switch">
-                                            <label class="form-check-label" for="m.review">報件審查</label>
-                                            <input class="form-check-input" type="checkbox" id="m.review" name="role[]" value="m.review" @if(isset($permission['m.review'])) checked @endif>
+                                            <label class="form-check-label" for="present">案件報件</label>
+                                            <input class="form-check-input" type="checkbox" id="present" name="role[]" value="present" @if(isset($permission['present'])) checked @endif>
                                         </div>
                                     </li>
                                 </ul>
+                            </div>
+                        </div>
+
+                        <div class="p-3">
+                            <div class="card">
+                                <div class="card-header fw-bold">
+                                    <div class="form-check form-switch">
+                                        <label class="form-check-label" for="review">報件審查</label>
+                                        <input class="form-check-input" type="checkbox" id="review" name="role[]" value="review" @if(isset($permission['review'])) checked @endif>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

@@ -6,7 +6,7 @@
 	<div class="row justify-content-center">
 		<div class="col-md-8 card-columns text-center">
 			<div class="card py-3">
-				<a href="/organization/employee/newEmployee">
+				<a href="/organization/employee/new">
 					<div class="card-body">
 						<h5 class="card-title"><i class="bi bi-person-plus-fill"></i></h5>
 						<p class="card-text">新增員工</p>
@@ -14,7 +14,7 @@
 				</a>
 			</div>
 			<div class="card py-3 d-inline-block two-column mt-3 me-2">
-				<a href="/organization/employee/employeeList">
+				<a href="/organization/employee/list/on">
 					<div class="card-body">
 						<h5 class="card-title"><i class="bi bi-person-lines-fill"></i></h5>
 						<p class="card-text">員工列表</p>
