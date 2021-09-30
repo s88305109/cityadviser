@@ -5,12 +5,7 @@
 <script>
     $(document).ready(function () {
         $("#saveBtn").click(function () {
-            if ($("#principal").val() == "") {
-                $("#confirmDialog3").modal("hide");
-                showMessageModal("請選擇公司負責人");
-
-                return false;
-            } else if ($("#old_principal").val() != "" && $("#principal").val() != $("#old_principal").val()) {
+            if ($("#principal").val() != "" && $("#old_principal").val() != "" && $("#principal").val() != $("#old_principal").val()) {
                 $("#confirmDialog3").modal("hide");
                 $("#confirmDialog4 .modal-body").html("目前負責人為" + $("#old_principal").data("name") + "，確定要更換成" + $("#principal_name").val() + "？")
                 $("#confirmDialog4").modal("show");
@@ -102,7 +97,7 @@
 .ok-mark {
     float: right;
     margin-top: -2.5em;
-    margin-right: 1em;
+    margin-right: .75em;
 }
 </style>
 
@@ -122,13 +117,14 @@
                             <div class="input-group">
                                 <div class="input-group-text @error('area_manager') text-danger border-danger @enderror">通路區經理</div>
                             </div>
+                            
                             <select class="form-select @error('area_manager') is-invalid @enderror" id="area_manager" name="area_manager">
                                 <option></option>
                                 @foreach($managers as $row)
-                                <option value="{{ $row->user_id }}" @if(old('area_manager') == $row->user_id || $company->area_manager == $row->user_id) selected @endif>{{ $row->name }}</option>
+                                <option value="{{ $row->user_id }}" @if($row->user_id == (($errors->isEmpty()) ? $company->area_manager : old('area_manager'))) selected @endif>{{ $row->name }}</option>
                                 @endforeach
                             </select>
-
+                            
                             @error('area_manager')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -136,19 +132,19 @@
                             @enderror
                         </div>
 
-                        <div class="input-group-top mb-2">
+                        <div class="input-group-top inner-addon right-addon reset-icon mb-2">
                             <div class="input-group">
                                 <div class="input-group-text @error('principal_name') text-danger border-danger @enderror">公司負責人</div>
                             </div>
                             
-                            <input class="form-control @error('principal_name') is-invalid @enderror" id="principal_name" name="principal_name" type="text" value="{{ old('principal_name') ?? $company->principal_name }}" autocomplete="off">
-                            <input id="principal" name="principal" type="hidden" value="{{ old('principal') ?? $company->principal }}">
+                            <i class="bi bi-x-circle-fill text-danger"></i>
+                            <input class="form-control @error('principal_name') is-invalid @enderror" id="principal_name" name="principal_name" type="text" value="{{ ($errors->isEmpty()) ? $company->principal_name : old('principal_name') }}" autocomplete="off">
+                            <input id="principal" name="principal" type="hidden" value="{{ ($errors->isEmpty()) ? $company->principal : old('principal') }}">
                             <input id="old_principal" type="hidden" data-name="{{ $company->principal_name }}" value="{{ $company->principal }}">
-
                             <span class="badge bg-primary ok-mark @if (! old('principal_id') && ! $company->principal) d-none @endif">OK</span>
-
+                            
                             <ul class="dropdown-menu" aria-labelledby="principal_name"></ul>
-
+                            
                             @error('principal_name')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -160,8 +156,9 @@
                             <div class="input-group">
                                 <div class="input-group-text @error('company_name') text-danger border-danger @enderror">公司名稱</div>
                             </div>
+                            
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('company_name') is-invalid @enderror" id="company_name" name="company_name" type="text" value="{{ old('company_name') ?? $company->company_name }}">
+                            <input class="form-control @error('company_name') is-invalid @enderror" id="company_name" name="company_name" type="text" value="{{ ($errors->isEmpty()) ? $company->company_name : old('company_name') }}">
 
                             @error('company_name')
                             <span class="invalid-feedback" role="alert">
@@ -174,8 +171,9 @@
                             <div class="input-group">
                                 <div class="input-group-text @error('company_address') text-danger border-danger @enderror">公司地址</div>
                             </div>
+                            
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('company_address') is-invalid @enderror" id="company_address" name="company_address" type="text" value="{{ old('company_address') ?? $company->company_address }}">
+                            <input class="form-control @error('company_address') is-invalid @enderror" id="company_address" name="company_address" type="text" value="{{ ($errors->isEmpty()) ? $company->company_address : old('company_address') }}">
 
                             @error('company_address')
                             <span class="invalid-feedback" role="alert">
@@ -188,8 +186,9 @@
                             <div class="input-group">
                                 <div class="input-group-text @error('company_no') text-danger border-danger @enderror">公司統一編號</div>
                             </div>
+                            
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('company_no') is-invalid @enderror" id="company_no" name="company_no" type="text" maxlength="8" value="{{ old('company_no') ?? $company->company_no }}">
+                            <input class="form-control @error('company_no') is-invalid @enderror" id="company_no" name="company_no" type="text" maxlength="8" value="{{ ($errors->isEmpty()) ? $company->company_no : old('company_no') }}">
 
                             @error('company_no')
                             <span class="invalid-feedback" role="alert">
@@ -202,8 +201,9 @@
                             <div class="input-group-prepend">
                                 <div class="input-group-text password-change-text @error('phone_number') text-danger border-danger @enderror">公司電話</div>
                             </div>
+                            
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('phone_number') is-invalid @enderror" id="phone_number" name="phone_number" type="text" value="{{ old('phone_number') ?? $company->phone_number }}">
+                            <input class="form-control @error('phone_number') is-invalid @enderror" id="phone_number" name="phone_number" type="text" value="{{ ($errors->isEmpty()) ? $company->phone_number : old('phone_number') }}">
 
                             @error('phone_number')
                             <span class="invalid-feedback" role="alert">
@@ -216,10 +216,11 @@
                             <div class="input-group-prepend">
                                 <label class="input-group-text @error('company_city') text-danger border-danger @enderror" for="company_city">縣市</label>
                             </div>
+                            
                             <select class="form-select @error('company_city') is-invalid @enderror" id="company_city" name="company_city">
                                 <option></option>
                                 @foreach ($region as $row)
-                                <option value="{{ $row->region_id }}" @if(old('company_city') == $row->region_id || $company->company_city == $row->region_id) selected @endif>{{ $row->title }}</option>
+                                <option value="{{ $row->region_id }}" @if($row->region_id == (($errors->isEmpty()) ? $company->company_city : old('company_city'))) selected @endif>{{ $row->title }}</option>
                                 @endforeach
                             </select>
 
@@ -234,8 +235,9 @@
                             <div class="input-group">
                                 <div class="input-group-text @error('company_mail') text-danger border-danger @enderror">公司Email</div>
                             </div>
+                            
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <textarea class="form-control @error('company_mail') is-invalid @enderror" id="company_mail" name="company_mail" rows="2">{{ old('company_mail') ?? $company->company_mail }}</textarea>
+                            <textarea class="form-control @error('company_mail') is-invalid @enderror" id="company_mail" name="company_mail" rows="2">{{ ($errors->isEmpty()) ? $company->company_mail : old('company_mail') }}</textarea>
 
                             @error('company_mail')
                             <span class="invalid-feedback" role="alert">
@@ -248,8 +250,9 @@
                             <div class="input-group-prepend">
                                 <div class="input-group-text password-change-text @error('company_bank_id') text-danger border-danger @enderror">公司銀行代號</div>
                             </div>
+                            
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('company_bank_id') is-invalid @enderror" id="company_bank_id" name="company_bank_id" type="text" value="{{ old('company_bank_id') ?? $company->company_bank_id }}">
+                            <input class="form-control @error('company_bank_id') is-invalid @enderror" id="company_bank_id" name="company_bank_id" type="text" value="{{ ($errors->isEmpty()) ? $company->company_bank_id : old('company_bank_id') }}">
 
                             @error('company_bank_id')
                             <span class="invalid-feedback" role="alert">
@@ -262,8 +265,9 @@
                             <div class="input-group">
                                 <div class="input-group-text @error('company_bank_account') text-danger border-danger @enderror">公司銀行帳戶</div>
                             </div>
+                            
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('company_bank_account') is-invalid @enderror" id="company_bank_account" name="company_bank_account" type="text" value="{{ old('company_bank_account') ?? $company->company_bank_account }}">
+                            <input class="form-control @error('company_bank_account') is-invalid @enderror" id="company_bank_account" name="company_bank_account" type="text" value="{{ ($errors->isEmpty()) ? $company->company_bank_account : old('company_bank_account') }}">
 
                             @error('company_bank_account')
                             <span class="invalid-feedback" role="alert">

@@ -14,7 +14,7 @@
 		<div class="col-md-8 mb-5">
 			<h4><i class="bi bi-building"></i> 公司管理（公司列表）</h4>
 
-			<ol class="list-group">
+			<ol class="list-group mb-5">
 				@foreach ($companys as $row)
 				<div class="card mb-1 @if($row->status != 1) bg-light-red @else bg-light @endif">
 					<div class="card-body py-2">

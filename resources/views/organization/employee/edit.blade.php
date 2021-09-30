@@ -92,8 +92,9 @@
                             <div class="input-group-prepend">
                                 <div class="input-group-text @error('name') text-danger border-danger @enderror">姓名</div>
                             </div>
+
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('name') is-invalid @enderror" id="name" name="name" type="text" value="{{ old('name') ?? $user->name }}">
+                            <input class="form-control @error('name') is-invalid @enderror" id="name" name="name" type="text" value="{{ ($errors->isEmpty()) ? $user->name : old('name') }}">
 
                             @error('name')
                             <span class="invalid-feedback" role="alert">
@@ -106,8 +107,9 @@
                             <div class="input-group-prepend">
                                 <div class="input-group-text password-change-text @error('id_card') text-danger border-danger @enderror">身分證</div>
                             </div>
+
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('id_card') is-invalid @enderror" id="id_card" name="id_card" type="text" value="{{ old('id_card') ?? $user->id_card }}">
+                            <input class="form-control @error('id_card') is-invalid @enderror" id="id_card" name="id_card" type="text" value="{{ ($errors->isEmpty()) ? $user->id_card : old('id_card') }}">
 
                             @error('id_card')
                             <span class="invalid-feedback" role="alert">
@@ -120,8 +122,9 @@
                             <div class="input-group-prepend">
                                 <div class="input-group-text password-change-text @error('phone_number') text-danger border-danger @enderror">手機號碼</div>
                             </div>
+
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('phone_number') is-invalid @enderror" id="phone_number" name="phone_number" type="text" value="{{ old('phone_number') ?? $user->phone_number }}">
+                            <input class="form-control @error('phone_number') is-invalid @enderror" id="phone_number" name="phone_number" type="text" value="{{ ($errors->isEmpty()) ? $user->phone_number : old('phone_number') }}">
 
                             @error('phone_number')
                             <span class="invalid-feedback" role="alert">
@@ -134,8 +137,9 @@
                             <div class="input-group">
                                 <div class="input-group-text @error('email') text-danger border-danger @enderror">Email</div>
                             </div>
+
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <textarea class="form-control @error('email') is-invalid @enderror" id="email" name="email" rows="2">{{ old('email') ?? $user->email }}</textarea>
+                            <textarea class="form-control @error('email') is-invalid @enderror" id="email" name="email" rows="2">{{ ($errors->isEmpty()) ? $user->email : old('email') }}</textarea>
 
                             @error('email')
                             <span class="invalid-feedback" role="alert">
@@ -148,7 +152,8 @@
                             <div class="input-group-prepend">
                                 <div class="input-group-text password-change-text @error('date_employment') text-danger border-danger @enderror">到職日期</div>
                             </div>
-                            <input class="form-control @error('date_employment') is-invalid @enderror" id="date_employment" name="date_employment" type="date" value="{{ old('date_employment') ?? $user->date_employment }}">
+
+                            <input class="form-control @error('date_employment') is-invalid @enderror" id="date_employment" name="date_employment" type="date" value="{{ ($errors->isEmpty()) ? $user->date_employment : old('date_employment') }}">
 
                             @error('date_employment')
                             <span class="invalid-feedback" role="alert">
@@ -161,7 +166,8 @@
                             <div class="input-group-prepend">
                                 <div class="input-group-text password-change-text @error('date_resignation') text-danger border-danger @enderror">離職日期</div>
                             </div>
-                            <input class="form-control @error('date_resignation') is-invalid @enderror" id="date_resignation" name="date_resignation" type="date" min="{{ old('date_employment') ?? $user->date_employment }}" value="{{ old('date_resignation') ?? $user->date_resignation }}">
+
+                            <input class="form-control @error('date_resignation') is-invalid @enderror" id="date_resignation" name="date_resignation" type="date" min="{{ ($errors->isEmpty()) ? $user->date_employment : old('date_employment') }}" value="{{ ($errors->isEmpty()) ? $user->date_resignation : old('date_resignation') }}">
 
                             @error('date_resignation')
                             <span class="invalid-feedback" role="alert">
@@ -174,7 +180,8 @@
                             <div class="input-group-prepend">
                                 <label class="input-group-text @error('reason') text-danger border-danger @enderror" for="reason">離職原因</label>
                             </div>
-                            <input class="form-control @error('reason') is-invalid @enderror" id="reason" name="reason" type="text" value="{{ old('reason') ?? $user->reason }}">
+
+                            <input class="form-control @error('reason') is-invalid @enderror" id="reason" name="reason" type="text" value="{{ ($errors->isEmpty()) ? $user->reason : old('reason') }}">
 
                             <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"></button>
                             <ul class="dropdown-menu dropdown-menu-end">
@@ -193,10 +200,10 @@
                         <div class="mb-2">
                             <label class="form-label gender-label @error('gender_type') text-danger @enderror">性別</label>
                             
-                            <input class="form-check-input @error('gender_type') is-invalid @enderror" id="gender_type1" name="gender_type" type="radio" value="1" @if(old('gender_type') == '1' || $user->gender_type == '1') checked @endif>
+                            <input class="form-check-input @error('gender_type') is-invalid @enderror" id="gender_type1" name="gender_type" type="radio" value="1" @if('1' == (($errors->isEmpty()) ? $user->gender_type : old('gender_type'))) checked @endif>
                             <label class="form-check-label me-3" for="gender_type1">男</label>
                         
-                            <input class="form-check-input @error('gender_type') is-invalid @enderror" id="gender_type0" name="gender_type" type="radio" value="0" @if(old('gender_type') == '0' || $user->gender_type == '0') checked @endif>
+                            <input class="form-check-input @error('gender_type') is-invalid @enderror" id="gender_type0" name="gender_type" type="radio" value="0" @if('0' == (($errors->isEmpty()) ? $user->gender_type : old('gender_type'))) checked @endif>
                             <label class="form-check-label" for="gender_type0">女</label>
                             
                             @error('gender_type')
@@ -210,10 +217,11 @@
                             <div class="input-group-prepend">
                                 <label class="input-group-text @error('counties_city_type') text-danger border-danger @enderror" for="counties_city_type">縣市</label>
                             </div>
+
                             <select class="form-select @error('counties_city_type') is-invalid @enderror" id="counties_city_type" name="counties_city_type">
                                 <option></option>
                                 @foreach ($region as $row)
-                                <option value="{{ $row->region_id }}" @if(old('counties_city_type') == $row->region_id || $user->counties_city_type == $row->region_id) selected @endif>{{ $row->title }}</option>
+                                <option value="{{ $row->region_id }}" @if($row->region_id == (($errors->isEmpty()) ? $user->counties_city_type : old('counties_city_type'))) selected @endif>{{ $row->title }}</option>
                                 @endforeach
                             </select>
 
@@ -228,10 +236,11 @@
                             <div class="input-group-prepend">
                                 <label class="input-group-text @error('company_id') text-danger border-danger @enderror" for="company_id">所屬公司</label>
                             </div>
+
                             <select class="form-select @error('company_id') is-invalid @enderror" id="company_id" name="company_id">
                                 <option></option>
                                 @foreach ($company as $row)
-                                <option value="{{ $row->company_id }}" data-type="{{ $row->type }}" @if(old('company_id') == $row->company_id || $user->company_id == $row->company_id) selected @endif>{{ $row->company_name }}</option>
+                                <option value="{{ $row->company_id }}" data-type="{{ $row->type }}" @if($row->company_id == (($errors->isEmpty()) ? $user->company_id : old('company_id'))) selected @endif>{{ $row->company_name }}</option>
                                 @endforeach
                             </select>
 
@@ -254,8 +263,8 @@
                             <div class="row p-2">
                                 @foreach ($job1 as $row)                                
                                 <div class="col-6 text-center g-1">
-                                    <input class="d-none" id="job{{ $row->job_id }}" name="job_id" type="radio" value="{{ $row->job_id }}" @if(old('job_id') == $row->job_id || $user->job_id == $row->job_id) checked @endif autocomplete="off">
-                                    <label class="btn btn-outline-secondary @if(old('job_id') == $row->job_id || $user->job_id == $row->job_id) active @endif" for="job{{ $row->job_id }}">{{ $row->job_title }}</label>
+                                    <input class="d-none" id="job{{ $row->job_id }}" name="job_id" type="radio" value="{{ $row->job_id }}" @if($row->job_id == (($errors->isEmpty()) ? $user->job_id : old('job_id'))) checked @endif autocomplete="off">
+                                    <label class="btn btn-outline-secondary @if($row->job_id == (($errors->isEmpty()) ? $user->job_id : old('job_id'))) active @endif" for="job{{ $row->job_id }}">{{ $row->job_title }}</label>
                                 </div>
                                 @endforeach
                             </div>
@@ -273,8 +282,8 @@
                             <div class="row p-2">
                                 @foreach ($job2 as $row)                                
                                 <div class="col-6 text-center g-1">
-                                    <input class="d-none" id="job{{ $row->job_id }}" name="job_id" type="radio" value="{{ $row->job_id }}" @if(old('job_id') == $row->job_id || $user->job_id == $row->job_id) checked @endif autocomplete="off">
-                                    <label class="btn btn-outline-secondary @if(old('job_id') == $row->job_id || $user->job_id == $row->job_id) active @endif" for="job{{ $row->job_id }}">{{ $row->job_title }}</label>
+                                    <input class="d-none" id="job{{ $row->job_id }}" name="job_id" type="radio" value="{{ $row->job_id }}" @if($row->job_id == (($errors->isEmpty()) ? $user->job_id : old('job_id'))) checked @endif autocomplete="off">
+                                    <label class="btn btn-outline-secondary @if($row->job_id == (($errors->isEmpty()) ? $user->job_id : old('job_id'))) active @endif" for="job{{ $row->job_id }}">{{ $row->job_title }}</label>
                                 </div>
                                 @endforeach
                             </div>
@@ -286,8 +295,9 @@
                             <div class="input-group">
                                 <div class="input-group-text @error('user_number') text-danger border-danger @enderror">平台帳號</div>
                             </div>
+
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('user_number') is-invalid @enderror" id="user_number" name="user_number" type="text" value="{{ old('user_number') ?? $user->user_number }}">
+                            <input class="form-control @error('user_number') is-invalid @enderror" id="user_number" name="user_number" type="text" value="{{ ($errors->isEmpty()) ? $user->user_number : old('user_number') }}">
 
                             @error('user_number')
                             <span class="invalid-feedback" role="alert">
@@ -300,6 +310,7 @@
                             <div class="input-group">
                                 <div class="input-group-text @error('user_password') text-danger border-danger @enderror">平台密碼</div>
                             </div>
+
                             <i class="bi bi-x-circle-fill text-danger"></i>
                             <input class="form-control @error('user_password') is-invalid @enderror" id="user_password" name="user_password" type="password" value="{{ old('user_password') }}" placeholder="8-25位數密碼，請區分大小寫">
 
@@ -314,8 +325,9 @@
                             <div class="input-group">
                                 <div class="input-group-text @error('staff_code') text-danger border-danger @enderror">員工編號</div>
                             </div>
+                            
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('staff_code') is-invalid @enderror" id="staff_code" name="staff_code" type="text" value="{{ old('staff_code') ?? $user->staff_code }}">
+                            <input class="form-control @error('staff_code') is-invalid @enderror" id="staff_code" name="staff_code" type="text" value="{{ ($errors->isEmpty()) ? $user->staff_code : old('staff_code') }}">
 
                             @error('staff_code')
                             <span class="invalid-feedback" role="alert">

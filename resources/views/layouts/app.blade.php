@@ -53,7 +53,7 @@
     .inner-addon.reset-icon i.bi { 
         display: none; 
         z-index: 10;
-        margin-right: .75em;;
+        margin-right: .25em;;
     }
     .left-addon i.bi  { left:  0px; }
     .right-addon i.bi { right: 0px; }
@@ -148,8 +148,8 @@
         border-bottom: 0;
     }
     .input-group-top .input-group-text { border-radius: 0.25em 0.25em 0 0; }
-    .input-group-top > input.form-control,
-    .input-group-top > textarea.form-control { border-radius: 0 0 0.25em 0.25em; }
+    .input-group-top > .form-control,
+    .input-group-top > .form-select { border-radius: 0 0 0.25em 0.25em; }
     .input-group-top.inner-addon.reset-icon i.bi { margin-top: -1.8em; }
     .job-set .btn { min-width: 88px; }
     .job-set .card-header { text-align: center; }
@@ -181,14 +181,12 @@
             $(".inner-addon.reset-icon input, .inner-addon.reset-icon textarea").on("keyup",function(e) {
                 if ($(this).val() != "") {
                     $(this).parent().children("i.bi").fadeIn();
-                    $(this).css("background-image", "none");
                 } else {
                     $(this).parent().children("i.bi").hide();
                 }
             }).on("focus",function(e){
                 if ($(this).val() != "") {
                     $(this).parent().children("i.bi").fadeIn();
-                    $(this).css("background-image", "none");
                 } else {
                     $(this).parent().children("i.bi").hide();
                 }
