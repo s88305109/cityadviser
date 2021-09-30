@@ -365,11 +365,9 @@
 <div class="modal fade" id="confirmDialog" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-body text-center">
-                確定凍結此帳號嗎？
-            </div>
+            <div class="modal-body text-center">確定凍結此帳號嗎？</div>
             <div class="modal-footer justify-content-center">
-                <button class="btn btn-primary untrigger" id="disableUser" type="button">　是　</button>
+                <button class="btn btn-danger untrigger" id="disableUser" type="button">　是　</button>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">　否　</button>
             </div>
@@ -380,9 +378,7 @@
 <div class="modal fade" id="confirmDialog2" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-body text-center">
-                確定解除凍結嗎？
-            </div>
+            <div class="modal-body text-center">確定解除凍結嗎？</div>
             <div class="modal-footer justify-content-center">
                 <button class="btn btn-success untrigger" id="enableUser" type="button">　是　</button>
                 &nbsp;&nbsp;&nbsp;&nbsp;

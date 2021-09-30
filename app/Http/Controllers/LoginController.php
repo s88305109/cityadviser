@@ -60,8 +60,10 @@ class LoginController extends Controller
 		$validated = $request->validate($rules, $messages);
 
 		$user      = User::where('user_number', $request->input('user_number'))->first();
-		$company   = Company::find($user->company_id);
-		$principal = User::find($company->principal);
+		if (! empty($user))
+			$company   = Company::find($user->company_id);
+		if (! empty($company))
+			$principal = User::find($company->principal);
 
 		if (empty($user)) {
 			return response()->json([

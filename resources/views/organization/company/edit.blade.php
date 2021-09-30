@@ -4,23 +4,6 @@
 
 <script>
     $(document).ready(function () {
-        $("#saveBtn").click(function () {
-            if ($("#principal").val() != "" && $("#old_principal").val() != "" && $("#principal").val() != $("#old_principal").val()) {
-                $("#confirmDialog3").modal("hide");
-                $("#confirmDialog4 .modal-body").html("目前負責人為" + $("#old_principal").data("name") + "，確定要更換成" + $("#principal_name").val() + "？")
-                $("#confirmDialog4").modal("show");
-                return false;
-            }
-
-            allowRedirect = true;
-            $("form.company").submit();
-        });
-
-        $("#saveConfirm").click(function () {
-            allowRedirect = true;
-            $("form.company").submit();
-        });
-
         $("#principal_name").keyup(function () {
             $(".ok-mark").hide();
             $("#principal").val("");
@@ -50,6 +33,19 @@
         $(".is-invalid").eq(0).focus();
         @endif
     });
+
+    function fromSubmit() {
+        if ($("#principal").val() != "" && $("#old_principal").val() != "" && $("#principal").val() != $("#old_principal").val()) {
+            showConfirmModal("目前負責人為" + $("#old_principal").data("name") + "，確定要更換成" + $("#principal_name").val() + "？", "forceSubmit();");
+        } else {
+            showConfirmModal('確定儲存嗎？', 'forceSubmit();');
+        }
+    }
+
+    function forceSubmit() {
+        allowRedirect = true;
+        $("form.company").submit();
+    }
 
     var loading = false;
         
@@ -287,7 +283,7 @@
                         @endif
 
                         <div class="mb-5">
-                            <button class="btn btn-primary px-5 w-100" type="button" data-bs-toggle="modal" data-bs-target="#confirmDialog3">儲存</button>
+                            <button class="btn btn-primary px-5 w-100" type="button" onclick="fromSubmit();">儲存</button>
                         </div>
                     </form>
                 </div>
@@ -299,9 +295,7 @@
 <div class="modal fade" id="confirmDialog" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-body text-center">
-                確定凍結此間公司嗎？
-            </div>
+            <div class="modal-body text-center">確定凍結此間公司嗎？</div>
             <div class="modal-footer justify-content-center">
                 <button class="btn btn-danger untrigger" id="confirmDisableCompany" type="button">　是　</button>
                 &nbsp;&nbsp;&nbsp;&nbsp;
@@ -314,39 +308,9 @@
 <div class="modal fade" id="confirmDialog2" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-body text-center">
-                確定解除凍結嗎？
-            </div>
+            <div class="modal-body text-center">確定解除凍結嗎？</div>
             <div class="modal-footer justify-content-center">
                 <button class="btn btn-success untrigger" id="confirmEnableCompany" type="button">　是　</button>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">　否　</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="confirmDialog3" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body text-center">
-                確定儲存嗎？
-            </div>
-            <div class="modal-footer justify-content-center">
-                <button class="btn btn-primary untrigger" id="saveBtn" type="button">　是　</button>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">　否　</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="confirmDialog4" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body text-center"></div>
-            <div class="modal-footer justify-content-center">
-                <button class="btn btn-primary untrigger" id="saveConfirm" type="button">　是　</button>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">　否　</button>
             </div>

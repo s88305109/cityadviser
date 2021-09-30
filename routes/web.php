@@ -108,6 +108,7 @@ Route::middleware(['auth'])->name('auth.')->group(function () {
         Route::post('/organization/company/savePeople', [OrganizationController::class, 'savePeople']);
         // 查找User公司負責人
         Route::post('/organization/company/findUser', [OrganizationController::class, 'findUser']);
+        Route::post('/organization/company/{area}', [OrganizationController::class, 'companyList']);
     });
 
     // 員工管理 (分公司負責人管理自己公司內的員工)

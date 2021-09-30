@@ -2,17 +2,6 @@
 
 @section('content')
 
-<script>
-    $(document).ready(function () {
-        $(".employee").click(function () {
-            window.location.href = "/organization/employee";
-        });
-
-        $(".company").click(function () {
-            window.location.href = "/organization/company";
-        });
-    });
-</script>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -21,17 +10,25 @@
             </div>
             <h2 class="text-center mt-1">{{ config('app.name', '融鎰數位科技') }}</h2>
 
+            @if(Auth::user()->hasPermission('employee'))
             <div class="card pt-3">
-                <div class="card-body employee">
-                    <h3><i class="bi bi-people-fill"></i> 員工管理</h3>
-                </div>
+                <a href="/organization/employee">
+                    <div class="card-body employee">
+                        <h3><i class="bi bi-people-fill"></i> 員工管理</h3>
+                    </div>
+                </a>
             </div>
+            @endif
 
+            @if(Auth::user()->hasPermission('company'))
             <div class="card pt-3 text-end company">
-                <div class="card-body">
-                    <h3>公司管理 <i class="bi bi-building"></i></h3>
-                </div>
+                <a href="/organization/company">
+                    <div class="card-body">
+                        <h3>公司管理 <i class="bi bi-building"></i></h3>
+                    </div>
+                </a>
             </div>
+            @endif
         </div>
     </div>
 </div>

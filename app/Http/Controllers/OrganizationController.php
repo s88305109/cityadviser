@@ -17,10 +17,12 @@ class OrganizationController extends Controller
     // 主頁
     public function index(Request $request)
     {
+        /*
         if (Auth::user()->hasPermission('employee') & ! Auth::user()->hasPermission('company')) 
             return redirect('/organization/employee');
         else if (! Auth::user()->hasPermission('employee') & Auth::user()->hasPermission('company')) 
             return redirect('/organization/company');
+        */
 
         return view('organization.index');
     }
@@ -375,9 +377,16 @@ class OrganizationController extends Controller
 
         $company = new Company;
 
-        if (! empty($request->input('company_id')))
+        if (! empty($request->input('company_id'))) {
             $company = Company::find($request->input('company_id'));
-        else {
+
+            // 若負責人變更則修改原本負責人的職位改為員工
+            if ($company->principal != $request->input('principal')) {
+                $user = User::find($company->principal);
+                $user->job_id = 16;
+                $user->save();
+            }
+        } else {
             $company->type   = 2;
             $company->status = 1;
         }

@@ -92,6 +92,17 @@
                             </div>
                         </div>
 
+                        <div class="p-3">
+                            <div class="card">
+                                <div class="card-header fw-bold">
+                                    <div class="form-check form-switch">
+                                        <label class="form-check-label" for="staff">員工管理</label>
+                                        <input class="form-check-input" type="checkbox" id="staff" name="role[]" value="staff" @if(isset($permission['staff'])) checked @endif>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <hr>
 
                         <div class="mb-5">

@@ -20,25 +20,14 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <style>
+    /* Global */
     .no-underline { text-decoration:none; }
+    .bg-light-red { background-color: hsl(0deg 100% 50% / 10%); }
     img.logo128 { 
         max-width: 128px; 
         padding: 0;
     }
-    .bottomNavUl {
-        width: 100%;
-        margin: 2px 0;
-        padding: 0 1em;
-    }
-    .bottomNavUl li {
-        display: inline-block;
-        margin-right: 8px;
-        height: 32px;
-        line-height: 32px;
-        vertical-align: middle;
-    }
-    .bottomNavUl li:nth-child(2) { margin-top: -6px; }
-    .bottomNavUl li:last-child { margin-right: 0; }
+
     /* Input 內嵌圖示 */
     button.btn.radius {
         border-radius: 20px;
@@ -89,14 +78,8 @@
         background-color: #EEE;
         border-top: 1px solid #CCC;;
     }
-    .float-navbar .back-icon { font-size: 24px; }
-    .navbar-header { font-size: 18px; }
 
-    .home-link {
-        padding: 6px 8px 2px 8px;
-        color: #FFF;
-    }
-
+    /* Check List (Login) */
     ul.check-list li {
         background-color: transparent;
         border: 0px;
@@ -118,7 +101,6 @@
         animation: shake 0.5s;
         animation-iteration-count: infinite;
     }
-
     @keyframes shake {
         0% { transform: translate(1px, 1px) rotate(0deg); }
         10% { transform: translate(-1px, -2px) rotate(-1deg); }
@@ -151,7 +133,7 @@
     .input-group-top > .form-control,
     .input-group-top > .form-select { border-radius: 0 0 0.25em 0.25em; }
     .input-group-top.inner-addon.reset-icon i.bi { margin-top: -1.8em; }
-    .job-set .btn { min-width: 88px; }
+    .job-set .btn { min-width: 106px; }
     .job-set .card-header { text-align: center; }
     .input-group-text, .gender-label { 
         min-width: 88px; 
@@ -167,7 +149,6 @@
         background-color: #fff;
         margin-bottom: 54px;
     }
-    .bg-light-red { background-color: hsl(0deg 100% 50% / 10%); }
     </style>
 
     <script>
@@ -193,14 +174,20 @@
             }).on("blur",function(e){ $(this).parent().children("i.bi").fadeOut(); });
         });
 
-        {{-- 訊息提示視窗Function --}}
+        {{-- 呼叫訊息提示視窗 --}}
         function showMessageModal(content) {
             $("#messageModal > .modal-dialog > .modal-content > .modal-body").html(content);
             $("#messageModal").modal("show");
         }
 
-        function hideMessageModal() {
-            $("#messageModal").modal("hide");
+        {{-- 呼叫確認視窗 --}}
+        function showConfirmModal(content, btn1Act = null) {
+            $("#confirmModal .modal-body").html(content);
+
+            if (btn1Act != null)
+                $("#confirmModal button.btn-primary").attr("onclick", btn1Act);
+
+            $("#confirmModal").modal("show");
         }
 
         {{-- Loading Mask Function --}}
@@ -278,38 +265,31 @@ if ($navlink2 == '/')
                         <i class="bi bi-person-fill"></i> 
                         <span>{{ Auth::user()->name }}</span>
                     </a>
-
-                    <div class="float-end"><i class="bi bi-twitch"></i></div>
                 </div>
             </div>
         </nav>
 
         {{-- Fixed BottomBar --}}
-        <nav class="navbar fixed-bottom navbar-light float-navbar justify-content-center">
+        <nav class="navbar fixed-bottom float-navbar justify-content-center">
             <div class="col-md-6">
-                <ul class="bottomNavUl">
-                    <li>
+                <div class="row justify-content-evenly">
+                    <div class="col-auto">
+                        <a href="#"><i class="bi bi-twitch fs-2"></i></a>
+                    </div>
+                    <div class="col-auto">
                         @if (Route::currentRouteName() == 'auth.home2')
-                        <a class="bg-primary rounded home-link" href="/home"><i class="bi bi-back"></i></a>
+                        <a href="/home"><i class="bi bi-back fs-2"></i></a>
                         @else
-                        <a class="bg-dark rounded home-link" href="/home2"><i class="bi bi-list-ul"></i></a>
+                        <a href="/home2"><i class="bi bi-front fs-2"></i></a>
                         @endif
-                    </li>
-                    <li>
-                        <a href="{{ $navlink1 }}"><img src="/images/logo-32.png"></a>
-                    </li>
-                    <li>
-                        <a href="{{ $navlink2 }}"><i class="bi bi-tags back-icon"></i></a>
-                    </li>
-                    <li class="float-end">
-                        <div class="inner-addon right-addon">
-                            <form class="search-form">
-                                <i class="bi bi-search" onclick="searchContent();"></i>
-                                <input class="form-control skip-change-validate" type="search" id="search_str" name="search_str" placeholder="{{ __('請輸入關鍵字') }}">
-                            </form>
-                        </div>
-                    </li>
-                </ul>
+                    </div>
+                    <div class="col-auto">
+                        <a href="{{ $navlink1 }}"><i class="bi bi-house-fill fs-2"></i></a>
+                    </div>
+                    <div class="col-auto">
+                        <a href="{{ $navlink2 }}"><i class="bi bi-tags-fill fs-2"></i></a>
+                    </div>
+                </div>
             </div>
         </nav>
         @endif
@@ -325,7 +305,21 @@ if ($navlink2 == '/')
             <div class="modal-content">
                 <div class="modal-body text-danger"></div>
                 <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-primary" onclick="hideMessageModal();">確認</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">確認</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- 確認視窗 --}}
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center"></div>
+                <div class="modal-footer justify-content-center">
+                    <button class="btn btn-primary untrigger" type="button">　是　</button>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">　否　</button>
                 </div>
             </div>
         </div>
