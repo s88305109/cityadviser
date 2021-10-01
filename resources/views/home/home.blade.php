@@ -7,16 +7,14 @@
 
 <style>
     html, 
-    body, 
+    body{ height: calc(100% - 48px); }
     #app, 
     #main, 
     .splide, 
-    .splide__track, 
     .splide__list, 
+    .splide__track,
     .inner-page, 
-    .inner-container  {
-        height: calc(100% - 10px);
-    }
+    .inner-container{ height: 100% }
     .splide__slide {
         margin-top: 1em;
         margin-bottom: 1em;
@@ -26,7 +24,7 @@
         margin-bottom: 0;
     }
     .inner-page .inner-container {
-        height: calc(100% - 70px);
+        height: calc(100% - 40px);
         padding: 1em;
         margin: 0.5em;
         border: 1px solid #CCC;
@@ -43,11 +41,35 @@
         margin-top: 8px;
     }
     .float-bar span { display: none; }
+    .start-shadow,
+    .end-shadow {
+        position: absolute;
+        top: calc(50% - 100px);
+        height: 200px;
+        width: 20px;
+        z-index: 20;
+        background: radial-gradient(at center, rgba(0,0,0,.5),transparent 50%) no-repeat;
+        background-size: 18px 100%;
+        opacity: 1;
+        animation: wheel 2s infinite;
+    }
+    @keyframes wheel {
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+    .start-shadow{ 
+        left: 0; 
+        background-position: -6px;
+    }
+    .end-shadow{ 
+        right: 0;
+        background-position: 6px;
+    }
 </style>
 
 <div class="container h-100">
     <div class="row justify-content-center h-100">
-        <div class="col-md-6 px-0 h-100 splide position-relative">
+        <div class="col-md-6 px-0 splide position-relative">
             <div class="splide__track">
                 <ul class="splide__list">
                     @foreach ($sysList as $key => $data)
@@ -67,9 +89,13 @@
                 <span class="float-start"></span>
                 <span class="float-end"></span>
             </div>
+
+            <div class="start-shadow"></div>
+            <div class="end-shadow"></div>
         </div>
     </div>
 </div>
+
 
 <script>
     const pageIndex = (getCookie("pageIndex") == null | getCookie("pageBlock") != "{{ $pageBlock }}") ? 0 : getCookie("pageIndex");
