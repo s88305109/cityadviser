@@ -202,7 +202,7 @@
                 <form class="login-form" method="POST" action="/login" novalidate>
                     @csrf
 
-                    <div class="form-group row step1">
+                    <div class="form-group step1">
                         <label class="col-form-label text-md-right" id="user_number_label" for="user_number">{{ __('請輸入帳號') }}</label>
 
                         <div class="inner-addon right-addon reset-icon">
@@ -217,7 +217,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row step2 d-none">
+                    <div class="form-group step2 d-none">
                         <label class="col-form-label text-md-right" id="user_password_label" for="user_password">{{ __('請輸入密碼') }}</label>
 
                         <div class="inner-addon right-addon reset-icon">
