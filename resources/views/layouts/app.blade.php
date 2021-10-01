@@ -152,18 +152,15 @@
     .go-top,
     .go-bottom {
         position: fixed;
-        padding: .25em .5em;
-        border-radius: 1em; 
+        padding: 2px 8px;
+        border-radius: 2em; 
         z-index: 1040; 
         display: none;
     }
-    .go-top {
-        top: 4em;
-        right: 1em;
-    }
+    .go-top,
     .go-bottom {
-        bottom: 4em;
-        right: 1em; 
+        bottom: 6em;
+        right: 2em; 
     }
     </style>
 
@@ -373,7 +370,7 @@ if ($navlink2 == '/')
     </div>
 
 
-    <div class="go-top btn-primary"><i class="bi bi-chevron-bar-up"></i></div>
-    <div class="go-bottom btn-primary"><i class="bi bi-chevron-bar-down"></i></div>
+    <div class="go-top btn-secondary"><i class="bi bi-chevron-bar-up fs-3"></i></div>
+    <div class="go-bottom btn-secondary"><i class="bi bi-chevron-bar-down fs-3"></i></div>
 </body>
 </html>
