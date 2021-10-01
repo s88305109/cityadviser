@@ -149,9 +149,27 @@
         background-color: #fff;
         margin-bottom: 54px;
     }
+    .go-top,
+    .go-bottom {
+        position: fixed;
+        padding: .25em .5em;
+        border-radius: 1em; 
+        z-index: 1040; 
+        display: none;
+    }
+    .go-top {
+        top: 4em;
+        right: 1em;
+    }
+    .go-bottom {
+        bottom: 4em;
+        right: 1em; 
+    }
     </style>
 
     <script>
+        var lastScrollTop = 0;
+
         $(document).ready(function () {
             {{-- 文字方塊叉叉圖示處理 --}}
             $(".inner-addon.reset-icon i.bi").click(function() {
@@ -172,6 +190,20 @@
                     $(this).parent().children("i.bi").hide();
                 }
             }).on("blur",function(e){ $(this).parent().children("i.bi").fadeOut(); });
+
+            $(window).scroll(function(event){
+                var st = $(this).scrollTop();
+                if (st > lastScrollTop){
+                    $(".go-top").hide();
+                    $(".go-bottom").show();
+                    setTimeout(function(){ $(".go-bottom").fadeOut(); }, 2000);
+                } else {
+                    $(".go-top").show();
+                    $(".go-bottom").hide();
+                    setTimeout(function(){ $(".go-top").fadeOut(); }, 2000);
+                }
+                lastScrollTop = st;
+            });
         });
 
         {{-- 呼叫訊息提示視窗 --}}
@@ -230,6 +262,14 @@
                 isChanged = false;
             }).bind("change", function () {
                 isChanged = false;
+            });
+
+            $(".go-top").bind("click", function () {
+                $("html, body").animate({ scrollTop: 0 }, 200);
+            });
+
+            $(".go-bottom").bind("click", function () {
+                $("html, body").animate({ scrollTop: $(document).height() }, 200);
             });
         });
 
@@ -331,5 +371,9 @@ if ($navlink2 == '/')
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
+
+
+    <div class="go-top btn-primary"><i class="bi bi-chevron-bar-up"></i></div>
+    <div class="go-bottom btn-primary"><i class="bi bi-chevron-bar-down"></i></div>
 </body>
 </html>
