@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\Region;
 use App\Models\Job;
@@ -17,13 +18,6 @@ class OrganizationController extends Controller
     // 主頁
     public function index(Request $request)
     {
-        /*
-        if (Auth::user()->hasPermission('employee') & ! Auth::user()->hasPermission('company')) 
-            return redirect('/organization/employee');
-        else if (! Auth::user()->hasPermission('employee') & Auth::user()->hasPermission('company')) 
-            return redirect('/organization/company');
-        */
-
         return view('organization.index');
     }
 
@@ -111,6 +105,16 @@ class OrganizationController extends Controller
             $errors['email'] = __('Email格式錯誤');
         if (empty($request->input('date_employment')))
             $errors['date_employment'] =  __('請輸入到職日期');
+        else {
+            $date = date_parse($request->input('date_employment'));
+            if ($date['error_count'] > 0 || ! checkdate($date['month'], $date['day'], $date['year'])) 
+                $errors['date_employment'] =  __('到職日期格式錯誤');            
+        }
+        if (! empty($request->input('date_resignation'))) {
+            $date = date_parse($request->input('date_resignation'));
+            if ($date['error_count'] > 0 || ! checkdate($date['month'], $date['day'], $date['year'])) 
+                $errors['date_resignation'] =  __('離職日期格式錯誤');            
+        }
         else if (! empty($request->input('date_resignation')) && strtotime($request->input('date_resignation')) < strtotime($request->input('date_employment')))
             $errors['date_resignation'] =  __('離職日期不可小於到職日期');
         else if (! empty($request->input('date_resignation')) && empty($request->input('reason')))

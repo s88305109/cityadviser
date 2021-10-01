@@ -33,8 +33,7 @@ class CreateUserTable extends Migration
             $table->integer('job_id')->default(0)->comment('職位ID(對應資料表job)');
             $table->string('staff_code', 32)->nullable()->unique()->comment('員工編號');
             $table->datetime('disable_period')->nullable()->comment('議價功能關閉期限');
-            $table->string('label_order')->nullable()->comment('初始畫面頁籤');
-            $table->tinyInteger('representative')->default(0)->index()->comment('是否為公司負責人0=否;1=是');
+            $table->string('label_order')->nullable()->comment('初始畫面頁籤');            
             $table->tinyInteger('admin')->default(0)->comment('管理者權限');
             $table->tinyInteger('status')->default(0)->comment('帳號狀態');
             $table->dateTime('created_at', $precision = 0)->nullable()->comment('資料建立時間');

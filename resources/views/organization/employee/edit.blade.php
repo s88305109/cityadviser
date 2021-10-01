@@ -21,6 +21,10 @@
             $("form.employee").submit();
         });
 
+        $("#date_employment").change(function () {
+            $("#date_resignation").attr("min", $(this).val());
+        });
+
         $(".btn.btn-outline-secondary").click(function () {
             $(".btn.btn-outline-secondary").removeClass("active");
             $(this).addClass("active");
