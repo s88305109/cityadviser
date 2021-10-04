@@ -17,9 +17,11 @@ class CreateSecretaryTable extends Migration
             $table->id()->comment('事件Id');
             $table->integer('user_id')->index()->comment('使用者ID(對應資料表user)');
             $table->string('event', 32)->default('')->comment('事件類型');
+            $table->string('content')->default('')->comment('內文');
             $table->datetime('deadline')->nullable()->comment('事件期限');
             $table->integer('item_id')->nullable()->comment('事件項目原資料Id');
             $table->string('url')->default('')->comment('目標連結');
+            $table->tinyInteger('watch')->default(0)->comment('狀態0=未讀;1=已讀');
             $table->tinyInteger('status')->default(0)->comment('狀態0=未處理;1=已處理');
         });
 

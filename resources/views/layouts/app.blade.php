@@ -190,6 +190,13 @@
     }
     .information-edit #old_password, #confirm_password { background-image: none; }
     .information-edit .password-change-text.text-danger { border-color: #e3342f; }
+
+    /* 小秘書 */
+    .secretary .toast { margin-bottom: 0.5rem; }
+    .secretary .toast-header .rounded-circle { 
+        margin-right: -0.375rem;
+        margin-left: 0.75rem;
+    }
     </style>
 
     <script>
@@ -325,7 +332,7 @@ if ($navlink2 == '/')
             <div class="col-md-6">
                 <div class="row justify-content-evenly">
                     <div class="col-auto">
-                        <a href="#"><i class="bi bi-twitch fs-2"></i></a>
+                        <a href="/secretary"><i class="bi bi-twitch fs-2"></i></a>
                     </div>
                     <div class="col-auto">
                         @if (Route::currentRouteName() == 'auth.home2')

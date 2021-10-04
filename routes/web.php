@@ -9,6 +9,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\SecretaryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +52,11 @@ Route::middleware(['auth'])->name('auth.')->group(function () {
     Route::get('/user', [UserController::class, 'index']);                           // 個人資料頁面
     Route::get('/user/information', [UserController::class, 'information']);         // 個人資料頁面
     Route::post('/user/information', [UserController::class, 'changePassword']);     // 修改密碼
+
+    // Secretary 小秘書
+    Route::get('/secretary', [SecretaryController::class, 'index']);                 // 小秘書頁面
+    Route::get('/secretary/{state}', [SecretaryController::class, 'index']);
+    Route::post('/secretary/watch', [SecretaryController::class, 'watch']);               // 事件已讀
 
     // Organization 組織 權限名稱:organization
     Route::get('/organization', [OrganizationController::class, 'index'])->middleware('permission:organization'); // 組織管理
