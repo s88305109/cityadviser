@@ -156,7 +156,7 @@
                             </div>
 
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <textarea class="form-control @error('email') is-invalid @enderror" id="email" name="email" rows="2">{{ ($errors->isEmpty()) ? $user->email : old('email') }}</textarea>
+                            <textarea class="form-control @error('email') is-invalid @enderror" id="email" name="email" rows="1" oninput="autoGrow(this);">{{ ($errors->isEmpty()) ? $user->email : old('email') }}</textarea>
 
                             @error('email')
                             <span class="invalid-feedback" role="alert">

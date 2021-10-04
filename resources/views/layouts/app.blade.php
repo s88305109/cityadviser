@@ -262,6 +262,12 @@
             setTimeout(function(){ $(obj).removeClass("obj-shake"); }, 500);
         }
 
+        {{-- Textarea自動高度 --}}
+        function autoGrow(element) {
+            element.style.height = "5px";
+            element.style.height = (element.scrollHeight + 2)+"px";
+        }
+
         {{-- 需登入驗證的頁面才執行 --}}
         @if (substr(Route::currentRouteName(), 0, 5) == 'auth.')
         var isChanged = false;

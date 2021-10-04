@@ -225,7 +225,7 @@
                             </div>
                             
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <textarea class="form-control @error('company_mail') is-invalid @enderror" id="company_mail" name="company_mail" rows="2">{{ ($errors->isEmpty()) ? $company->company_mail : old('company_mail') }}</textarea>
+                            <textarea class="form-control @error('company_mail') is-invalid @enderror" id="company_mail" name="company_mail" rows="1" oninput="autoGrow(this);">{{ ($errors->isEmpty()) ? $company->company_mail : old('company_mail') }}</textarea>
 
                             @error('company_mail')
                             <span class="invalid-feedback" role="alert">
@@ -255,7 +255,7 @@
                             </div>
                             
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('company_bank_account') is-invalid @enderror" id="company_bank_account" name="company_bank_account" type="text" value="{{ ($errors->isEmpty()) ? $company->company_bank_account : old('company_bank_account') }}">
+                            <textarea class="form-control @error('company_bank_account') is-invalid @enderror" id="company_bank_account" name="company_bank_account" rows="1" oninput="autoGrow(this);">{{ ($errors->isEmpty()) ? $company->company_bank_account : old('company_bank_account') }}</textarea>
 
                             @error('company_bank_account')
                             <span class="invalid-feedback" role="alert">
