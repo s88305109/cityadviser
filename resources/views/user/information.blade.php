@@ -2,15 +2,6 @@
 
 @section('content')
 
-<style>
-    .password-change-text { 
-        min-width: 106px;
-        display: inline-block;
-    }
-    #old_password, #confirm_password { background-image: none; }
-    .password-change-text.text-danger { border-color: #e3342f; }
-</style>
-
 <script>
     $(document).ready(function () {
         $("i.password-visible").click(function () {
@@ -71,7 +62,7 @@
         @endif
     });
 </script>
-<div class="container">
+<div class="container information-edit">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <h4><i class="bi bi-person"></i> 個人資料</h4>

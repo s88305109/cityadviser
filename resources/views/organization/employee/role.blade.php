@@ -5,6 +5,7 @@
 <script>
     $(document).ready(function () {
         $("#saveBtn").click(function () {
+            showLoadingMask();
             allowRedirect = true;
             $(".role").submit();
         });
@@ -21,11 +22,7 @@
     });
 </script>
 
-<style>
-.list-group-item .form-switch { padding-left: 3.5em; }
-</style>
-
-<div class="container">
+<div class="container role-edit">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <h4><i class="bi bi-list-task"></i> 員工管理（客製化權限）</h4>

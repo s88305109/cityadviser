@@ -2,14 +2,7 @@
 
 @section('content')
 
-<style>
-	.badge.num-count{
-		margin-top: -2.5em;
-    	margin-right: -0.25em;
-	}
-</style>
-
-<div class="container">
+<div class="container company-list">
 	<div class="row justify-content-center">
 		<div class="col-md-8 mb-5">
 			<h4><i class="bi bi-building"></i> 公司管理（公司列表）</h4>

@@ -5,17 +5,20 @@
 <script>
     $(document).ready(function () {
         $("#saveBtn").click(function () {
+            showLoadingMask();
             allowRedirect = true;
             $("form.employee").submit();
         });
 
         $("#disableUser").click(function () {
+            showLoadingMask();
             allowRedirect = true;
             $("form.employee").attr("action", "/organization/employee/lockUser");
             $("form.employee").submit();
         });
 
         $("#enableUser").click(function () {
+            showLoadingMask();
             allowRedirect = true;
             $("form.employee").attr("action", "/organization/employee/unlockUser");
             $("form.employee").submit();
@@ -74,13 +77,7 @@
     }
 </script>
 
-<style>
-.job-set, 
-.staff-code-set { display: none; }
-.input-group-text  { min-width: 92px; }
-</style>
-
-<div class="container">
+<div class="container employee-edit">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <h4><i class="bi bi-person-plus"></i> 員工管理（編輯資料）</h4>

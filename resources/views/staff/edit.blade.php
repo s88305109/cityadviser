@@ -5,17 +5,20 @@
 <script>
     $(document).ready(function () {
         $("#saveBtn").click(function () {
+            showLoadingMask();
             allowRedirect = true;
             $("form.staff").submit();
         });
 
         $("#disableUser").click(function () {
+            showLoadingMask();
             allowRedirect = true;
             $("form.staff").attr("action", "/staff/lockUser");
             $("form.staff").submit();
         });
 
         $("#enableUser").click(function () {
+            showLoadingMask();
             allowRedirect = true;
             $("form.staff").attr("action", "/staff/unlockUser");
             $("form.staff").submit();
@@ -44,11 +47,7 @@
     });
 </script>
 
-<style>
-.input-group-text  { min-width: 92px; }
-</style>
-
-<div class="container">
+<div class="container staff-edit">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <h4><i class="bi bi-person-plus"></i> 員工管理（新增員工）</h4>

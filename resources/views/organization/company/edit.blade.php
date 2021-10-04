@@ -18,12 +18,14 @@
         });
 
         $("#confirmDisableCompany").click(function () {
+            showLoadingMask();
             allowRedirect = true;
             $("form.company").attr("action", "/organization/company/lockCompany");
             $("form.company").submit();
         });
 
         $("#confirmEnableCompany").click(function () {
+            showLoadingMask();
             allowRedirect = true;
             $("form.company").attr("action", "/organization/company/unlockCompany");
             $("form.company").submit();
@@ -38,11 +40,12 @@
         if ($("#principal").val() != "" && $("#old_principal").val() != "" && $("#principal").val() != $("#old_principal").val()) {
             showConfirmModal("目前負責人為" + $("#old_principal").data("name") + "，確定要更換成" + $("#principal_name").val() + "？", "forceSubmit();");
         } else {
-            showConfirmModal('確定儲存嗎？', 'forceSubmit();');
+            showConfirmModal("確定儲存嗎？", "forceSubmit();");
         }
     }
 
     function forceSubmit() {
+        showLoadingMask();
         allowRedirect = true;
         $("form.company").submit();
     }
@@ -86,18 +89,7 @@
     }
 </script>
 
-<style>
-.job-set { display: none; }
-.input-group-text  { min-width: 92px; }
-.dropdown-menu li { margin: .25em .75em; }
-.ok-mark {
-    float: right;
-    margin-top: -2.5em;
-    margin-right: .75em;
-}
-</style>
-
-<div class="container">
+<div class="container company-edit">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <h4><i class="bi bi-building"></i> 公司管理（編輯資料）</h4>

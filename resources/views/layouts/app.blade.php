@@ -55,6 +55,27 @@
         margin-right: 4px;
     }
 
+    /* Form Input Group */
+    .input-group-text {
+        border-bottom-right-radius: 0;
+        border-top-right-radius: 0;
+    }
+    .input-group-top .input-group, .input-group-top .input-group-text { 
+        width: 100%; 
+        border-bottom: 0;
+    }
+    .input-group-top .input-group-text { border-radius: 0.25em 0.25em 0 0; }
+    .input-group-top > .form-control,
+    .input-group-top > .form-select { border-radius: 0 0 0.25em 0.25em; }
+    .input-group-top.inner-addon.reset-icon i.bi { margin-top: -1.8em; }
+    .job-set .btn { min-width: 106px; }
+    .job-set .card-header { text-align: center; }
+    .input-group-text, .gender-label { 
+        min-width: 88px; 
+        display: inline-block;
+        text-align: center;
+    }
+
     /* Loading Mask */
     .loading-mask {
         position: fixed;
@@ -119,27 +140,6 @@
     .block-inner-page { font-size: 1.5em; }
     .block-inner-page .card-title { font-size: 2.5em; }
     .block-inner-page .two-column { width: calc(50% - 7px); }
-
-    /* Form Input Group */
-    .input-group-text {
-        border-bottom-right-radius: 0;
-        border-top-right-radius: 0;
-    }
-    .input-group-top .input-group, .input-group-top .input-group-text { 
-        width: 100%; 
-        border-bottom: 0;
-    }
-    .input-group-top .input-group-text { border-radius: 0.25em 0.25em 0 0; }
-    .input-group-top > .form-control,
-    .input-group-top > .form-select { border-radius: 0 0 0.25em 0.25em; }
-    .input-group-top.inner-addon.reset-icon i.bi { margin-top: -1.8em; }
-    .job-set .btn { min-width: 106px; }
-    .job-set .card-header { text-align: center; }
-    .input-group-text, .gender-label { 
-        min-width: 88px; 
-        display: inline-block;
-        text-align: center;
-    }
     .bottom-tabs {
         position: fixed;
         right: 0;
@@ -159,9 +159,40 @@
     }
     .go-top,
     .go-bottom {
-        bottom: 6em;
-        right: 2em; 
+        right: 1em;
+        top: 60%;
     }
+
+    /* 組織管理 > 新增員工 & 編輯 */
+    .employee-edit .job-set, 
+    .employee-edit .staff-code-set { display: none; }
+    .employee-edit .input-group-text  { min-width: 92px; }
+
+    /* 組織管理 > 新增公司 & 編輯 */
+    .company-edit .input-group-text,
+    .staff-edit .input-group-text { min-width: 92px; }
+    .company-edit .dropdown-menu li { margin: .25em .75em; }
+    .company-edit .ok-mark {
+        float: right;
+        margin-top: -2.5em;
+        margin-right: .75em;
+    }
+    /* 組織管理 > 公司列表 */
+    .company-list .badge.num-count{
+        margin-top: -2.5em;
+        margin-right: -0.25em;
+    }
+
+    /* 組織管理 > 權限管理 & 客製化權限 */
+    .role-edit .list-group-item .form-switch { padding-left: 3.5em; }
+
+    /* 個人資料 */
+    .information-edit .password-change-text { 
+        min-width: 106px;
+        display: inline-block;
+    }
+    .information-edit #old_password, #confirm_password { background-image: none; }
+    .information-edit .password-change-text.text-danger { border-color: #e3342f; }
     </style>
 
     <script>
@@ -233,20 +264,7 @@
             setTimeout(function(){ $(obj).removeClass("obj-shake"); }, 500);
         }
 
-        {{-- 全站搜尋 --}}
-        function searchContent() {
-            if ($("#search_str").val().length < 2) {
-                $("#search_str").val("").addClass("is-invalid").attr("placeholder", "至少輸入2個字");
-                return false;
-            }
-        }
-
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-        }
-
+        {{-- 需登入驗證的頁面才執行 --}}
         @if (substr(Route::currentRouteName(), 0, 5) == 'auth.')
         var isChanged = false;
         var allowRedirect = false;
@@ -271,9 +289,8 @@
         });
 
         window.onbeforeunload = function () {
-            if (isChanged & ! allowRedirect) {                
+            if (isChanged & ! allowRedirect)              
                 return "您尚未儲存修改的資料";
-            }
         }
         @endif
     </script>
