@@ -365,10 +365,11 @@ class OrganizationController extends Controller
     // 公司列表
     public function companyList(Request $request)
     {
-        $area = empty($request->area) ? '南部' : $request->area;
+        $areas    = Company::getAreas();
+        $area     = empty($request->area) ? '南部' : $request->area;
         $companys = Company::getAreaRecord($area);
 
-        return view('organization.company.companyList', ['area' => $area, 'companys' => $companys]);
+        return view('organization.company.companyList', ['area' => $area, 'areas' => $areas, 'companys' => $companys]);
     }
 
     // 編輯公司資料

@@ -30,11 +30,9 @@
 		</div>
 
 		<div class="btn-group bottom-tabs">
-			<a class="btn btn-outline-primary @if ($area == '北部') active @endif" href="/organization/company/北部">北部</a>
-			<a class="btn btn-outline-primary @if ($area == '中部') active @endif" href="/organization/company/中部">中部</a>
-			<a class="btn btn-outline-primary @if ($area == '南部') active @endif" href="/organization/company/南部">南部</a>
-			<a class="btn btn-outline-primary @if ($area == '東部') active @endif" href="/organization/company/東部">東部</a>
-			<a class="btn btn-outline-primary @if ($area == '離島') active @endif" href="/organization/company/離島">離島</a>
+			@foreach($areas as $value)
+			<a class="btn btn-outline-primary @if ($area == $value) active @endif" href="/organization/company/{{ $value }}">{{ $value }}</a>
+			@endforeach
 		</div>
 	</div>
 </div>
