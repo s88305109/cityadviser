@@ -21,29 +21,30 @@ class OrganizationController extends Controller
 
         if ($type == 1) {
             // 總公司權限
-            $roles['organization'] = ['title' => '組織管理', 
-                'child' => [
-                    'employee' => ['title' => '員工管理'], 
-                    'company'  => ['title' => '公司管理']
-                ]
+            $roles = [
+                'organization' => ['title' => '組織管理', 
+                    'child' => [
+                        'employee' => ['title' => '員工管理'], 
+                        'company'  => ['title' => '公司管理']
+                    ]
+                ],
+                'case' => ['title' => '報件管理', 
+                    'child' => [
+                        'present' => ['title' => '案件報件']
+                    ]
+                ],
+                'review' => ['title' => '報件審查']
             ];
-
-            $roles['case'] = ['title' => '報件管理', 
-                'child' => [
-                    'present' => ['title' => '案件報件']
-                ]
-            ];
-
-            $roles['review'] = ['title' => '報件審查'];
         } else if ($type == 2) {
             // 分公司權限
-            $roles['case'] = ['title' => '報件管理', 
-                'child' => [
-                    'present' => ['title' => '案件報件']
-                ]
+            $roles = [
+                'case' => ['title' => '報件管理', 
+                    'child' => [
+                        'present' => ['title' => '案件報件']
+                    ]
+                ],
+                'staff' => ['title' => '員工管理']
             ];
-
-            $roles['staff'] = ['title' => '員工管理'];
         }
 
         return $roles;
@@ -165,6 +166,8 @@ class OrganizationController extends Controller
             $errors['user_number'] = __('請輸入平台帳號');
         else if (User::where('user_number', $request->input('user_number'))->where('user_id', '!=', $request->input('user_id'))->count() > 0)
             $errors['user_number'] = __('此帳號已存在，請使用不同的帳號名稱。');
+        if (empty($request->input('user_id')) && empty($request->input('user_password')))
+            $errors['user_password'] = __('請輸入平台密碼');
 
         $company = Company::find($request->input('company_id'));
         $region = ! empty($company->company_city) ? Region::find($company->company_city) : null;
