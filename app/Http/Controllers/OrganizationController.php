@@ -294,6 +294,9 @@ class OrganizationController extends Controller
         $job        = Job::find($user->job_id);
         $roles      = (! empty($job)) ? $this->getRoles($job->type) : array();
 
+        if (empty($permission))
+            $permission = Permission::getJobPermission($user->job_id);
+
         return view('organization.employee.role', [
             'state'      => $request->state,
             'user'       => $user, 
