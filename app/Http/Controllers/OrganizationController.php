@@ -15,6 +15,40 @@ use App\Models\Permission;
 
 class OrganizationController extends Controller
 {
+    // 權限參數設定
+    public static function getRoles($type) {
+        $roles = [];
+
+        if ($type == 1) {
+            // 總公司權限
+            $roles['organization'] = ['title' => '組織管理', 
+                'child' => [
+                    'employee' => ['title' => '員工管理'], 
+                    'company'  => ['title' => '公司管理']
+                ]
+            ];
+
+            $roles['case'] = ['title' => '報件管理', 
+                'child' => [
+                    'present' => ['title' => '案件報件']
+                ]
+            ];
+
+            $roles['review'] = ['title' => '報件審查'];
+        } else if ($type == 2) {
+            // 分公司權限
+            $roles['case'] = ['title' => '報件管理', 
+                'child' => [
+                    'present' => ['title' => '案件報件']
+                ]
+            ];
+
+            $roles['staff'] = ['title' => '員工管理'];
+        }
+
+        return $roles;
+    }
+
     // 主頁
     public function index(Request $request)
     {
@@ -252,13 +286,16 @@ class OrganizationController extends Controller
     // 個人權限設定
     public function role(Request $request)
     {
-        $user = User::where('user_id', $request->userId)->first();
+        $user       = User::find($request->userId);
         $permission = Permission::getUserPermission($request->userId);
+        $job        = Job::find($user->job_id);
+        $roles      = (! empty($job)) ? $this->getRoles($job->type) : array();
 
         return view('organization.employee.role', [
             'state'      => $request->state,
             'user'       => $user, 
-            'permission' => $permission
+            'permission' => $permission,
+            'roles'      => $roles
         ]);
     }
 
@@ -281,13 +318,16 @@ class OrganizationController extends Controller
     public function permissions(Request $request)
     {
         $jobId      = $request->jobId;
+        $job        = Job::find($jobId);
         $jobs       = Job::where('status', 1)->orderBy('type')->orderBy('sort')->get();
         $permission = Permission::getJobPermission($jobId);
+        $roles      = (! empty($job)) ? $this->getRoles($job->type) : array();
 
         return view('organization.employee.permissions', [
             'jobId'      => $jobId, 
             'jobs'       => $jobs,
-            'permission' => $permission
+            'permission' => $permission,
+            'roles'      => $roles
         ]);
     }
 

@@ -9,10 +9,6 @@
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
 
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
@@ -185,6 +181,7 @@
 
     /* 組織管理 > 權限管理 & 客製化權限 */
     .role-edit .list-group-item .form-switch { padding-left: 3.5em; }
+    .role-edit .list-group-item .form-switch.triple { padding-left: 4.5em; }
 
     /* 個人資料 */
     .information-edit .password-change-text { 
