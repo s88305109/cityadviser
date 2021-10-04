@@ -4,6 +4,18 @@
 
 <script>
     $(document).ready(function () {
+        $("i.password-visible").click(function () {
+            var obj = $(this).parent().find("input");
+
+            if($(obj).attr("type") == "password") {
+                $("#user_password").attr("type", "text");
+                $("#show_password").val(1);
+            } else {
+                $("#user_password").attr("type", "password");
+                $("#show_password").val(0);
+            }
+        });
+
         $("#saveBtn").click(function () {
             showLoadingMask();
             allowRedirect = true;
@@ -43,6 +55,10 @@
 
         @if($errors->any())
         $(".is-invalid").eq(0).focus();
+        @endif
+
+        @if(old('show_password') == 1)
+        $("#user_password").attr("type", "text");
         @endif
     });
 </script>
@@ -230,12 +246,13 @@
                             @enderror
                         </div>
 
-                        <div class="input-group-top inner-addon right-addon reset-icon mb-3">
+                        <div class="input-group-top inner-addon right-addon mb-3">
                             <div class="input-group">
                                 <div class="input-group-text @error('user_password') text-danger border-danger @enderror">平台密碼</div>
                             </div>
-                            <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('user_password') is-invalid @enderror" id="user_password" name="user_password" type="password" value="{{ old('user_password') }}" placeholder="8-25位數密碼，請區分大小寫">
+                            
+                            <i class="bi bi-eye-fill password-visible"></i>
+                            <input class="form-control no-background-image @error('user_password') is-invalid @enderror" id="user_password" name="user_password" type="password" value="{{ old('user_password') }}" placeholder="8-25位數密碼，請區分大小寫">
 
                             @error('user_password')
                             <span class="invalid-feedback" role="alert">
@@ -253,6 +270,8 @@
                             <button class="btn btn-success px-5 w-100" type="button" data-bs-toggle="modal" data-bs-target="#confirmDialog2">解除凍結</button>
                         </div>
                         @endif
+
+                        <input id="show_password" name="show_password" type="hidden" value="{{ old('show_password') }}">
 
                         <div class="mb-5">
                             <button type="button" class="btn btn-primary px-5 w-100" id="saveBtn">儲存</button>

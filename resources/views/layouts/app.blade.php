@@ -17,6 +17,7 @@
 
     <style>
     /* Global */
+    .no-background-image { background-image: none !important; }
     .no-underline { text-decoration:none; }
     .bg-light-red { background-color: hsl(0deg 100% 50% / 10%); }
     img.logo128 { 
