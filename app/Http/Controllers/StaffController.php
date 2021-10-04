@@ -70,6 +70,8 @@ class StaffController extends Controller
             $errors['user_number'] = __('請輸入平台帳號');
         else if (User::where('user_number', $request->input('user_number'))->where('user_id', '!=', $request->input('user_id'))->count() > 0)
             $errors['user_number'] = __('此帳號已存在，請使用不同的帳號名稱。');
+        if (empty($request->input('user_id')) && empty($request->input('user_password')))
+            $errors['user_password'] = __('請輸入平台密碼');
 
         // 密碼格式驗證
         if (! empty($request->input('user_password'))) {
