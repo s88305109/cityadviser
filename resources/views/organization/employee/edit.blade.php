@@ -96,7 +96,7 @@
 <div class="container employee-edit">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <h4><i class="bi bi-person-plus"></i> 員工管理（編輯資料）</h4>
+            <h4><i class="bi bi-person-plus"></i> 員工管理（{{ (empty($user->user_id)) ? '新增員工' : '編輯資料' }}）</h4>
             <div class="card">
                 <div class="card-body @if(! empty($user->user_id) && $user->status != 1) bg-danger bg-opacity-25 @endif">
                     <form class="employee" method="POST" action="/organization/employee/save" novalidate>
