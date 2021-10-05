@@ -284,7 +284,7 @@
                             {{ __('繼續') }}
                         </button>
 
-                        <button class="btn btn-primary w-100 mt-3 px-5 d-none" id="prev" type="button">{{ __('上一步') }}</button>
+                        <button class="btn btn-secondary w-100 mt-3 px-5 d-none" id="prev" type="button">{{ __('上一步') }}</button>
                     </div>
                 </form>
             </div>
