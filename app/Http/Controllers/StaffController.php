@@ -92,6 +92,8 @@ class StaffController extends Controller
             // 檢查是否為同公司的員工
             if (Auth::user()->company_id != $user->company_id)
                 abort(500);
+            else if ($user->status != 1)
+                return redirect()->back()->withInput()->withErrors(['user_id' => __('帳號已凍結，不可編輯資料。')]);
         } else {
             // 取不重複的亂數做UID
             do {

@@ -242,6 +242,9 @@ class OrganizationController extends Controller
 
         if (! empty($request->input('user_id')))
             $user = User::find($request->input('user_id'));
+
+            if ($user->status != 1)
+                return redirect()->back()->withInput()->withErrors(['user_id' => __('帳號已凍結，不可編輯資料。')]);
         else {
             // 取不重複的亂數做UID
             do {
@@ -394,7 +397,10 @@ class OrganizationController extends Controller
     // 公司管理
     public function company(Request $request)
     {
-        return view('organization.company');
+        $areas = Company::getAreas();
+        $first = empty(reset($areas)) ? '南部' : reset($areas);
+
+        return view('organization.company', ['first' => $first]);
     }
 
     // 新增公司
@@ -457,9 +463,7 @@ class OrganizationController extends Controller
 
         if (empty($request->input('area_manager')))
             $errors['area_manager'] = __('請選擇通路區經理');
-        if (empty($request->input('principal')))
-            $errors['principal_name'] = __('請選擇公司負責人');
-        else if (Company::where('principal', $request->input('principal'))->where('status', 1)->where('company_id', '!=', $request->input('company_id'))->count() > 0)
+        if (! empty($request->input('principal')) && Company::where('principal', $request->input('principal'))->where('status', 1)->where('company_id', '!=', $request->input('company_id'))->count() > 0)
             $errors['principal_name'] = __('此人已是其他公司的負責人，不可同時負責兩間公司。');
         if (empty($request->input('company_name')))
             $errors['company_name'] = __('請輸入公司名稱');
@@ -487,6 +491,9 @@ class OrganizationController extends Controller
 
         if (! empty($request->input('company_id'))) {
             $company = Company::find($request->input('company_id'));
+
+            if ($company->status != 1)
+                return redirect()->back()->withInput()->withErrors(['company_id' => __('公司已凍結，不可編輯資料。')]);
 
             // 若負責人變更則修改原本負責人的職位改為員工
             if ($company->principal != $request->input('principal')) {

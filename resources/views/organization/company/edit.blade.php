@@ -31,6 +31,10 @@
             $("form.company").submit();
         });
 
+        @error('company_id')
+        showMessageModal("{{ $message }}");
+        @enderror
+
         @if($errors->any())
         $(".is-invalid").eq(0).focus();
         @endif
@@ -86,6 +90,16 @@
                 loading = false;
             }
         });
+    }
+
+    function lockConfirm() {
+        $("#confirmDialog .modal-body").html("確定凍結<strong class=\"text-danger\">" + $("#company_name").val() + "</strong>嗎？");
+        $("#confirmDialog").modal("show");
+    }
+
+    function unlockConfirm() {
+        $("#confirmDialog2 .modal-body").html("確定解除凍結<strong class=\"text-danger\">" + $("#company_name").val() + "</strong>嗎？");
+        $("#confirmDialog2").modal("show");
     }
 </script>
 
@@ -266,16 +280,16 @@
 
                         @if ($company->status == 1)
                         <div class="mb-3">
-                            <button class="btn btn-danger px-5 w-100" type="button" data-bs-toggle="modal" data-bs-target="#confirmDialog">凍結公司</button>
+                            <button class="btn btn-danger px-5 w-100" type="button" onclick="lockConfirm();">凍結公司</button>
                         </div>
                         @elseif (! empty($company->company_id))
                         <div class="mb-3">
-                            <button class="btn btn-success px-5 w-100" type="button" data-bs-toggle="modal" data-bs-target="#confirmDialog2">解除凍結</button>
+                            <button class="btn btn-success px-5 w-100" type="button" onclick="unlockConfirm();">解除凍結</button>
                         </div>
                         @endif
 
                         <div class="mb-5">
-                            <button class="btn btn-primary px-5 w-100" type="button" onclick="fromSubmit();">儲存</button>
+                            <button class="btn btn-primary px-5 w-100" type="button" onclick="fromSubmit();" @if($company->status != 1) disabled @endif>儲存</button>
                         </div>
                     </form>
                 </div>

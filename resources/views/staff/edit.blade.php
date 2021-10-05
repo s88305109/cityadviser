@@ -57,10 +57,24 @@
         $(".is-invalid").eq(0).focus();
         @endif
 
+        @error('user_id')
+        showMessageModal("{{ $message }}");
+        @enderror
+
         @if(old('show_password') == 1)
         $("#user_password").attr("type", "text");
         @endif
     });
+
+    function lockConfirm() {
+        $("#confirmDialog .modal-body").html("確定凍結<strong class=\"text-danger\">" + $("#name").val() + "</strong>嗎？");
+        $("#confirmDialog").modal("show");
+    }
+
+    function unlockConfirm() {
+        $("#confirmDialog2 .modal-body").html("確定解除凍結<strong class=\"text-danger\">" + $("#name").val() + "</strong>嗎？");
+        $("#confirmDialog2").modal("show");
+    }
 </script>
 
 <div class="container staff-edit">
@@ -263,18 +277,18 @@
 
                         @if ($user->status == 1)
                         <div class="mb-3">
-                            <button class="btn btn-danger px-5 w-100" type="button" data-bs-toggle="modal" data-bs-target="#confirmDialog">凍結帳號</button>
+                            <button class="btn btn-danger px-5 w-100" type="button" onclick="lockConfirm();">凍結帳號</button>
                         </div>
                         @elseif(! empty($user->user_id) && empty($user->date_resignation))
                         <div class="mb-3">
-                            <button class="btn btn-success px-5 w-100" type="button" data-bs-toggle="modal" data-bs-target="#confirmDialog2">解除凍結</button>
+                            <button class="btn btn-success px-5 w-100" type="button" onclick="unlockConfirm();">解除凍結</button>
                         </div>
                         @endif
 
                         <input id="show_password" name="show_password" type="hidden" value="{{ old('show_password') }}">
 
                         <div class="mb-5">
-                            <button type="button" class="btn btn-primary px-5 w-100" id="saveBtn">儲存</button>
+                            <button type="button" class="btn btn-primary px-5 w-100" id="saveBtn" @if($user->status != 1) disabled @endif>儲存</button>
                         </div>
                     </form>
                 </div>

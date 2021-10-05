@@ -9,7 +9,7 @@
 
 	$(document).ready(function() {
 		$(window).scroll(function() {
-			if (($(window).height() + $(window).scrollTop() + 60) >= $(document).height()) {
+			if (($(window).height() + $(window).scrollTop() + 100) >= $(document).height()) {
 				clearTimeout(timers);
 				timers = setTimeout(function() {
 					if (end == false) {
@@ -29,11 +29,10 @@
             url: "/organization/company/moreCompany/{{ $area }}/" + page,
             dataType: "text",
             success: function (response) {
-            	if (response == "") {
+            	if (response == "") 
             		end = true;
-            	} else {
+            	else 
 	                $("ol.list-group").append(response);
-	            }
 
 	            $(".more-loading").fadeOut();
             },
