@@ -101,6 +101,7 @@ Route::middleware(['auth', 'permission'])->name('auth.')->group(function () {
         // 員工列表
         Route::redirect('/organization/company/{area}/{companyId}/people', '/organization/company/{area}');
         Route::get('/organization/company/{area}/{companyId}/people/{state}', [OrganizationController::class, 'companyPeople']);
+        Route::get('/organization/company/{area}/{companyId}/morePeople/{state}/{page}', [OrganizationController::class, 'morePeople']);
         // 編輯公司資料 (凍結公司)
         Route::post('/organization/company/lockCompany', [OrganizationController::class, 'lockCompany']);
         // 編輯公司資料 (解除凍結)

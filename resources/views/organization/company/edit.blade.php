@@ -143,7 +143,7 @@
                             <input class="form-control @error('principal_name') is-invalid @enderror" id="principal_name" name="principal_name" type="text" value="{{ ($errors->isEmpty()) ? $company->principal_name : old('principal_name') }}" autocomplete="off" placeholder="請輸入關鍵字">
                             <input id="principal" name="principal" type="hidden" value="{{ ($errors->isEmpty()) ? $company->principal : old('principal') }}">
                             <input id="old_principal" type="hidden" data-name="{{ $company->principal_name }}" value="{{ $company->principal }}">
-                            <span class="badge bg-primary ok-mark @if (! old('principal_id') && ! $company->principal) d-none @endif">OK</span>
+                            <span class="badge bg-primary ok-mark @if((! $errors->isEmpty() & ! old('principal_id')) | ($errors->isEmpty() & empty($company->principal))) d-none @endif">OK</span>
                             
                             <ul class="dropdown-menu" aria-labelledby="principal_name"></ul>
                             
@@ -160,7 +160,7 @@
                             </div>
                             
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('company_name') is-invalid @enderror" id="company_name" name="company_name" type="text" value="{{ ($errors->isEmpty()) ? $company->company_name : old('company_name') }}">
+                            <textarea class="form-control @error('company_name') is-invalid @enderror" id="company_name" name="company_name" rows="1" oninput="autoGrow(this);">{{ ($errors->isEmpty()) ? $company->company_name : old('company_name') }}</textarea>
 
                             @error('company_name')
                             <span class="invalid-feedback" role="alert">
@@ -175,7 +175,7 @@
                             </div>
                             
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('company_address') is-invalid @enderror" id="company_address" name="company_address" type="text" value="{{ ($errors->isEmpty()) ? $company->company_address : old('company_address') }}">
+                            <textarea class="form-control @error('company_address') is-invalid @enderror" id="company_address" name="company_address" rows="1" oninput="autoGrow(this);">{{ ($errors->isEmpty()) ? $company->company_address : old('company_address') }}</textarea>
 
                             @error('company_address')
                             <span class="invalid-feedback" role="alert">
@@ -289,7 +289,7 @@
                         @endif
 
                         <div class="mb-5">
-                            <button class="btn btn-primary px-5 w-100" type="button" onclick="fromSubmit();" @if($company->status != 1) disabled @endif>儲存</button>
+                            <button class="btn btn-primary px-5 w-100" type="button" onclick="fromSubmit();" @if(! empty($company->company_id) && $company->status != 1) disabled @endif>儲存</button>
                         </div>
                     </form>
                 </div>

@@ -173,6 +173,10 @@
     /* 組織管理 > 新增公司 & 編輯 */
     .company-edit .input-group-text,
     .staff-edit .input-group-text { min-width: 92px; }
+    .company-edit .dropdown-menu {
+        max-height: 18.5em;
+        overflow: scroll;
+    }
     .company-edit .dropdown-menu li { margin: .25em .75em; }
     .company-edit .ok-mark {
         float: right;

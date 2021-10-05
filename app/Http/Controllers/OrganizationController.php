@@ -242,9 +242,14 @@ class OrganizationController extends Controller
 
         if (! empty($request->input('user_id')))
             $user = User::find($request->input('user_id'));
+            $principalCheck = Company::where('principal', $user->user_id)->first();
 
             if ($user->status != 1)
                 return redirect()->back()->withInput()->withErrors(['user_id' => __('帳號已凍結，不可編輯資料。')]);
+            else if ($request->input('company_id') != $user->company_id & ! empty($principalCheck))
+                return redirect()->back()->withInput()->withErrors(['user_id' => __('此員工是'.$principalCheck->company_name.'的負責人，不能變更所屬公司。')]);
+            else if ($request->input('job_id') != $user->job_id & ! empty($principalCheck))
+                return redirect()->back()->withInput()->withErrors(['user_id' => __('此員工是'.$principalCheck->company_name.'的負責人，不能變更職位。')]);
         else {
             // 取不重複的亂數做UID
             do {
@@ -496,9 +501,18 @@ class OrganizationController extends Controller
                 return redirect()->back()->withInput()->withErrors(['company_id' => __('公司已凍結，不可編輯資料。')]);
 
             // 若負責人變更則修改原本負責人的職位改為員工
-            if ($company->principal != $request->input('principal')) {
+            if (! empty($company->principal) && $company->principal != $request->input('principal')) {
                 $user = User::find($company->principal);
-                $user->job_id = 16;
+                if (! empty($user)) {
+                    $user->job_id = 16;
+                    $user->save();
+                }
+            }
+
+            // 將新負責人的職位自動變為負責人
+            $user = User::find($request->input('principal'));
+            if (! empty($user)) {
+                $user->job_id = 15;
                 $user->save();
             }
         } else {
@@ -571,6 +585,8 @@ class OrganizationController extends Controller
                 ->where('user.company_id', $request->companyId)
                 ->select('user.*', 'company.company_name')
                 ->orderBy('user.date_resignation', 'desc')
+                ->offset(0)
+                ->limit(20)
                 ->get();
         } else {
             $users = User::join('company', 'company.company_id', '=', 'user.company_id')
@@ -578,6 +594,8 @@ class OrganizationController extends Controller
                 ->where('user.company_id', $request->companyId)
                 ->select('user.*', 'company.company_name')
                 ->orderBy('user.date_employment')
+                ->offset(0)
+                ->limit(20)
                 ->get();
         }
 
@@ -586,7 +604,47 @@ class OrganizationController extends Controller
             'area'      => $request->area, 
             'companyId' => $request->companyId, 
             'state'     => $request->state, 
-            'users'     => $users
+            'users'     => $users,
+            'offset'    => 0
+        ]);
+    }
+
+    // 公司員工列表 (載入更多)
+    public function morePeople(Request $request)
+    {
+        $page   = ! empty($request->page) ? $request->page : 1;
+        $per    = 20;
+        $offset = ($page - 1) * $per;
+
+        $company = Company::find($request->companyId);
+
+        if ($request->state == 'left') {
+            $users = User::join('company', 'company.company_id', '=', 'user.company_id')
+                ->whereNotNull('user.date_resignation')
+                ->where('user.company_id', $request->companyId)
+                ->select('user.*', 'company.company_name')
+                ->orderBy('user.date_resignation', 'desc')
+                ->offset($offset)
+                ->limit($per)
+                ->get();
+        } else {
+            $users = User::join('company', 'company.company_id', '=', 'user.company_id')
+                ->whereNull('user.date_resignation')
+                ->where('user.company_id', $request->companyId)
+                ->select('user.*', 'company.company_name')
+                ->orderBy('user.date_employment')
+                ->offset($offset)
+                ->limit($per)
+                ->get();
+        }
+
+        return view('organization.company.people-each', [
+            'company'   => $company,
+            'area'      => $request->area, 
+            'companyId' => $request->companyId, 
+            'state'     => $request->state, 
+            'users'     => $users,
+            'offset'    => $offset
         ]);
     }
 
