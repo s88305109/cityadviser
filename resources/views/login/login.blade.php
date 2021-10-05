@@ -168,7 +168,7 @@
             dataType: "json",
             success: function (response) {
                 $("#run").prop("disabled", true);
-                $(".step1, .step2").addClass("d-none");
+                $(".step1, .step2, #prev").addClass("d-none");
                 $(".step3").removeClass("d-none");
                 $("#captcha").focus();
             },
