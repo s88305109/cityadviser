@@ -604,7 +604,7 @@ class OrganizationController extends Controller
                 ->whereNull('user.date_resignation')
                 ->where('user.company_id', $request->companyId)
                 ->select('user.*', 'company.company_name')
-                ->orderBy('user.date_employment')
+                ->orderBy('user.date_employment', 'desc')
                 ->offset(0)
                 ->limit(20)
                 ->get();

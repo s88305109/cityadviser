@@ -24,7 +24,6 @@
         max-width: 128px; 
         padding: 0;
     }
-
     /* Input 內嵌圖示 */
     button.btn.radius {
         border-radius: 20px;

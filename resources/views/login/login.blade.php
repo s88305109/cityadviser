@@ -87,6 +87,17 @@
             }
         });
 
+        $("#prev").click(function () {
+            $("#user_number, #user_password").val("");
+            $(".step2, .step3, #prev").addClass("d-none");
+            $(".step1").removeClass("d-none");
+            $("#user_number, #user_password").removeClass("is-invalid");
+            $("#run").removeClass("btn-danger");
+            $("#user_number").parent().find("span.invalid-feedback > strong").remove();
+            $("#user_password").parent().find("span.invalid-feedback > strong").remove();
+            $("ul.check-list li i.bi").hide();
+        });
+
         $("#user_number, #user_password, #captcha").on("keypress",function(e) {
             if(e.which == 13) {
                 $("#run").trigger("click");
@@ -125,7 +136,7 @@
                 }
 
                 $(".step1, .step3").addClass("d-none");
-                $(".step2").removeClass("d-none");
+                $(".step2, #prev").removeClass("d-none");
                 $("#user_password").focus();
             },
             error: function (thrownError) {
@@ -272,6 +283,8 @@
                         <button class="btn btn-primary w-100 mt-3 px-5 @error('captcha') btn-danger @enderror" id="run" type="button" {{ old('user_number') ? ''  : 'disabled' }}>
                             {{ __('繼續') }}
                         </button>
+
+                        <button class="btn btn-primary w-100 mt-3 px-5 d-none" id="prev" type="button">{{ __('上一步') }}</button>
                     </div>
                 </form>
             </div>
