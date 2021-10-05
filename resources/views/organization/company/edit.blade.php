@@ -140,7 +140,7 @@
                             </div>
                             
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('principal_name') is-invalid @enderror" id="principal_name" name="principal_name" type="text" value="{{ ($errors->isEmpty()) ? $company->principal_name : old('principal_name') }}" autocomplete="off">
+                            <input class="form-control @error('principal_name') is-invalid @enderror" id="principal_name" name="principal_name" type="text" value="{{ ($errors->isEmpty()) ? $company->principal_name : old('principal_name') }}" autocomplete="off" placeholder="請輸入關鍵字">
                             <input id="principal" name="principal" type="hidden" value="{{ ($errors->isEmpty()) ? $company->principal : old('principal') }}">
                             <input id="old_principal" type="hidden" data-name="{{ $company->principal_name }}" value="{{ $company->principal }}">
                             <span class="badge bg-primary ok-mark @if (! old('principal_id') && ! $company->principal) d-none @endif">OK</span>
