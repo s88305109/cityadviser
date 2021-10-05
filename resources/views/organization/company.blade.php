@@ -14,7 +14,7 @@
 				</a>
 			</div>
 			<div class="card py-3 d-inline-block two-column mt-3 me-2">
-				<a href="/organization/company/南部">
+				<a href="/organization/company/{{ $first }}">
 					<div class="card-body">
 						<h5 class="card-title"><i class="bi bi-building"></i></h5>
 						<p class="card-text">公司列表</p>

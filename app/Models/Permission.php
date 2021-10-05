@@ -30,13 +30,28 @@ class Permission extends Model
     public static function updateUserPermission($user_id, $roles) {
         // 刪除舊設定重新Insert
         $permission = Permission::where('user_id', $user_id)->delete();
+        
+        // 檢查個人權限跟職位權限是否有差異
+        $user       = User::find($user_id);
+        $permission = Permission::where('job_id', $user->job_id)->get();
 
-        foreach((array)$roles as $value) {
-            $permission = new Permission;
-            $permission->user_id    = $user_id;
-            $permission->permission = $value;
-            $permission->action     = '';
-            $permission->save();
+        $jobRole = array();
+
+        foreach($permission as $row)
+            $jobRole[] = $row->permission;
+    
+        sort($roles);
+        sort($jobRole);
+        $diff = array_diff($roles, $jobRole);
+
+        if (! empty($diff)) {
+            foreach((array)$roles as $value) {
+                $permission = new Permission;
+                $permission->user_id    = $user_id;
+                $permission->permission = $value;
+                $permission->action     = '';
+                $permission->save();
+            }
         }
     }
 
@@ -46,9 +61,8 @@ class Permission extends Model
 
         $permission = Permission::where('job_id', $job_id)->get();
 
-        foreach($permission as $row) {
+        foreach($permission as $row)
             $data[$row['permission']] = ['permission' => $row->permission, 'action' => $row->action];
-        }
 
         return $data;
     }

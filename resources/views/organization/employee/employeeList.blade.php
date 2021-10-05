@@ -2,23 +2,63 @@
 
 @section('content')
 
-<div class="container">
+<script>
+	var page = 1;
+	var end = false;
+	var timers = null;
+
+	$(document).ready(function() {
+		$(window).scroll(function() {
+			if (($(window).height() + $(window).scrollTop() + 100) >= $(document).height()) {
+				clearTimeout(timers);
+				timers = setTimeout(function() {
+					if (end == false) {
+						page++;
+						loadMore(page);
+					}
+				}, 500);
+			}
+		});
+	});
+
+	function loadMore(page) {
+		$(".more-loading").fadeIn();
+
+        $.ajax({
+            type: "GET",
+            url: "/organization/employee/moreEmployee/{{ $state }}/" + page,
+            dataType: "text",
+            success: function (response) {
+            	if (response == "") {
+            		end = true;
+            	} else {
+	                $("ol.list-group").append(response);
+	            }
+
+	            $(".more-loading").fadeOut();
+            },
+            error: function (thrownError) {
+                showMessageModal(thrownError.responseJSON.message);
+                $(".more-loading").fadeOut();
+            }
+        });
+    }
+</script>
+
+<div class="container list">
 	<div class="row justify-content-center">
-		<div class="col-md-8 mb-5">
+		<div class="col-md-8 list">
 			<h4><i class="bi bi-person-lines-fill"></i> 員工管理（員工列表）</h4>
 
 			<ol class="list-group">
-				@foreach ($users as $row)
-				<a class="no-underline @if($row->status != 1) text-danger @endif" href="/organization/employee/list/{{ $state }}/{{ $row->user_id }}">
-					<li class="list-group-item d-flex @if($row->status != 1) bg-light-red @endif">
-						<div class="col-1 text-center">
-							<span class="badge rounded-pill @if($row->status == 1) bg-primary @else bg-danger @endif">{{ $loop->iteration }}</span>
-						</div>
-						<div class="ms-3 me-auto fw-bold @if($row->status != 1) text-danger @endif">{{ $row->name }}</div>
-					</li>
-				</a>
-				@endforeach
+				@include('organization.employee.each')
 			</ol>
+
+			<div class="more-loading">
+				<div class="spinner-border text-primary" role="status">
+					<span class="visually-hidden">Loading...</span>
+				</div>
+			</div>
 		</div>
 
 		<div class="btn-group bottom-tabs">

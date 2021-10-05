@@ -31,8 +31,13 @@
             $("form.company").submit();
         });
 
+        @error('company_id')
+        showMessageModal("{{ $message }}");
+        @enderror
+
         @if($errors->any())
         $(".is-invalid").eq(0).focus();
+        isChanged = true;
         @endif
     });
 
@@ -87,12 +92,22 @@
             }
         });
     }
+
+    function lockConfirm() {
+        $("#confirmDialog .modal-body").html("確定凍結<strong class=\"text-danger\">" + $("#company_name").val() + "</strong>嗎？");
+        $("#confirmDialog").modal("show");
+    }
+
+    function unlockConfirm() {
+        $("#confirmDialog2 .modal-body").html("確定解除凍結<strong class=\"text-danger\">" + $("#company_name").val() + "</strong>嗎？");
+        $("#confirmDialog2").modal("show");
+    }
 </script>
 
 <div class="container company-edit">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <h4><i class="bi bi-building"></i> 公司管理（編輯資料）</h4>
+            <h4><i class="bi bi-building"></i> 公司管理（{{ (empty($company->company_id)) ? '新增公司' : '編輯資料' }}）</h4>
             <div class="card">
                 <div class="card-body @if(! empty($company->company_id) && $company->status != 1) bg-light-red @endif">
                     <form class="company" method="POST" action="/organization/company/saveCompany" novalidate>
@@ -126,10 +141,10 @@
                             </div>
                             
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('principal_name') is-invalid @enderror" id="principal_name" name="principal_name" type="text" value="{{ ($errors->isEmpty()) ? $company->principal_name : old('principal_name') }}" autocomplete="off">
+                            <input class="form-control @error('principal_name') is-invalid @enderror" id="principal_name" name="principal_name" type="text" value="{{ ($errors->isEmpty()) ? $company->principal_name : old('principal_name') }}" autocomplete="off" placeholder="請輸入關鍵字">
                             <input id="principal" name="principal" type="hidden" value="{{ ($errors->isEmpty()) ? $company->principal : old('principal') }}">
                             <input id="old_principal" type="hidden" data-name="{{ $company->principal_name }}" value="{{ $company->principal }}">
-                            <span class="badge bg-primary ok-mark @if (! old('principal_id') && ! $company->principal) d-none @endif">OK</span>
+                            <span class="badge bg-primary ok-mark @if((! $errors->isEmpty() & ! old('principal_id')) | ($errors->isEmpty() & empty($company->principal))) d-none @endif">OK</span>
                             
                             <ul class="dropdown-menu" aria-labelledby="principal_name"></ul>
                             
@@ -146,7 +161,7 @@
                             </div>
                             
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('company_name') is-invalid @enderror" id="company_name" name="company_name" type="text" value="{{ ($errors->isEmpty()) ? $company->company_name : old('company_name') }}">
+                            <textarea class="form-control @error('company_name') is-invalid @enderror" id="company_name" name="company_name" rows="1" oninput="autoGrow(this);">{{ ($errors->isEmpty()) ? $company->company_name : old('company_name') }}</textarea>
 
                             @error('company_name')
                             <span class="invalid-feedback" role="alert">
@@ -161,7 +176,7 @@
                             </div>
                             
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('company_address') is-invalid @enderror" id="company_address" name="company_address" type="text" value="{{ ($errors->isEmpty()) ? $company->company_address : old('company_address') }}">
+                            <textarea class="form-control @error('company_address') is-invalid @enderror" id="company_address" name="company_address" rows="1" oninput="autoGrow(this);">{{ ($errors->isEmpty()) ? $company->company_address : old('company_address') }}</textarea>
 
                             @error('company_address')
                             <span class="invalid-feedback" role="alert">
@@ -225,7 +240,7 @@
                             </div>
                             
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <textarea class="form-control @error('company_mail') is-invalid @enderror" id="company_mail" name="company_mail" rows="2">{{ ($errors->isEmpty()) ? $company->company_mail : old('company_mail') }}</textarea>
+                            <textarea class="form-control @error('company_mail') is-invalid @enderror" id="company_mail" name="company_mail" rows="1" oninput="autoGrow(this);">{{ ($errors->isEmpty()) ? $company->company_mail : old('company_mail') }}</textarea>
 
                             @error('company_mail')
                             <span class="invalid-feedback" role="alert">
@@ -255,7 +270,7 @@
                             </div>
                             
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('company_bank_account') is-invalid @enderror" id="company_bank_account" name="company_bank_account" type="text" value="{{ ($errors->isEmpty()) ? $company->company_bank_account : old('company_bank_account') }}">
+                            <textarea class="form-control @error('company_bank_account') is-invalid @enderror" id="company_bank_account" name="company_bank_account" rows="1" oninput="autoGrow(this);">{{ ($errors->isEmpty()) ? $company->company_bank_account : old('company_bank_account') }}</textarea>
 
                             @error('company_bank_account')
                             <span class="invalid-feedback" role="alert">
@@ -266,16 +281,18 @@
 
                         @if ($company->status == 1)
                         <div class="mb-3">
-                            <button class="btn btn-danger px-5 w-100" type="button" data-bs-toggle="modal" data-bs-target="#confirmDialog">凍結公司</button>
+                            <button class="btn btn-danger px-5 w-100" type="button" onclick="lockConfirm();">凍結公司</button>
                         </div>
                         @elseif (! empty($company->company_id))
                         <div class="mb-3">
-                            <button class="btn btn-success px-5 w-100" type="button" data-bs-toggle="modal" data-bs-target="#confirmDialog2">解除凍結</button>
+                            <button class="btn btn-success px-5 w-100" type="button" onclick="unlockConfirm();">解除凍結</button>
                         </div>
                         @endif
 
                         <div class="mb-5">
-                            <button class="btn btn-primary px-5 w-100" type="button" onclick="fromSubmit();">儲存</button>
+                            <button class="btn btn-primary px-5 w-100" type="button" onclick="fromSubmit();" @if(! empty($company->company_id) && $company->status != 1) disabled @endif>
+                                {{ (empty($company->company_id)) ? '新增' : '儲存' }}
+                            </button>
                         </div>
                     </form>
                 </div>

@@ -4,6 +4,18 @@
 
 <script>
     $(document).ready(function () {
+        $("i.password-visible").click(function () {
+            var obj = $(this).parent().find("input");
+
+            if($(obj).attr("type") == "password") {
+                $("#user_password").attr("type", "text");
+                $("#show_password").val(1);
+            } else {
+                $("#user_password").attr("type", "password");
+                $("#show_password").val(0);
+            }
+        });
+
         $("#saveBtn").click(function () {
             showLoadingMask();
             allowRedirect = true;
@@ -43,14 +55,33 @@
 
         @if($errors->any())
         $(".is-invalid").eq(0).focus();
+        isChanged = true;
+        @endif
+
+        @error('user_id')
+        showMessageModal("{{ $message }}");
+        @enderror
+
+        @if(old('show_password') == 1)
+        $("#user_password").attr("type", "text");
         @endif
     });
+
+    function lockConfirm() {
+        $("#confirmDialog .modal-body").html("確定凍結<strong class=\"text-danger\">" + $("#name").val() + "</strong>嗎？");
+        $("#confirmDialog").modal("show");
+    }
+
+    function unlockConfirm() {
+        $("#confirmDialog2 .modal-body").html("確定解除凍結<strong class=\"text-danger\">" + $("#name").val() + "</strong>嗎？");
+        $("#confirmDialog2").modal("show");
+    }
 </script>
 
 <div class="container staff-edit">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <h4><i class="bi bi-person-plus"></i> 員工管理（新增員工）</h4>
+            <h4><i class="bi bi-person-plus"></i> 員工管理（{{ (empty($user->user_id)) ? '新增員工' : '編輯資料' }}）</h4>
             <div class="card">
                 <div class="card-body @if(! empty($user->user_id) && $user->status != 1) bg-danger bg-opacity-25 @endif"">
                     <form class="staff" method="POST" action="/staff/save" novalidate>
@@ -106,7 +137,7 @@
                                 <div class="input-group-text @error('email') text-danger border-danger @enderror">Email</div>
                             </div>
                             <i class="bi bi-x-circle-fill text-danger"></i>
-                            <textarea class="form-control @error('email') is-invalid @enderror" id="email" name="email" rows="2">{{ ($errors->isEmpty()) ? $user->email : old('email') }}</textarea>
+                            <textarea class="form-control @error('email') is-invalid @enderror" id="email" name="email" rows="1" oninput="autoGrow(this);">{{ ($errors->isEmpty()) ? $user->email : old('email') }}</textarea>
 
                             @error('email')
                             <span class="invalid-feedback" role="alert">
@@ -230,12 +261,13 @@
                             @enderror
                         </div>
 
-                        <div class="input-group-top inner-addon right-addon reset-icon mb-3">
+                        <div class="input-group-top inner-addon right-addon mb-3">
                             <div class="input-group">
                                 <div class="input-group-text @error('user_password') text-danger border-danger @enderror">平台密碼</div>
                             </div>
-                            <i class="bi bi-x-circle-fill text-danger"></i>
-                            <input class="form-control @error('user_password') is-invalid @enderror" id="user_password" name="user_password" type="password" value="{{ old('user_password') }}" placeholder="8-25位數密碼，請區分大小寫">
+                            
+                            <i class="bi bi-eye-fill password-visible"></i>
+                            <input class="form-control no-background-image @error('user_password') is-invalid @enderror" id="user_password" name="user_password" type="password" value="{{ old('user_password') }}" placeholder="8-25位數密碼，請區分大小寫">
 
                             @error('user_password')
                             <span class="invalid-feedback" role="alert">
@@ -246,16 +278,20 @@
 
                         @if ($user->status == 1)
                         <div class="mb-3">
-                            <button class="btn btn-danger px-5 w-100" type="button" data-bs-toggle="modal" data-bs-target="#confirmDialog">凍結帳號</button>
+                            <button class="btn btn-danger px-5 w-100" type="button" onclick="lockConfirm();">凍結帳號</button>
                         </div>
                         @elseif(! empty($user->user_id) && empty($user->date_resignation))
                         <div class="mb-3">
-                            <button class="btn btn-success px-5 w-100" type="button" data-bs-toggle="modal" data-bs-target="#confirmDialog2">解除凍結</button>
+                            <button class="btn btn-success px-5 w-100" type="button" onclick="unlockConfirm();">解除凍結</button>
                         </div>
                         @endif
 
+                        <input id="show_password" name="show_password" type="hidden" value="{{ old('show_password') }}">
+
                         <div class="mb-5">
-                            <button type="button" class="btn btn-primary px-5 w-100" id="saveBtn">儲存</button>
+                            <button type="button" class="btn btn-primary px-5 w-100" id="saveBtn" @if(! empty($user->user_id) && $user->status != 1) disabled @endif>
+                                {{ (empty($user->user_id)) ? '新增' : '儲存' }}
+                            </button>
                         </div>
                     </form>
                 </div>

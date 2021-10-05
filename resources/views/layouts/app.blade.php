@@ -17,13 +17,13 @@
 
     <style>
     /* Global */
+    .no-background-image { background-image: none !important; }
     .no-underline { text-decoration:none; }
     .bg-light-red { background-color: hsl(0deg 100% 50% / 10%); }
     img.logo128 { 
         max-width: 128px; 
         padding: 0;
     }
-
     /* Input 內嵌圖示 */
     button.btn.radius {
         border-radius: 20px;
@@ -70,6 +70,11 @@
         min-width: 88px; 
         display: inline-block;
         text-align: center;
+    }
+    .more-loading {
+        text-align: center;
+        margin-top: 1em;
+        display: none;
     }
 
     /* Loading Mask */
@@ -167,6 +172,10 @@
     /* 組織管理 > 新增公司 & 編輯 */
     .company-edit .input-group-text,
     .staff-edit .input-group-text { min-width: 92px; }
+    .company-edit .dropdown-menu {
+        max-height: 18.5em;
+        overflow: scroll;
+    }
     .company-edit .dropdown-menu li { margin: .25em .75em; }
     .company-edit .ok-mark {
         float: right;
@@ -190,6 +199,7 @@
     }
     .information-edit #old_password, #confirm_password { background-image: none; }
     .information-edit .password-change-text.text-danger { border-color: #e3342f; }
+    .container.list .list{ margin-bottom: 6rem; }
 
     /* 小秘書 */
     .secretary .toast { margin-bottom: 0.5rem; }
@@ -211,13 +221,13 @@
 
             $(".inner-addon.reset-icon input, .inner-addon.reset-icon textarea").on("keyup",function(e) {
                 if ($(this).val() != "") {
-                    $(this).parent().children("i.bi").fadeIn();
+                    $(this).css("background-image", "none").parent().children("i.bi").fadeIn();
                 } else {
                     $(this).parent().children("i.bi").hide();
                 }
             }).on("focus",function(e){
                 if ($(this).val() != "") {
-                    $(this).parent().children("i.bi").fadeIn();
+                    $(this).css("background-image", "none").parent().children("i.bi").fadeIn();
                 } else {
                     $(this).parent().children("i.bi").hide();
                 }
@@ -266,6 +276,12 @@
         function objectShake(obj) {
             $(obj).addClass("obj-shake");
             setTimeout(function(){ $(obj).removeClass("obj-shake"); }, 500);
+        }
+
+        {{-- Textarea自動高度 --}}
+        function autoGrow(element) {
+            element.style.height = "5px";
+            element.style.height = (element.scrollHeight + 2)+"px";
         }
 
         {{-- 需登入驗證的頁面才執行 --}}
