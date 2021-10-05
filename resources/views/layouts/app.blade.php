@@ -72,6 +72,11 @@
         display: inline-block;
         text-align: center;
     }
+    .more-loading {
+        text-align: center;
+        margin-top: 1em;
+        display: none;
+    }
 
     /* Loading Mask */
     .loading-mask {
@@ -191,6 +196,7 @@
     }
     .information-edit #old_password, #confirm_password { background-image: none; }
     .information-edit .password-change-text.text-danger { border-color: #e3342f; }
+    .container.list .list{ margin-bottom: 6rem; }
     </style>
 
     <script>
@@ -205,13 +211,13 @@
 
             $(".inner-addon.reset-icon input, .inner-addon.reset-icon textarea").on("keyup",function(e) {
                 if ($(this).val() != "") {
-                    $(this).parent().children("i.bi").fadeIn();
+                    $(this).css("background-image", "none").parent().children("i.bi").fadeIn();
                 } else {
                     $(this).parent().children("i.bi").hide();
                 }
             }).on("focus",function(e){
                 if ($(this).val() != "") {
-                    $(this).parent().children("i.bi").fadeIn();
+                    $(this).css("background-image", "none").parent().children("i.bi").fadeIn();
                 } else {
                     $(this).parent().children("i.bi").hide();
                 }

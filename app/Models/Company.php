@@ -31,12 +31,17 @@ class Company extends Model
     }
 
     // 取得區域內公司人數資料
-    public static function getAreaRecord($area = '北部')
+    public static function getAreaRecord($area = '北部', $page = 1)
     {
+        $per    = 10;
+        $offset = ($page - 1) * $per;
+
         $companys = Company::join('region', 'company_city', '=', 'region.region_id')
                 ->where('company.type', 2)
                 ->where('region.area', $area)
                 ->orderBy('company.sort', 'desc')
+                ->offset($offset)
+                ->limit($per)
                 ->get();
 
         foreach($companys as $key => $row) {

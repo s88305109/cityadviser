@@ -20,11 +20,18 @@ class PermissionValid
     public function handle(Request $request, Closure $next, $role = null, $action = null)
     {
         $user = Auth::user();
-        $company = Company::find($user->company_id);
-        $principal = User::find($company->principal);
+
+        if (! empty($user))
+            $company = Company::find($user->company_id);
+        if (! empty($company))
+            $principal = User::find($company->principal);
         
         // 若User狀態已被凍結 或 所屬公司已被凍結 或 所屬公司負責人帳號被凍結 就強制執行登出
-        if ($user->status != 1 || $company->status != 1 || $principal->status != 1 || ! empty($user->date_resignation)) {
+        if ($user->status != 1 
+            || (! empty($company) && $company->status != 1)
+            || (! empty($principal) && $principal->status != 1)
+            || ! empty($user->date_resignation)
+        ) {
             Auth::logout();
             return redirect('/errors/unauthorized');
         }

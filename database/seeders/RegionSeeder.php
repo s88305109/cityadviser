@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\Region;
 
 class RegionSeeder extends Seeder
 {
@@ -14,7 +14,7 @@ class RegionSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('region')->insert([
+        Region::insert([
             [ 'region_id' => '63000', 'area' => '北部', 'title' => '臺北市', 'sort' => 0,  'created_at' => date('Y-m-d H:i:s')],
             [ 'region_id' => '64000', 'area' => '南部', 'title' => '高雄市', 'sort' => 1,  'created_at' => date('Y-m-d H:i:s')],
             [ 'region_id' => '65000', 'area' => '北部', 'title' => '新北市', 'sort' => 2,  'created_at' => date('Y-m-d H:i:s')],

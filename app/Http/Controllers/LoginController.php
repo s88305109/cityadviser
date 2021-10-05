@@ -59,9 +59,10 @@ class LoginController extends Controller
 		$messages  = ['user_number.required' =>  __('請輸入帳號')];
 		$validated = $request->validate($rules, $messages);
 
-		$user      = User::where('user_number', $request->input('user_number'))->first();
+		$user = User::where('user_number', $request->input('user_number'))->first();
+
 		if (! empty($user))
-			$company   = Company::find($user->company_id);
+			$company = Company::find($user->company_id);
 		if (! empty($company))
 			$principal = User::find($company->principal);
 
@@ -71,7 +72,12 @@ class LoginController extends Controller
 				'message' => __('帳號錯誤'), 
 				'code'    => 40001
 			], 400);
-		} else if ($user->status != 1 || $company->status != 1 || $principal->status != 1 || ! empty($user->date_resignation)) {
+		} else if (
+			$user->status != 1 
+			|| (! empty($company) && $company->status != 1)
+			|| (! empty($principal) && $principal->status != 1)
+			|| ! empty($user->date_resignation)
+		) {
 			// 若User狀態已被凍結 或 所屬公司已被凍結 或 所屬公司負責人帳號被凍結 或帳號已離職 就禁止登入
 			return response()->json([
 				'status'  => 'fail', 
@@ -179,8 +185,10 @@ class LoginController extends Controller
 		if (empty($user))
 			return redirect()->back()->withInput()->withErrors(['user_number' => __('帳號錯誤')]);
 
-		$company = Company::find($user->company_id);
-		$principal = User::find($company->principal);
+		if (! empty($user))
+			$company = Company::find($user->company_id);
+		if (! empty($company))
+			$principal = User::find($company->principal);
 
 		$incorrect_count = SystemSetting::where('code', 'error_locked_account')->first();
 		$lock_minutes = SystemSetting::where('code', 'error_locked_time')->first();
@@ -198,7 +206,11 @@ class LoginController extends Controller
 			]);
 
 			return redirect()->back()->withInput()->withErrors(['user_password' => __('密碼錯誤')]);
-		} else if ($user->status != 1 || $company->status != 1 || $principal->status != 1 || ! empty($user->date_resignation)) {
+		} else if ($user->status != 1 
+			|| (! empty($company) && $company->status != 1)
+			|| (! empty($principal) && $principal->status != 1)
+			|| ! empty($user->date_resignation)
+		) {
 			// 若User狀態已被凍結 或 所屬公司已被凍結 或 所屬公司負責人帳號被凍結 或帳號已離職 就禁止登入
 			return redirect()->back()->withInput()->withErrors(['user_number' => __('此帳號已被凍結')]);
 		}

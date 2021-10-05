@@ -42,7 +42,7 @@ Route::view('/errors/unauthorized', 'errors.unauthorized');
 Route::view('/errors/forbidden', 'errors.forbidden');
 
 // 需登入驗證頁面
-Route::middleware(['auth'])->name('auth.')->group(function () {
+Route::middleware(['auth', 'permission'])->name('auth.')->group(function () {
     // Home 主畫面 & 副畫面 選單
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/home2', [HomeController::class, 'home2'])->name('home2');
@@ -66,6 +66,7 @@ Route::middleware(['auth'])->name('auth.')->group(function () {
         // 員工列表
         Route::redirect('/organization/employee/list', '/organization/employee');
         Route::get('/organization/employee/list/{state}', [OrganizationController::class, 'employeeList']);
+        Route::get('/organization/employee/moreEmployee/{state}/{page}', [OrganizationController::class, 'moreEmployee']);
         // 編輯員工資料
         Route::get('/organization/employee/list/{state}/{userId}', [OrganizationController::class, 'modifyEmployee']);
         // 編輯員工資料 (凍結帳號)
@@ -93,6 +94,7 @@ Route::middleware(['auth'])->name('auth.')->group(function () {
         Route::post('/organization/company/saveCompany', [OrganizationController::class, 'saveCompany']);
         // 公司列表
         Route::get('/organization/company/{area}', [OrganizationController::class, 'companyList']);
+        Route::get('/organization/company/moreCompany/{area}/{page}', [OrganizationController::class, 'moreCompany']);
         // 編輯公司
         Route::get('/organization/company/{area}/{companyId}', [OrganizationController::class, 'modifyCompany']);
         // 員工列表
@@ -121,6 +123,7 @@ Route::middleware(['auth'])->name('auth.')->group(function () {
         Route::post('/staff/save', [StaffController::class, 'save']);
         // 員工列表
         Route::get('/staff/{state}', [StaffController::class, 'list']);
+        Route::get('/staff/more/{state}/{page}', [StaffController::class, 'more']);
         // 編輯員工資料
         Route::get('/staff/{state}/{userId}', [StaffController::class, 'modify']);
         // 編輯員工資料 (凍結帳號)

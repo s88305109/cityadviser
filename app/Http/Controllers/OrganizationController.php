@@ -90,22 +90,64 @@ class OrganizationController extends Controller
     public function employeeList(Request $request)
     {
         if ($request->state == 'left') {
+            // 已離職
             $users = User::join('company', 'company.company_id', '=', 'user.company_id')
                 ->whereNotNull('user.date_resignation')
                 ->where('user.company_id', Auth::user()->company_id)
+                ->where('user.user_number', '!=', 'user01')
                 ->select('user.*', 'company.company_name')
-                ->orderBy('user.date_resignation', 'desc')
+                ->orderBy('user.staff_code', 'desc')
+                ->offset(0)
+                ->limit(20)
                 ->get();
         } else {
+            // 未離職
             $users = User::join('company', 'company.company_id', '=', 'user.company_id')
                 ->whereNull('user.date_resignation')
                 ->where('user.company_id', Auth::user()->company_id)
+                ->where('user.user_number', '!=', 'user01')
                 ->select('user.*', 'company.company_name')
-                ->orderBy('user.date_employment')
+                ->orderBy('user.staff_code', 'desc')
+                ->offset(0)
+                ->limit(20)
                 ->get();
         }
 
-        return view('organization.employee.employeeList', ['state' => $request->state, 'users' => $users]);
+        return view('organization.employee.employeeList', ['state' => $request->state, 'users' => $users , 'offset' => 0]);
+    }
+
+    // 員工列表 (載入更多)
+    public function moreEmployee(Request $request)
+    {
+        $page   = ! empty($request->page) ? $request->page : 1;
+        $per    = 20;
+        $offset = ($page - 1) * $per;
+
+        if ($request->state == 'left') {
+            // 已離職
+            $users = User::join('company', 'company.company_id', '=', 'user.company_id')
+                ->whereNotNull('user.date_resignation')
+                ->where('user.company_id', Auth::user()->company_id)
+                ->where('user.user_number', '!=', 'user01')
+                ->select('user.*', 'company.company_name')
+                ->orderBy('user.staff_code', 'desc')
+                ->offset($offset)
+                ->limit($per)
+                ->get();
+        } else {
+            // 未離職
+            $users = User::join('company', 'company.company_id', '=', 'user.company_id')
+                ->whereNull('user.date_resignation')
+                ->where('user.company_id', Auth::user()->company_id)
+                ->where('user.user_number', '!=', 'user01')
+                ->select('user.*', 'company.company_name')
+                ->orderBy('user.staff_code', 'desc')
+                ->offset($offset)
+                ->limit($per)
+                ->get();
+        }
+
+        return view('organization.employee.each', ['state' => $request->state, 'users' => $users , 'offset' => $offset]);
     }
 
     // 編輯員工資料
@@ -378,6 +420,16 @@ class OrganizationController extends Controller
         $companys = Company::getAreaRecord($area);
 
         return view('organization.company.companyList', ['area' => $area, 'areas' => $areas, 'companys' => $companys]);
+    }
+
+    // 公司列表 載入更多
+    public function moreCompany(Request $request)
+    {
+        $page   = ! empty($request->page) ? $request->page : 1;
+        $area     = empty($request->area) ? '南部' : $request->area;
+        $companys = Company::getAreaRecord($area, $page);
+
+        return view('organization.company.each', ['area' => $area, 'companys' => $companys]);
     }
 
     // 編輯公司資料
