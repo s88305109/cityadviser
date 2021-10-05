@@ -107,7 +107,7 @@
 <div class="container company-edit">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <h4><i class="bi bi-building"></i> 公司管理（編輯資料）</h4>
+            <h4><i class="bi bi-building"></i> 公司管理（{{ (empty($company->company_id)) ? '新增公司' : '編輯資料' }}）</h4>
             <div class="card">
                 <div class="card-body @if(! empty($company->company_id) && $company->status != 1) bg-light-red @endif">
                     <form class="company" method="POST" action="/organization/company/saveCompany" novalidate>
@@ -290,7 +290,9 @@
                         @endif
 
                         <div class="mb-5">
-                            <button class="btn btn-primary px-5 w-100" type="button" onclick="fromSubmit();" @if(! empty($company->company_id) && $company->status != 1) disabled @endif>儲存</button>
+                            <button class="btn btn-primary px-5 w-100" type="button" onclick="fromSubmit();" @if(! empty($company->company_id) && $company->status != 1) disabled @endif>
+                                {{ (empty($company->company_id)) ? '新增' : '儲存' }}
+                            </button>
                         </div>
                     </form>
                 </div>

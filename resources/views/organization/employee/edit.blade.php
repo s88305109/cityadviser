@@ -385,7 +385,9 @@
                         <input id="show_password" name="show_password" type="hidden" value="{{ old('show_password') }}">
 
                         <div class="mb-5">
-                            <button type="button" class="btn btn-primary px-5 w-100" id="saveBtn" @if(! empty($user->user_id) &&$user->status != 1) disabled @endif>儲存</button>
+                            <button type="button" class="btn btn-primary px-5 w-100" id="saveBtn" @if(! empty($user->user_id) &&$user->status != 1) disabled @endif>
+                                {{ (empty($user->user_id)) ? '新增' : '儲存' }}
+                            </button>
                         </div>
                     </form>
                 </div>
