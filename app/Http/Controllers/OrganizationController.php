@@ -53,10 +53,10 @@ class OrganizationController extends Controller
     // 主頁
     public function index(Request $request)
     {
-        /*if (Auth::user()->hasPermission('employee') & ! Auth::user()->hasPermission('company')) 
+        if (Auth::user()->hasPermission('employee') & ! Auth::user()->hasPermission('company')) 
             return redirect('/organization/employee');
         else if (! Auth::user()->hasPermission('employee') & Auth::user()->hasPermission('company')) 
-            return redirect('/organization/company');*/
+            return redirect('/organization/company');
 
         return view('organization.index');
     }
