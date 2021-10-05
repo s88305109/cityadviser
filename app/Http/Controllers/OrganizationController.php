@@ -240,7 +240,7 @@ class OrganizationController extends Controller
 
         $user = new User;
 
-        if (! empty($request->input('user_id')))
+        if (! empty($request->input('user_id'))) {
             $user = User::find($request->input('user_id'));
             $principalCheck = Company::where('principal', $user->user_id)->first();
 
@@ -250,7 +250,7 @@ class OrganizationController extends Controller
                 return redirect()->back()->withInput()->withErrors(['user_id' => __('此員工是'.$principalCheck->company_name.'的負責人，不能變更所屬公司。')]);
             else if ($request->input('job_id') != $user->job_id & ! empty($principalCheck))
                 return redirect()->back()->withInput()->withErrors(['user_id' => __('此員工是'.$principalCheck->company_name.'的負責人，不能變更職位。')]);
-        else {
+        } else {
             // 取不重複的亂數做UID
             do {
                 $uid = Str::random(16);
@@ -258,6 +258,11 @@ class OrganizationController extends Controller
 
             $user->user_uid   = $uid;
             $user->status     = 1;
+
+            // 若是新增員工且是公司負責人則先檢查該公司是否已有任命負責人
+            if($request->input('job_id') == 15 && ! empty($company->principal)) {
+                return redirect()->back()->withInput()->withErrors(['user_id' => __($company->company_name.'已有公司負責人，不能重複設定負責人。')]);
+            }
         }
 
         $user->user_number        = $request->input('user_number');
@@ -281,6 +286,12 @@ class OrganizationController extends Controller
             $user->status = 0;
 
         $user->save();
+
+        // 若新增員工且指定為負責人 則一併自動變更公司負責人ID
+        if($request->input('job_id') == 15 && empty($company->principal)) {
+            $company->principal = $user->user_id;
+            $company->save();
+        }
 
         $state = (! empty($request->input('state'))) ? $request->input('state') : 'on';
 

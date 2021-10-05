@@ -6,7 +6,12 @@
 		<h6 class="card-subtitle mb-3 text-muted">
 			<div class="input-group">
 				<span class="input-group-text" id="basic-addon3">負責人</span>
-				<input type="text" class="form-control" value="{{ $row->principal_name }}">
+				
+				@if(empty($row->principal))
+				<div class="form-control text-center"><a href="/organization/employee/new">點我新增負責人</a></div>
+				@else
+				<div class="form-control">{{ $row->principal_name }}</div>
+				@endif
 			</div>
 		</h6>
 		<div class="text-center">
