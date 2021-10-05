@@ -79,16 +79,16 @@
         @endif
     });
 
-
     function checkCompanyType() {
-        if ($("#company_id").children("option:selected").data("type") == "2") {
-            $(".job-set").eq(0).hide();
-            $(".job-set").eq(1).show();
-            $(".staff-code-set").hide();
-        } else {
+        $(".job-set").eq(0).hide();
+        $(".job-set").eq(1).hide();
+        $(".staff-code-set").hide();
+
+        if ($("#company_id").children("option:selected").data("type") == "1") {
             $(".job-set").eq(0).show();
-            $(".job-set").eq(1).hide();
             $(".staff-code-set").show();
+        } else if ($("#company_id").children("option:selected").data("type") == "2") {
+            $(".job-set").eq(1).show();
         }
     }
 </script>
