@@ -37,6 +37,7 @@
 
         @if($errors->any())
         $(".is-invalid").eq(0).focus();
+        isChanged = true;
         @endif
     });
 

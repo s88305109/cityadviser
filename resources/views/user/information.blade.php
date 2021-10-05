@@ -57,6 +57,11 @@
         objectShake($("#old_password").parent());
         @enderror
 
+        @if($errors->any())
+        $(".is-invalid").eq(0).focus();
+        isChanged = true;
+        @endif
+
         @if(old('show_password') == 1)
         $("#old_password, #new_password, #confirm_password").attr("type", "text");
         @endif
