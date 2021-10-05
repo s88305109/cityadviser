@@ -33,7 +33,7 @@ class PermissionValid
             || ! empty($user->date_resignation)
         ) {
             Auth::logout();
-            return redirect('/errors/unauthorized');
+            return redirect('/errors/locked');
         }
 
         // 若Route有傳入權限名稱則進行權限驗證

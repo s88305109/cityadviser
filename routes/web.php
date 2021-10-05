@@ -40,6 +40,7 @@ Route::get('/reload-captcha', [CaptchaServiceController::class, 'reloadCaptcha']
 // Error 錯誤控制頁面
 Route::view('/errors/unauthorized', 'errors.unauthorized');
 Route::view('/errors/forbidden', 'errors.forbidden');
+Route::view('/errors/locked', 'errors.locked');
 
 // 需登入驗證頁面
 Route::middleware(['auth', 'permission'])->name('auth.')->group(function () {
