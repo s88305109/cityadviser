@@ -57,6 +57,8 @@
         $("#date_resignation").change(function() {
             if ($(this).val() == "")
                 $("#reason").val("");
+            else 
+                $("#reason").parent().removeClass("d-none").css("display", "flex").show();
         });
 
         $("ul.dropdown-menu li").click(function () {
@@ -203,7 +205,7 @@
                             @enderror
                         </div>
 
-                        <div class="input-group mb-2 @if(empty($user->user_id)) d-none @endif">
+                        <div class="input-group mb-2 @if(empty($user->date_resignation)) d-none @endif">
                             <div class="input-group-prepend">
                                 <label class="input-group-text @error('reason') text-danger border-danger @enderror" for="reason">離職原因</label>
                             </div>
