@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -97,7 +100,28 @@ class User extends Authenticatable
         }
 
         return false;
+    }
 
+    // 取得員工列表 
+    public static function getEmployees($state = 'on', $company_id, $orderRow, $direction = 'desc', $per = 20, $page = 1) 
+    {
+        $offset = ($page - 1) * $per;
+
+        $users = User::join('company', 'company.company_id', '=', 'user.company_id')
+            ->when($state == 'left', function ($query, $state) {
+                return $query->whereNotNull('user.date_resignation');
+            }, function ($query) {
+                return $query->whereNull('user.date_resignation');
+            })
+            ->where('user.company_id', $company_id)
+            ->where('user.user_number', '!=', 'user01')
+            ->select('user.*', 'company.company_name')
+            ->orderBy($orderRow, $direction)
+            ->offset($offset)
+            ->limit($per)
+            ->get();
+
+        return $users;
     }
 
 }

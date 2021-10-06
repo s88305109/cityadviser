@@ -166,6 +166,8 @@ class StaffController extends Controller
     // 員工列表 (載入更多)
     public function more(Request $request)
     {
+        sleep(0.5);
+        
         $page   = ! empty($request->page) ? $request->page : 1;
         $per    = 20;
         $offset = ($page - 1) * $per;
