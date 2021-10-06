@@ -49,8 +49,8 @@
                             <div class="card">
                                 <div class="card-header fw-bold">
                                     <div class="form-check form-switch">
-                                        <label class="form-check-label" for="{{ $key }}">{{ $rows['title'] }}</label>
-                                        <input class="form-check-input" type="checkbox" id="{{ $key }}" name="role[]" value="{{ $key }}" @if(isset($permission[$key])) checked @endif>
+                                        <label class="form-check-label" for="{{ $rows->role }}">{{ $rows->title }}</label>
+                                        <input class="form-check-input" type="checkbox" id="{{ $rows->role }}" name="role[]" value="{{ $rows->role }}" @if(isset($permission[$rows->role])) checked @endif>
                                     </div>
                                 </div>
                                 @if(isset($rows['child']))
@@ -58,8 +58,8 @@
                                     @foreach($rows['child'] as $cKey => $cRows)
                                     <li class="list-group-item">
                                         <div class="form-check form-switch">
-                                            <label class="form-check-label" for="{{ $cKey }}">{{ $cRows['title'] }}</label>
-                                            <input class="form-check-input" type="checkbox" id="{{ $cKey }}" name="role[]" value="{{ $cKey }}" @if(isset($permission[$cKey])) checked @endif>
+                                            <label class="form-check-label" for="{{ $cRows->role }}">{{ $cRows->title }}</label>
+                                            <input class="form-check-input" type="checkbox" id="{{ $cRows->role }}" name="role[]" value="{{ $cRows->role }}" @if(isset($permission[$cRows->role])) checked @endif>
                                         </div>
                                     </li>
                                     
@@ -67,8 +67,8 @@
                                             @foreach($cRows['child'] as $c2Key => $c2Rows)
                                             <li class="list-group-item">
                                                 <div class="form-check form-switch triple">
-                                                    <label class="form-check-label" for="{{ $c2Key }}">{{ $c2Rows['title'] }}</label>
-                                                    <input class="form-check-input" type="checkbox" id="{{ $c2Key }}" name="role[]" value="{{ $c2Key }}" @if(isset($permission[$c2Key])) checked @endif>
+                                                    <label class="form-check-label" for="{{ $c2Rows->role }}">{{ $c2Rows->title }}</label>
+                                                    <input class="form-check-input" type="checkbox" id="{{ $c2Rows->role }}" name="role[]" value="{{ $c2Rows->role }}" @if(isset($permission[$c2Rows->role])) checked @endif>
                                                 </div>
                                             </li>
                                             @endforeach

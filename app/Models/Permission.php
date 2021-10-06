@@ -20,9 +20,8 @@ class Permission extends Model
 
         $permission = Permission::where('user_id', $user_id)->get();
 
-        foreach($permission as $row) {
-            $data[$row['permission']] = ['permission' => $row->permission, 'action' => $row->action];
-        }
+        foreach($permission as $row)
+            $data[$row->permission] = ['permission' => $row->permission, 'action' => $row->action];
 
         return $data;
     }
@@ -30,29 +29,60 @@ class Permission extends Model
     // 更新使用者的權限設定
     public static function updateUserPermission($user_id, $roles) 
     {
-        // 刪除舊設定重新Insert
-        $permission = Permission::where('user_id', $user_id)->delete();
-        
-        // 檢查個人權限跟職位權限是否有差異
-        $user       = User::find($user_id);
-        $permission = Permission::where('job_id', $user->job_id)->get();
+        $oldData = self::getUserPermission($user_id);
+        $job     = Job::find(User::find($user_id)->job_id);
 
-        $jobRole = array();
+        if (! empty($roles)) {
+            foreach($roles as $value) {
+                // 新增權限
+                if (empty($oldData) || ! isset($oldData[$value])) {
+                    $permission = new Permission;
+                    $permission->user_id    = $user_id;
+                    $permission->permission = $value;
+                    $permission->action     = '';
+                    $permission->save();
 
-        foreach($permission as $row)
-            $jobRole[] = $row->permission;
-    
-        sort($roles);
-        sort($jobRole);
-        $diff = array_diff($roles, $jobRole);
+                    // 若首次新增個人客製化權限 職位通用權限內已有的項目不做事件通知
+                    if (empty($oldData) && Permission::where('job_id', $job->job_id)->where('permission', $value)->count() > 0)
+                        continue;
 
-        if (! empty($diff)) {
-            foreach((array)$roles as $value) {
-                $permission = new Permission;
-                $permission->user_id    = $user_id;
-                $permission->permission = $value;
-                $permission->action     = '';
-                $permission->save();
+                    $role = Role::where('role', $value)->where('type', $job->type)->first();
+                    $content = '新增';
+
+                    if ($role->parent > 0) {
+                        $parent = Role::find($role->parent);
+                        $content .= '<strong>'.$parent->title.'</strong>的';
+                    }
+
+                    $content .= '<strong>'.$role->title.'</strong>權限。';
+
+                    Secretary::createEvent($user_id, 'role', '組織管理', $content);
+                }
+            }
+        }
+
+        if (! empty($oldData)) {
+            foreach($oldData as $key => $row) {
+                // 移除權限
+                if (empty($roles) || ! in_array($key, $roles)) {
+                    Permission::where('user_id', $user_id)->where('permission', $key)->delete();
+
+                    // 若移除個人客製化權限後 職位通用權限內已有的項目不做事件通知
+                    if (empty($roles) && Permission::where('job_id', $job->job_id)->where('permission', $key)->count() > 0)
+                        continue;
+
+                    $role = Role::where('role', $key)->where('type', $job->type)->first();
+                    $content = '移除';
+
+                    if ($role->parent > 0) {
+                        $parent = Role::find($role->parent);
+                        $content .= '<strong>'.$parent->title.'</strong>的';
+                    }
+
+                    $content .= '<strong>'.$role->title.'</strong>權限。';
+
+                    Secretary::createEvent($user_id, 'role', '組織管理', $content);
+                }
             }
         }
     }

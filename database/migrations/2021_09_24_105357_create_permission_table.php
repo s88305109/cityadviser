@@ -14,7 +14,7 @@ class CreatePermissionTable extends Migration
     public function up()
     {
         Schema::create('permission', function (Blueprint $table) {
-            $table->id('permission_id')->comment('權限資料ID');
+            $table->id()->comment('權限資料ID');
             $table->integer('job_id')->nullable()->index()->comment('職位ID');
             $table->integer('user_id')->nullable()->index()->comment('使用者ID');
             $table->string('permission', 64)->index()->comment('權限名稱');

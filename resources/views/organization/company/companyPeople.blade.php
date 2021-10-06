@@ -9,21 +9,20 @@
 
 	$(document).ready(function() {
 		$(window).scroll(function() {
-			if (($(window).height() + $(window).scrollTop() + 100) >= $(document).height()) {
+			if (($(window).height() + $(window).scrollTop() + 120) >= $(document).height()) {
 				clearTimeout(timers);
-				timers = setTimeout(function() {
-					if (end == false) {
-						page++;
-						loadMore(page);
-					}
-				}, 500);
+                if (end == false) {
+                    $(".more-loading").fadeIn();
+                    timers = setTimeout(function() {
+                            page++;
+                            loadMore(page);
+                    }, 500);
+                }
 			}
 		});
 	});
 
 	function loadMore(page) {
-		$(".more-loading").fadeIn();
-
         $.ajax({
             type: "GET",
             url: "/organization/company/{{ $area }}/{{ $companyId }}/morePeople/{{ $state }}/" + page,

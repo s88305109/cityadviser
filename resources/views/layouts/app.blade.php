@@ -199,7 +199,8 @@
     }
     .information-edit #old_password, #confirm_password { background-image: none; }
     .information-edit .password-change-text.text-danger { border-color: #e3342f; }
-    .container.list .list{ margin-bottom: 6rem; }
+    .container.list .list,
+    .mb-6em { margin-bottom: 6rem; }
 
     /* 小秘書 */
     .secretary .toast { margin-bottom: 0.5rem; }
@@ -207,6 +208,7 @@
         margin-right: -0.375rem;
         margin-left: 0.75rem;
     }
+    .secretary .toast .toast-body strong {  color: #dc3545; }
     </style>
 
     <script>

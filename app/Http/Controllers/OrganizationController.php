@@ -12,7 +12,7 @@ use App\Models\Region;
 use App\Models\Job;
 use App\Models\Company;
 use App\Models\Permission;
-use App\Services\CommonService;
+use App\Models\Role;
 
 class OrganizationController extends Controller
 {
@@ -281,7 +281,7 @@ class OrganizationController extends Controller
         $user       = User::find($request->userId);
         $permission = Permission::getUserPermission($request->userId);
         $job        = Job::find($user->job_id);
-        $roles      = (! empty($job)) ? CommonService::getRoles($job->type) : array();
+        $roles      = (! empty($job)) ? Role::getRoles($job->type) : array();
 
         if (empty($permission))
             $permission = Permission::getJobPermission($user->job_id);
@@ -316,7 +316,7 @@ class OrganizationController extends Controller
         $job        = Job::find($jobId);
         $jobs       = Job::where('status', 1)->orderBy('type')->orderBy('sort')->get();
         $permission = Permission::getJobPermission($jobId);
-        $roles      = (! empty($job)) ? CommonService::getRoles($job->type) : array();
+        $roles      = (! empty($job)) ? Role::getRoles($job->type) : array();
 
         return view('organization.employee.permissions', [
             'jobId'      => $jobId, 

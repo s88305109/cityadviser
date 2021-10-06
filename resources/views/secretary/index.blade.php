@@ -3,7 +3,49 @@
 @section('content')
 
 <script>
+    var page = 1;
+    var end = false;
+    var timers = null;
+
+    $(document).ready(function() {
+        $(window).scroll(function() {
+            if (($(window).height() + $(window).scrollTop() + 160) >= $(document).height()) {
+                clearTimeout(timers);
+                if (end == false) {
+                    $(".more-loading").fadeIn();
+                    timers = setTimeout(function() {
+                            page++;
+                            loadMore(page);
+                    }, 500);
+                }
+            }
+        });
+    });
+
+    function loadMore(page) {
+        $.ajax({
+            type: "GET",
+            url: "/secretary/more/{{ $state }}/" + page,
+            dataType: "text",
+            success: function (response) {
+                if (response == "") {
+                    end = true;
+                } else {
+                    $(".toast-container").append(response);
+                }
+
+                $(".more-loading").fadeOut();
+            },
+            error: function (thrownError) {
+                showMessageModal(thrownError.responseJSON.message);
+                $(".more-loading").fadeOut();
+            }
+        });
+    }
+
     function seen(id, obj) {
+        objectShake(obj);
+
         $.ajax({
             type: "POST",
             url: "/secretary/watch",
@@ -24,38 +66,40 @@
             }
         });
     }
+
+    function processAll() {
+        window.location.href = "/secretary/processAll";
+    }
 </script>
 
 <div class="container secretary">
     <div class="row justify-content-center">
         <div class="col-md-8 mb-2">
-            <h4><i class="bi bi-twitch fs-2"></i> 小秘書 <a class="btn btn-outline-secondary float-end" href="#">全部處理</a></h4>
+            <h4>
+                <i class="bi bi-twitch fs-2"></i> 小秘書 
+                @if($state == 'wait')
+                <a class="btn btn-outline-secondary float-end" onclick="showConfirmModal('是否全部處理？', 'processAll();');">全部處理</a>
+                @endif
+            </h4>
         </div>
 
         <div class="clearfix"></div>
 
         <div class="toast-container">
-            @foreach($events as $row)
-            <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true" @if($row->watch == 0) onclick="seen('{{ $row->id }}', this);" @endif>
-                <div class="toast-header">
-                    <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect></svg>
-                    <strong class="me-auto">{{ $row->event }}</strong>
-                    <small>{{ $row->deadline }}</small>
-                    
-                    @if($row->watch == 0)
-                    <span class="p-2 bg-danger rounded-circle">
-                        <span class="visually-hidden">alert</span>
-                    </span>
-                    @endif
-                </div>
-                <div class="toast-body">{{ $row->content }}</div>
-            </div>
-            @endforeach
+            @include('secretary.each')
         </div>
 
+        <div class="more-loading">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+
+        <div class="mb-6em"></div>
+
         <div class="btn-group bottom-tabs">
-            <a class="btn btn-outline-primary @if ($state == 'processed') active @endif" href="/secretary/processed">已處理</a>
-            <a class="btn btn-outline-primary @if ($state == 'wait') active @endif" href="/secretary/wait">未處理</a>
+            <a class="btn btn-outline-primary @if($state == 'processed') active @endif" href="/secretary/processed">已處理</a>
+            <a class="btn btn-outline-primary @if($state == 'wait') active @endif" href="/secretary/wait">未處理</a>
         </div>
     </div>
 </div>
