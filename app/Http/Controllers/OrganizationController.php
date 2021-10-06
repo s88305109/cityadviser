@@ -445,13 +445,6 @@ class OrganizationController extends Controller
                     $user->save();
                 }
             }
-
-            // 將新負責人的職位自動變為負責人
-            $user = User::find($request->input('principal'));
-            if (! empty($user)) {
-                $user->job_id = 15;
-                $user->save();
-            }
         } else {
             $company->type   = 2;
             $company->status = 1;
@@ -468,6 +461,17 @@ class OrganizationController extends Controller
         $company->company_bank_id      = $request->input('company_bank_id');
         $company->company_bank_account = $request->input('company_bank_account');
         $company->save();
+
+        // 自動變為新負責人的公司別與職位
+        if ( ! empty($request->input('principal'))) {
+            $user = User::find($request->input('principal'));
+            
+            if (! empty($user)) {
+                $user->company_id = $company->company_id;
+                $user->job_id     = 15;
+                $user->save();
+            }
+        }
 
         $region = Region::find($company->company_city);
         $area = ! empty($request->input('area')) ? $request->input('area') : $region->area;
