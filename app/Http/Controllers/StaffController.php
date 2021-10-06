@@ -129,7 +129,7 @@ class StaffController extends Controller
     // 員工列表
     public function list(Request $request)
     {
-        $users  = User::getEmployees($request->state, Auth::user()->company_id, 'user.date_employment', 'desc', 20, 1);
+        $users  = User::getEmployees($request->state, Auth::user()->company_id, true, 'user.date_employment', 'desc', 20, 1);
 
         return view('staff.list', ['state' => $request->state, 'users' => $users, 'offset' => 0]);
     }
@@ -143,7 +143,7 @@ class StaffController extends Controller
         $per    = 20;
         $offset = ($page - 1) * $per;
 
-        $users  = User::getEmployees($request->state, Auth::user()->company_id, 'user.date_employment', 'desc', $per, $page);
+        $users  = User::getEmployees($request->state, Auth::user()->company_id, true, 'user.date_employment', 'desc', $per, $page);
 
         return view('staff.each', ['state' => $request->state, 'users' => $users, 'offset' => $offset]);
     }

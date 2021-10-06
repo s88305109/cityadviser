@@ -103,7 +103,7 @@ class User extends Authenticatable
     }
 
     // 取得員工列表 
-    public static function getEmployees($state = 'on', $company_id, $orderRow, $direction = 'desc', $per = 20, $page = 1) 
+    public static function getEmployees($state = 'on', $company_id, $hide = false, $orderRow, $direction = 'desc', $per = 20, $page = 1) 
     {
         $offset = ($page - 1) * $per;
 
@@ -117,7 +117,11 @@ class User extends Authenticatable
             })
             ->where('user.company_id', $company_id)
             ->where('user.user_number', '!=', 'user01')
-            ->where('user.user_id', '!=', $company->principal)
+            ->when($hide, function ($query, $hide) {
+                return $query->where('user.user_id', '!=', $company->principal);
+            }, function ($query) {
+                return $query;
+            })
             ->select('user.*', 'company.company_name')
             ->orderBy($orderRow, $direction)
             ->offset($offset)

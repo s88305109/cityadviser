@@ -55,7 +55,7 @@ class OrganizationController extends Controller
     // 員工列表
     public function employeeList(Request $request)
     {
-        $users = User::getEmployees($request->state, 1, 'user.staff_code', 'desc', 20, 1);
+        $users = User::getEmployees($request->state, 1, false, 'user.staff_code', 'desc', 20, 1);
 
         return view('organization.employee.employeeList', ['state' => $request->state, 'users' => $users , 'offset' => 0]);
     }
@@ -68,7 +68,7 @@ class OrganizationController extends Controller
         $page   = ! empty($request->page) ? $request->page : 1;
         $per    = 20;
         $offset = ($page - 1) * $per;
-        $users  = User::getEmployees($request->state, 1, 'user.staff_code', 'desc', 20, 1);
+        $users  = User::getEmployees($request->state, 1, false, 'user.staff_code', 'desc', 20, 1);
 
         return view('organization.employee.each', ['state' => $request->state, 'users' => $users , 'offset' => $offset]);
     }
@@ -515,7 +515,7 @@ class OrganizationController extends Controller
     public function companyPeople(Request $request)
     {
         $company = Company::find($request->companyId);
-        $users   = User::getEmployees($request->state, $request->companyId, 'user.date_employment', 'desc', 20, 1);
+        $users   = User::getEmployees($request->state, $request->companyId, false, 'user.date_employment', 'desc', 20, 1);
 
         return view('organization.company.companyPeople', [
             'company'   => $company,
@@ -537,7 +537,7 @@ class OrganizationController extends Controller
         $offset = ($page - 1) * $per;
 
         $company = Company::find($request->companyId);
-        $users   = User::getEmployees($request->state, $request->companyId, 'user.date_employment', 'desc', $per, $page);
+        $users   = User::getEmployees($request->state, $request->companyId, false, 'user.date_employment', 'desc', $per, $page);
 
         return view('organization.company.people-each', [
             'company'   => $company,
