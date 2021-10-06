@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -107,6 +104,8 @@ class User extends Authenticatable
     {
         $offset = ($page - 1) * $per;
 
+        $company = Company::find($company_id);
+
         $users = User::join('company', 'company.company_id', '=', 'user.company_id')
             ->when($state == 'left', function ($query, $state) {
                 return $query->whereNotNull('user.date_resignation');
@@ -115,6 +114,7 @@ class User extends Authenticatable
             })
             ->where('user.company_id', $company_id)
             ->where('user.user_number', '!=', 'user01')
+            ->where('user.user_id', '!=', $company->principal)
             ->select('user.*', 'company.company_name')
             ->orderBy($orderRow, $direction)
             ->offset($offset)

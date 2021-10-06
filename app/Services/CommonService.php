@@ -2,11 +2,7 @@
 
 namespace App\Services;
 
-use Route;
-use Request;
-use Illuminate\Support\Facades\Auth;
-
-class OrganizationService 
+class CommonService 
 {
 	// 權限參數設定
     public static function getRoles($type) {

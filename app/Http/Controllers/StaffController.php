@@ -27,10 +27,7 @@ class StaffController extends Controller
         $user    = new User;
         $company = Company::find(Auth::user()->company_id);     // 公司資料
         $region  = Region::orderBy('sort')->get();              // 縣市資料
-        $job     = Job::where('type', $company->type)           // 分公司職務
-                    ->where('status', 1)
-                    ->orderBy('sort')
-                    ->get();   
+        $job     = Job::where('type', $company->type)->where('status', 1)->orderBy('sort')->get();  // 分公司職務
 
         return view('staff.edit', [
             'state'   => null,
@@ -41,7 +38,7 @@ class StaffController extends Controller
         ]);
     }
 
-    // 新增員工 (保存)
+    // 新增 & 編輯員工 (保存)
     public function save(Request $request)
     {
         $errors = [];
@@ -132,33 +129,7 @@ class StaffController extends Controller
     // 員工列表
     public function list(Request $request)
     {
-        $company = Company::find(Auth::user()->company_id);
-
-        if ($request->state == 'left') {
-            // 已離職
-            $users = User::join('company', 'company.company_id', '=', 'user.company_id')
-                ->whereNotNull('user.date_resignation')
-                ->where('user.company_id', Auth::user()->company_id)
-                ->where('user.user_number', '!=', 'user01')
-                ->where('user.user_id', '!=', $company->principal )
-                ->select('user.*', 'company.company_name')
-                ->orderBy('user.date_resignation', 'desc')
-                ->offset(0)
-                ->limit(20)
-                ->get();
-        } else {
-            // 未離職
-            $users = User::join('company', 'company.company_id', '=', 'user.company_id')
-                ->whereNull('user.date_resignation')
-                ->where('user.company_id', Auth::user()->company_id)
-                ->where('user.user_number', '!=', 'user01')
-                ->where('user.user_id', '!=', $company->principal )
-                ->select('user.*', 'company.company_name')
-                ->orderBy('user.date_employment')
-                ->offset(0)
-                ->limit(20)
-                ->get();
-        }
+        $users  = User::getEmployees($request->state, Auth::user()->company_id, 'user.date_employment', 'desc', 20, 1);
 
         return view('staff.list', ['state' => $request->state, 'users' => $users, 'offset' => 0]);
     }
@@ -172,33 +143,7 @@ class StaffController extends Controller
         $per    = 20;
         $offset = ($page - 1) * $per;
 
-        $company = Company::find(Auth::user()->company_id);
-
-        if ($request->state == 'left') {
-            // 已離職
-            $users = User::join('company', 'company.company_id', '=', 'user.company_id')
-                ->whereNotNull('user.date_resignation')
-                ->where('user.company_id', Auth::user()->company_id)
-                ->where('user.user_number', '!=', 'user01')
-                ->where('user.user_id', '!=', $company->principal )
-                ->select('user.*', 'company.company_name')
-                ->orderBy('user.date_resignation', 'desc')
-                ->offset($offset)
-                ->limit($per)
-                ->get();
-        } else {
-            // 未離職
-            $users = User::join('company', 'company.company_id', '=', 'user.company_id')
-                ->whereNull('user.date_resignation')
-                ->where('user.company_id', Auth::user()->company_id)
-                ->where('user.user_number', '!=', 'user01')
-                ->where('user.user_id', '!=', $company->principal )
-                ->select('user.*', 'company.company_name')
-                ->orderBy('user.date_employment')
-                ->offset($offset)
-                ->limit($per)
-                ->get();
-        }
+        $users  = User::getEmployees($request->state, Auth::user()->company_id, 'user.date_employment', 'desc', $per, $page);
 
         return view('staff.each', ['state' => $request->state, 'users' => $users, 'offset' => $offset]);
     }
@@ -209,10 +154,7 @@ class StaffController extends Controller
         $user    = User::find($request->userId);
         $company = Company::find(Auth::user()->company_id); // 公司資料
         $region  = Region::orderBy('sort')->get();          // 縣市資料
-        $job     = Job::where('type', $company->type)       // 分公司職務
-                    ->where('status', 1)
-                    ->orderBy('sort')
-                    ->get();
+        $job     = Job::where('type', $company->type)->where('status', 1)->orderBy('sort')->get();  // 分公司職務
 
         // 檢查是否為同公司的員工
         if (Auth::user()->company_id != $user->company_id)
