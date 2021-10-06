@@ -107,7 +107,10 @@ class User extends Authenticatable
     {
         $offset = ($page - 1) * $per;
 
-        $company = Company::find($company_id);
+        if ($hide) {
+            $company = Company::find($company_id);
+            $hide    = $company->principal;
+        }
 
         $users = User::join('company', 'company.company_id', '=', 'user.company_id')
             ->when($state == 'left', function ($query, $state) {
@@ -118,9 +121,7 @@ class User extends Authenticatable
             ->where('user.company_id', $company_id)
             ->where('user.user_number', '!=', 'user01')
             ->when($hide, function ($query, $hide) {
-                return $query->where('user.user_id', '!=', $company->principal);
-            }, function ($query) {
-                return $query;
+                return $query->where('user.user_id', '!=', $hide);
             })
             ->select('user.*', 'company.company_name')
             ->orderBy($orderRow, $direction)
