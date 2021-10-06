@@ -21,7 +21,7 @@ use App\Http\Controllers\StaffController;
 |
 */
 
-// 首頁
+// 首頁 (若已登入自動導向到選單頁；若未登入導向到登入頁)
 Route::get('/', function () {
     if (Auth::check()) 
         return redirect()->route('auth.home.home');
@@ -42,7 +42,9 @@ Route::view('/errors/unauthorized', 'errors.unauthorized');
 Route::view('/errors/forbidden', 'errors.forbidden');
 Route::view('/errors/locked', 'errors.locked');
 
-// 需登入驗證頁面
+/*************
+|需登入驗證頁面|
+**************/
 Route::middleware(['auth', 'permission'])->name('auth.')->group(function () {
     // User 使用者頁面：個人資料、登出
     Route::get('/user', [UserController::class, 'index']);                           // 個人資料頁面
@@ -55,7 +57,7 @@ Route::middleware(['auth', 'permission'])->name('auth.')->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::name('home.')->group(function () {
-        /** 主畫面 **/
+        /** 主畫面 首頁 **/
         Route::get('/home', [HomeController::class, 'index'])->name('home');
 
         /** Organization 組織 權限名稱:organization **/
@@ -120,7 +122,7 @@ Route::middleware(['auth', 'permission'])->name('auth.')->group(function () {
             Route::post('/organization/company/{area}', [OrganizationController::class, 'companyList']);
         });
 
-        /** 員工管理 (分公司負責人管理自己公司內的員工) **/
+        /** 員工管理 (分公司負責人管理自己公司內的員工) 權限名稱:staff **/
         Route::middleware('permission:staff')->group(function () {
             // 員工管理 首頁
             Route::get('/staff', [StaffController::class, 'index']);
@@ -142,11 +144,11 @@ Route::middleware(['auth', 'permission'])->name('auth.')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | Home 副畫面
+    | Home2 副畫面
     |--------------------------------------------------------------------------
     */
     Route::name('home2.')->group(function () {
-        /** 副畫面 **/
+        /** 副畫面 首頁 **/
         Route::get('/home2', [HomeController::class, 'home2'])->name('home2');
     });
 });

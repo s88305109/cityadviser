@@ -5,7 +5,8 @@ namespace App\Services;
 class CommonService 
 {
 	// 權限參數設定
-    public static function getRoles($type) {
+    public static function getRoles($type) 
+    {
         $roles = [];
 
         if ($type == 1) {

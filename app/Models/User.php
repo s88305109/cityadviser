@@ -46,7 +46,8 @@ class User extends Authenticatable
     ];
 
     // 驗證使用者密碼格式是否符合
-    public static function passwordRuleVerify($passwdStr) {
+    public static function passwordRuleVerify($passwdStr) 
+    {
         if (! preg_match('/^[A-Za-z0-9]+$/', $passwdStr)) {
             $message = __('密碼只能輸入英文跟數字');
         } else if (! preg_match('/^((?=.*[0-9])(?=.*[a-z|A-Z]))^.*$/', $passwdStr)) {
@@ -61,7 +62,8 @@ class User extends Authenticatable
     }
 
     // 取得公司有多少在職員工的人數
-    public static function getCompanyCount($company_id) {
+    public static function getCompanyCount($company_id) 
+    {
         $count = User::where('company_id', $company_id)
             ->whereNull('user.date_resignation')
             ->count();
@@ -70,7 +72,8 @@ class User extends Authenticatable
     }
 
     // 頁面權限驗證 
-    public function hasPermission($role, $action = null) {
+    public function hasPermission($role, $action = null) 
+    {
         // 檢查是否為超級管理員帳號
         if (Auth::user()->admin == 1)
             return true;
