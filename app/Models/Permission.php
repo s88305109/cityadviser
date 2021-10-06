@@ -14,7 +14,8 @@ class Permission extends Model
 
 
     // 取得使用者的權限設定並陣列化
-    public static function getUserPermission($user_id) {
+    public static function getUserPermission($user_id) 
+    {
         $data = array();
 
         $permission = Permission::where('user_id', $user_id)->get();
@@ -27,7 +28,8 @@ class Permission extends Model
     }
 
     // 更新使用者的權限設定
-    public static function updateUserPermission($user_id, $roles) {
+    public static function updateUserPermission($user_id, $roles) 
+    {
         // 刪除舊設定重新Insert
         $permission = Permission::where('user_id', $user_id)->delete();
         
@@ -56,7 +58,8 @@ class Permission extends Model
     }
 
     // 取得職位的權限設定並陣列化
-    public static function getJobPermission($job_id) {
+    public static function getJobPermission($job_id) 
+    {
         $data = array();
 
         $permission = Permission::where('job_id', $job_id)->get();
@@ -68,7 +71,8 @@ class Permission extends Model
     }
 
     // 更新職位的權限設定
-    public static function updateJobPermission($job_id, $roles) {
+    public static function updateJobPermission($job_id, $roles) 
+    {
         // 刪除舊設定重新Insert
         $permission = Permission::where('job_id', $job_id)->delete();
 

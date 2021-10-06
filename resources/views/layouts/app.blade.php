@@ -316,19 +316,6 @@
     </script>
 </head>
 <body>
-<?php 
-// 回到首頁的連結
-$navlink1 = (session('pageBlock') !== null) ? session('pageBlock') : '/home';
-
-// 取得系統結構上一層的連結
-$navlink2 = '/';
-for($i = 1; $i <= count(Request::segments()); $i++)
-    if($i < count(Request::segments()) & $i > 0)
-        $navlink2 .= ($navlink2 == '/') ? Request::segment($i) : '/' . Request::segment($i);
-
-if ($navlink2 == '/')
-    $navlink2 = $navlink1;
-?>
     <div id="app">
         @if (substr(Route::currentRouteName(), 0, 5) == 'auth.')
         {{-- Fixed HeaderBar --}}
@@ -351,17 +338,13 @@ if ($navlink2 == '/')
                         <a href="/secretary"><i class="bi bi-twitch fs-2"></i></a>
                     </div>
                     <div class="col-auto">
-                        @if (Route::currentRouteName() == 'auth.home2')
-                        <a href="/home"><i class="bi bi-back fs-2"></i></a>
-                        @else
-                        <a href="/home2"><i class="bi bi-front fs-2"></i></a>
-                        @endif
+                        {!! App\Services\NavService::getSwitch() !!}
                     </div>
                     <div class="col-auto">
-                        <a href="{{ $navlink1 }}"><i class="bi bi-house-fill fs-2"></i></a>
+                        <a href="{{ App\Services\NavService::getHomeUrl() }}"><i class="bi bi-house-fill fs-2"></i></a>
                     </div>
                     <div class="col-auto">
-                        <a href="{{ $navlink2 }}"><i class="bi bi-tags-fill fs-2"></i></a>
+                        <a href="{{ App\Services\NavService::getUpUrl() }}"><i class="bi bi-tags-fill fs-2"></i></a>
                     </div>
                 </div>
             </div>

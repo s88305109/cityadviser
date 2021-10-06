@@ -12,51 +12,17 @@ use App\Models\Region;
 use App\Models\Job;
 use App\Models\Company;
 use App\Models\Permission;
+use App\Services\CommonService;
 
 class OrganizationController extends Controller
 {
-    // 權限參數設定
-    public static function getRoles($type) {
-        $roles = [];
-
-        if ($type == 1) {
-            // 總公司權限
-            $roles = [
-                'organization' => ['title' => '組織管理', 
-                    'child' => [
-                        'employee' => ['title' => '員工管理'], 
-                        'company'  => ['title' => '公司管理']
-                    ]
-                ],
-                'case' => ['title' => '報件管理', 
-                    'child' => [
-                        'present' => ['title' => '案件報件']
-                    ]
-                ],
-                'review' => ['title' => '報件審查']
-            ];
-        } else if ($type == 2) {
-            // 分公司權限
-            $roles = [
-                'case' => ['title' => '報件管理', 
-                    'child' => [
-                        'present' => ['title' => '案件報件']
-                    ]
-                ],
-                'staff' => ['title' => '員工管理']
-            ];
-        }
-
-        return $roles;
-    }
-
     // 主頁
     public function index(Request $request)
     {
-        /*if (Auth::user()->hasPermission('employee') & ! Auth::user()->hasPermission('company')) 
+        if (Auth::user()->hasPermission('employee') & ! Auth::user()->hasPermission('company')) 
             return redirect('/organization/employee');
         else if (! Auth::user()->hasPermission('employee') & Auth::user()->hasPermission('company')) 
-            return redirect('/organization/company');*/
+            return redirect('/organization/company');
 
         return view('organization.index');
     }
@@ -71,7 +37,7 @@ class OrganizationController extends Controller
     public function new(Request $request)
     {
         $user    = new User;
-        $company = Company::orderBy('sort')->get();                                    // 公司資料
+        $company = Company::where('status', 1)->orderBy('sort')->get();                // 公司資料
         $region  = Region::orderBy('sort')->get();                                     // 縣市資料
         $job1    = Job::where('type', 1)->where('status', 1)->orderBy('sort')->get();  // 總公司職務
         $job2    = Job::where('type', 2)->where('status', 1)->orderBy('sort')->get();  // 分公司職務
@@ -89,29 +55,7 @@ class OrganizationController extends Controller
     // 員工列表
     public function employeeList(Request $request)
     {
-        if ($request->state == 'left') {
-            // 已離職
-            $users = User::join('company', 'company.company_id', '=', 'user.company_id')
-                ->whereNotNull('user.date_resignation')
-                ->where('user.company_id', Auth::user()->company_id)
-                ->where('user.user_number', '!=', 'user01')
-                ->select('user.*', 'company.company_name')
-                ->orderBy('user.staff_code', 'desc')
-                ->offset(0)
-                ->limit(20)
-                ->get();
-        } else {
-            // 未離職
-            $users = User::join('company', 'company.company_id', '=', 'user.company_id')
-                ->whereNull('user.date_resignation')
-                ->where('user.company_id', Auth::user()->company_id)
-                ->where('user.user_number', '!=', 'user01')
-                ->select('user.*', 'company.company_name')
-                ->orderBy('user.staff_code', 'desc')
-                ->offset(0)
-                ->limit(20)
-                ->get();
-        }
+        $users = User::getEmployees($request->state, 1, 'user.staff_code', 'desc', 20, 1);
 
         return view('organization.employee.employeeList', ['state' => $request->state, 'users' => $users , 'offset' => 0]);
     }
@@ -119,33 +63,12 @@ class OrganizationController extends Controller
     // 員工列表 (載入更多)
     public function moreEmployee(Request $request)
     {
+        sleep(0.5);
+
         $page   = ! empty($request->page) ? $request->page : 1;
         $per    = 20;
         $offset = ($page - 1) * $per;
-
-        if ($request->state == 'left') {
-            // 已離職
-            $users = User::join('company', 'company.company_id', '=', 'user.company_id')
-                ->whereNotNull('user.date_resignation')
-                ->where('user.company_id', Auth::user()->company_id)
-                ->where('user.user_number', '!=', 'user01')
-                ->select('user.*', 'company.company_name')
-                ->orderBy('user.staff_code', 'desc')
-                ->offset($offset)
-                ->limit($per)
-                ->get();
-        } else {
-            // 未離職
-            $users = User::join('company', 'company.company_id', '=', 'user.company_id')
-                ->whereNull('user.date_resignation')
-                ->where('user.company_id', Auth::user()->company_id)
-                ->where('user.user_number', '!=', 'user01')
-                ->select('user.*', 'company.company_name')
-                ->orderBy('user.staff_code', 'desc')
-                ->offset($offset)
-                ->limit($per)
-                ->get();
-        }
+        $users  = User::getEmployees($request->state, 1, 'user.staff_code', 'desc', 20, 1);
 
         return view('organization.employee.each', ['state' => $request->state, 'users' => $users , 'offset' => $offset]);
     }
@@ -199,7 +122,7 @@ class OrganizationController extends Controller
         }
         else if (! empty($request->input('date_resignation')) && strtotime($request->input('date_resignation')) < strtotime($request->input('date_employment')))
             $errors['date_resignation'] =  __('離職日期不可小於到職日期');
-        else if (! empty($request->input('date_resignation')) && empty($request->input('reason')))
+        if (! empty($request->input('date_resignation')) && empty($request->input('reason')))
             $errors['reason'] =  __('請輸入離職原因');
         if (is_null($request->input('gender_type')))
             $errors['gender_type'] = __('請選擇性別');
@@ -358,7 +281,7 @@ class OrganizationController extends Controller
         $user       = User::find($request->userId);
         $permission = Permission::getUserPermission($request->userId);
         $job        = Job::find($user->job_id);
-        $roles      = (! empty($job)) ? $this->getRoles($job->type) : array();
+        $roles      = (! empty($job)) ? CommonService::getRoles($job->type) : array();
 
         if (empty($permission))
             $permission = Permission::getJobPermission($user->job_id);
@@ -393,7 +316,7 @@ class OrganizationController extends Controller
         $job        = Job::find($jobId);
         $jobs       = Job::where('status', 1)->orderBy('type')->orderBy('sort')->get();
         $permission = Permission::getJobPermission($jobId);
-        $roles      = (! empty($job)) ? $this->getRoles($job->type) : array();
+        $roles      = (! empty($job)) ? CommonService::getRoles($job->type) : array();
 
         return view('organization.employee.permissions', [
             'jobId'      => $jobId, 
@@ -403,6 +326,7 @@ class OrganizationController extends Controller
         ]);
     }
 
+    // 權限設定 (保存)
     public function savePermissions(Request $request)
     {
         Permission::updateJobPermission($request->input('job_id'), $request->input('role'));
@@ -447,6 +371,8 @@ class OrganizationController extends Controller
     // 公司列表 載入更多
     public function moreCompany(Request $request)
     {
+        sleep(0.5);
+
         $page   = ! empty($request->page) ? $request->page : 1;
         $area     = empty($request->area) ? '南部' : $request->area;
         $companys = Company::getAreaRecord($area, $page);
@@ -589,26 +515,7 @@ class OrganizationController extends Controller
     public function companyPeople(Request $request)
     {
         $company = Company::find($request->companyId);
-
-        if ($request->state == 'left') {
-            $users = User::join('company', 'company.company_id', '=', 'user.company_id')
-                ->whereNotNull('user.date_resignation')
-                ->where('user.company_id', $request->companyId)
-                ->select('user.*', 'company.company_name')
-                ->orderBy('user.date_resignation', 'desc')
-                ->offset(0)
-                ->limit(20)
-                ->get();
-        } else {
-            $users = User::join('company', 'company.company_id', '=', 'user.company_id')
-                ->whereNull('user.date_resignation')
-                ->where('user.company_id', $request->companyId)
-                ->select('user.*', 'company.company_name')
-                ->orderBy('user.date_employment', 'desc')
-                ->offset(0)
-                ->limit(20)
-                ->get();
-        }
+        $users   = User::getEmployees($request->state, $request->companyId, 'user.date_employment', 'desc', 20, 1);
 
         return view('organization.company.companyPeople', [
             'company'   => $company,
@@ -623,31 +530,14 @@ class OrganizationController extends Controller
     // 公司員工列表 (載入更多)
     public function morePeople(Request $request)
     {
+        sleep(0.5);
+
         $page   = ! empty($request->page) ? $request->page : 1;
         $per    = 20;
         $offset = ($page - 1) * $per;
 
         $company = Company::find($request->companyId);
-
-        if ($request->state == 'left') {
-            $users = User::join('company', 'company.company_id', '=', 'user.company_id')
-                ->whereNotNull('user.date_resignation')
-                ->where('user.company_id', $request->companyId)
-                ->select('user.*', 'company.company_name')
-                ->orderBy('user.date_resignation', 'desc')
-                ->offset($offset)
-                ->limit($per)
-                ->get();
-        } else {
-            $users = User::join('company', 'company.company_id', '=', 'user.company_id')
-                ->whereNull('user.date_resignation')
-                ->where('user.company_id', $request->companyId)
-                ->select('user.*', 'company.company_name')
-                ->orderBy('user.date_employment')
-                ->offset($offset)
-                ->limit($per)
-                ->get();
-        }
+        $users   = User::getEmployees($request->state, $request->companyId, 'user.date_employment', 'desc', $per, $page);
 
         return view('organization.company.people-each', [
             'company'   => $company,
