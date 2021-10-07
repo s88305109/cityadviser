@@ -219,6 +219,9 @@
             $(".inner-addon.reset-icon i.bi").click(function() {
                 isChanged = true;
                 $(this).hide().parent().children("input, textarea").val("").focus().trigger("keyup");
+
+                if ($(this).parent().children("textarea").attr("oninput") == "autoGrow(this);")
+                    autoGrow($(this).parent().children("textarea")[0]);
             });
 
             $(".inner-addon.reset-icon input, .inner-addon.reset-icon textarea").on("keyup",function(e) {
