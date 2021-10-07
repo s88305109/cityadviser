@@ -224,6 +224,10 @@
                     autoGrow($(this).parent().children("textarea")[0]);
             });
 
+            $("textarea[oninput='autoGrow(this);']").each(function() {
+                autoGrow(this);
+            });
+
             $(".inner-addon.reset-icon input, .inner-addon.reset-icon textarea").on("keyup",function(e) {
                 if ($(this).val() != "") {
                     $(this).css("background-image", "none").parent().children("i.bi").fadeIn();
