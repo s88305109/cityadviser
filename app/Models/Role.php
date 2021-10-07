@@ -12,6 +12,8 @@ class Role extends Model
     protected $table = 'role';
     protected $primaryKey = 'role_id';
 
+    public $timestamps = false;
+
     public static function getRoles($type)
     {
         $roles = Role::where('type', $type)

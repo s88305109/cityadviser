@@ -26,8 +26,13 @@ class Secretary extends Model
     {
         $offset = ($page - 1) * $per;
 
-        $events = Secretary::where('user_id', Auth::id())
+        $events = Secretary::join('event', 'event.event', '=', 'secretary.event')
+            ->select('secretary.*', 'event.title', 'event.content')
+            ->where('user_id', Auth::id())
             ->where('status', $status)
+            ->when($status == 1, function ($query) {
+                return $query->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-14 days')));   // 已處理的事件只顯示14天內
+            })
             ->orderByRaw('ISNULL(deadline), deadline ASC')
             ->orderBy('id', 'desc')
             ->offset($offset)
@@ -46,17 +51,38 @@ class Secretary extends Model
         return $events;
     }
 
-    public static function createEvent($user_id, $event, $title, $content, $deadline = null, $item_id = null, $url = '')
+    // 建立事件
+    public static function createEvent($user_id, $event, $parameter, $deadline = null, $item_id = null, $url = '')
     {
         $secretary = new Secretary();
-        $secretary->user_id  = $user_id;
-        $secretary->event    = $event;
-        $secretary->title    = $title;
-        $secretary->content  = $content;
-        $secretary->deadline = $deadline;
-        $secretary->item_id  = $item_id;
-        $secretary->url      = $url;
+        $secretary->user_id    = $user_id;
+        $secretary->event      = $event;
+        $secretary->parameter  = $parameter;
+        $secretary->deadline   = $deadline;
+        $secretary->item_id    = $item_id;
+        $secretary->url        = $url;
+        $secretary->created_at = date('Y-m-d H:i:s');
         $secretary->save();
+    }
+
+    // 取得未讀數量
+    public static function getUnreadCount()
+    {
+        $count = Secretary::where('user_id', Auth::id())
+            ->where('status', 0)
+            ->where('watch', 0)
+            ->count();
+
+        return $count;
+    }
+
+    // 刪除已處理且超過14天的事件
+    public static function removeExpire()
+    {
+        Secretary::where('user_id', Auth::id())
+            ->where('status', 1)
+            ->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-14 days')))
+            ->delete();
     }
 
 }

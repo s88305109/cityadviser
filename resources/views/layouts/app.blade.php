@@ -286,6 +286,24 @@
             element.style.height = (element.scrollHeight + 2)+"px";
         }
 
+        function refreshUnread() {
+            $.ajax({
+                type: "GET",
+                url: "/unread",
+                dataType: "text",
+                success: function (response) {
+                    if (response > 0) {
+                        $("span.unread").html(response).show();
+                    } else {
+                        $("span.unread").hide();
+                    }
+                },
+                error: function (thrownError) {
+                    showMessageModal(thrownError.responseJSON.message);
+                }
+            });
+        }
+
         {{-- 需登入驗證的頁面才執行 --}}
         @if (substr(Route::currentRouteName(), 0, 5) == 'auth.')
         var isChanged = false;
@@ -308,6 +326,8 @@
             $(".go-bottom").bind("click", function () {
                 $("html, body").animate({ scrollTop: $(document).height() }, 200);
             });
+
+            setInterval(refreshUnread, 30000);
         });
 
         window.onbeforeunload = function () {
@@ -336,8 +356,13 @@
         <nav class="navbar fixed-bottom float-navbar justify-content-center">
             <div class="col-md-6">
                 <div class="row justify-content-evenly">
-                    <div class="col-auto">
+                    <div class="col-auto position-relative">
                         <a href="/secretary"><i class="bi bi-twitch fs-2"></i></a>
+                        @if(App\Models\Secretary::getUnreadCount() > 0)
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger unread">{{ App\Models\Secretary::getUnreadCount() }}</span>
+                        @else
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger unread"></span>
+                        @endif
                     </div>
                     <div class="col-auto">
                         {!! App\Services\NavService::getSwitch() !!}

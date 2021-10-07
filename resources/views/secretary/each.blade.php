@@ -5,11 +5,9 @@
         <small>{{ $row->deadline }}</small>
         
         @if($row->watch == 0)
-        <span class="p-2 bg-danger rounded-circle">
-            <span class="visually-hidden">alert</span>
-        </span>
+        <span class="p-2 bg-danger rounded-circle"></span>
         @endif
     </div>
-    <div class="toast-body">{!! $row->content !!}</div>
+    <div class="toast-body">{!! vsprintf($row->content, json_decode($row->parameter, true)) !!}</div>
 </div>
 @endforeach

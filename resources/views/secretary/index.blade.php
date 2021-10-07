@@ -55,6 +55,7 @@
             success: function (response) {
                 $(obj).find(".rounded-circle").fadeOut();
                 $(obj).prop("onclick", null).off("click");
+                refreshUnread();
             },
             error: function (thrownError) {
                 if (thrownError.status == "419") {

@@ -10,6 +10,7 @@ use App\Models\Company;
 use App\Models\User;
 use App\Models\SystemSetting;
 use App\Models\AuthenticationLog;
+use App\Models\Secretary;
 
 class LoginController extends Controller 
 {
@@ -221,7 +222,12 @@ class LoginController extends Controller
 		Auth::loginUsingId($user->user_id);
 
 		// 記錄使用者最後登入時間
-		Auth::user()->update(['login_time' => date('Y/m/d H:i:s'), 'sign_out_time' => date('Y-m-d H:i:s')]);
+		$user->login_time    = date('Y-m-d H:i:s'); 
+		$user->sign_out_time = date('Y-m-d H:i:s');
+		$user->save();
+
+		// 刪除已處理且超過14天的事件
+		Secretary::removeExpire();
 
 		return redirect('/home');
 	}

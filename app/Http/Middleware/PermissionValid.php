@@ -15,11 +15,16 @@ class PermissionValid
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
+     * @param  String  $role
+     * @param  String  $action
      * @return mixed
      */
     public function handle(Request $request, Closure $next, $role = null, $action = null)
     {
         $user = Auth::user();
+
+        $user->sign_out_time = date('Y-m-d H:i:s');
+        $user->save();
 
         if (! empty($user))
             $company = Company::find($user->company_id);

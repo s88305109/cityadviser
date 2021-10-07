@@ -46,17 +46,20 @@ class Permission extends Model
                     if (empty($oldData) && Permission::where('job_id', $job->job_id)->where('permission', $value)->count() > 0)
                         continue;
 
-                    $role = Role::where('role', $value)->where('type', $job->type)->first();
-                    $content = '新增';
+                    $role      = Role::where('role', $value)->where('type', $job->type)->first();
+                    $parameter = array();
+                    $event     = 'roleAdd';
 
                     if ($role->parent > 0) {
+                        $event = 'roleAdd2';
                         $parent = Role::find($role->parent);
-                        $content .= '<strong>'.$parent->title.'</strong>的';
+                        $parameter[] = $parent->title;
                     }
 
-                    $content .= '<strong>'.$role->title.'</strong>權限。';
+                    $parameter[] = $role->title;
+                    $parameter   = json_encode($parameter, JSON_UNESCAPED_UNICODE);
 
-                    Secretary::createEvent($user_id, 'role', '組織管理', $content);
+                    Secretary::createEvent($user_id, $event, $parameter);
                 }
             }
         }
@@ -71,17 +74,20 @@ class Permission extends Model
                     if (empty($roles) && Permission::where('job_id', $job->job_id)->where('permission', $key)->count() > 0)
                         continue;
 
-                    $role = Role::where('role', $key)->where('type', $job->type)->first();
-                    $content = '移除';
+                    $role      = Role::where('role', $key)->where('type', $job->type)->first();
+                    $parameter = array();
+                    $event     = 'roleDel';
 
                     if ($role->parent > 0) {
+                        $event = 'roleDel2';
                         $parent = Role::find($role->parent);
-                        $content .= '<strong>'.$parent->title.'</strong>的';
+                        $parameter[] = $parent->title;
                     }
 
-                    $content .= '<strong>'.$role->title.'</strong>權限。';
+                    $parameter[] = $role->title;
+                    $parameter   = json_encode($parameter, JSON_UNESCAPED_UNICODE);
 
-                    Secretary::createEvent($user_id, 'role', '組織管理', $content);
+                    Secretary::createEvent($user_id, $event, $parameter);
                 }
             }
         }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Secretary;
 
 class HomeController extends Controller
 {
@@ -40,4 +41,11 @@ class HomeController extends Controller
 
         return view('home.home', ['sysList' => $sysList, 'pageBlock' => 'home2']);
     }
+
+    // 小秘書事件未讀數量
+    public function unread()
+    {
+        return response(Secretary::getUnreadCount());
+    }
+
 }
