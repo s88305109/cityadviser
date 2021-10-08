@@ -36,22 +36,22 @@
         top: 0;
         left: 0;
         width: 100%;
-        font-size: 24px;
-        padding: 4px;
         margin-top: 8px;
+        padding: 4px;
+        font-size: 24px;
     }
     .float-bar span { display: none; }
     .start-shadow,
     .end-shadow {
         position: absolute;
         top: calc(50% - 100px);
+        z-index: 20;
         height: 200px;
         width: 20px;
-        z-index: 20;
         background: radial-gradient(at center, rgba(0,0,0,.5),transparent 50%) no-repeat;
         background-size: 18px 100%;
-        opacity: 1;
         animation: wheel 2s infinite;
+        opacity: 1;
     }
     @keyframes wheel {
         50% { opacity: 0.5; }

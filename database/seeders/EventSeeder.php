@@ -16,9 +16,8 @@ class EventSeeder extends Seeder
     {
         Event::insert([
             [ 'event' => 'roleAdd',  'title' => '組織管理', 'content' => '新增<strong>%s</strong>權限。' ],
-            [ 'event' => 'roleAdd2', 'title' => '組織管理', 'content' => '新增<strong>%s</strong>的<strong>%s</strong>權限。' ],
             [ 'event' => 'roleDel',  'title' => '組織管理', 'content' => '移除<strong>%s</strong>權限。' ],
-            [ 'event' => 'roleDel2', 'title' => '組織管理', 'content' => '移除<strong>%s</strong>的<strong>%s</strong>權限。' ],
+            [ 'event' => 'roleBoth', 'title' => '組織管理', 'content' => '新增<strong>%s</strong>權限，移除<strong>%s</strong>權限。' ],
         ]);
     }
 }

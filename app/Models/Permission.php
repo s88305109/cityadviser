@@ -51,15 +51,14 @@ class Permission extends Model
                     $event     = 'roleAdd';
 
                     if ($role->parent > 0) {
-                        $event = 'roleAdd2';
-                        $parent = Role::find($role->parent);
+                        $event       = 'roleAdd2';
+                        $parent      = Role::find($role->parent);
                         $parameter[] = $parent->title;
                     }
 
-                    $parameter[] = $role->title;
-                    $parameter   = json_encode($parameter, JSON_UNESCAPED_UNICODE);
-
-                    Secretary::createEvent($user_id, $event, $parameter);
+                    $parameter[]             = $role->title;
+                    $parameter               = json_encode($parameter, JSON_UNESCAPED_UNICODE);
+                    $events['add'][$event][] = $parameter;
                 }
             }
         }
@@ -79,18 +78,56 @@ class Permission extends Model
                     $event     = 'roleDel';
 
                     if ($role->parent > 0) {
-                        $event = 'roleDel2';
-                        $parent = Role::find($role->parent);
+                        $event       = 'roleDel2';
+                        $parent      = Role::find($role->parent);
                         $parameter[] = $parent->title;
                     }
 
-                    $parameter[] = $role->title;
-                    $parameter   = json_encode($parameter, JSON_UNESCAPED_UNICODE);
-
-                    Secretary::createEvent($user_id, $event, $parameter);
+                    $parameter[]             = $role->title;
+                    $parameter               = json_encode($parameter, JSON_UNESCAPED_UNICODE);
+                    $events['del'][$event][] = $parameter;
                 }
             }
         }
+
+        $addStr = array();
+        $delStr = array();
+
+        if (! empty($events['add'])) {
+            foreach($events['add'] as $key => $row) {
+                foreach($row as $value) {
+                    $json = json_decode($value, true);
+
+                    if (count($json) == 2)
+                        $addStr[] = $json[0].'的'.$json[1];
+                    else
+                        $addStr[] = $json[0];
+                }
+            }
+        }
+
+        if (! empty($events['del'])) {
+            foreach($events['del'] as $key => $row) {
+                foreach($row as $value) {
+                    $json = json_decode($value, true);
+
+                    if (count($json) == 2)
+                        $delStr[] = $json[0].'的'.$json[1];
+                    else
+                        $delStr[] = $json[0];
+                }
+            }
+        }
+
+        $addStr = implode($addStr, '、');
+        $delStr = implode($delStr, '、');
+
+        if (! empty($addStr) && empty($delStr))
+            Secretary::createEvent($user_id, 'roleAdd', json_encode(array($addStr), JSON_UNESCAPED_UNICODE));
+        else if (empty($addStr) && ! empty($delStr))
+            Secretary::createEvent($user_id, 'roleDel', json_encode(array($delStr), JSON_UNESCAPED_UNICODE));
+        else if (! empty($addStr) && ! empty($delStr))
+            Secretary::createEvent($user_id, 'roleBoth', json_encode(array($addStr, $delStr), JSON_UNESCAPED_UNICODE));
     }
 
     // 取得職位的權限設定並陣列化
