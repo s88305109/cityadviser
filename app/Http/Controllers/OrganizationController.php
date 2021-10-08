@@ -426,6 +426,13 @@ class OrganizationController extends Controller
         if (empty($request->input('company_bank_account')))
             $errors['company_bank_account'] = __('請輸入公司銀行帳戶');
 
+        if (! empty($request->input('principal'))) {
+            $user = User::find($company->principal);
+
+            if ($user->company_id == 1)
+                $errors['principal_name'] = __('總公司員工不可指定為分公司負責人');
+        }
+
         if (count($errors) > 0)
             return redirect()->back()->withInput()->withErrors($errors);
 
@@ -588,6 +595,73 @@ class OrganizationController extends Controller
             ->get();
 
         return response()->json($users);
+    }
+
+    // 選擇公司負責人
+    public function choose(Request $request)
+    {
+        $company = Company::find($request->companyId);
+        $users   = User::getEmployees('on', $request->companyId, true, 'user.date_employment', 'desc', 20, 1);
+
+        return view('organization.company.choose', [
+            'area'      => $request->area,
+            'company'   => $company,
+            'companyId' => $request->companyId, 
+            'users'     => $users,
+            'offset'    => 0
+        ]);
+    }
+
+    // 選擇公司負責人 (載入更多)
+    public function moreChoose(Request $request)
+    {
+        sleep(0.5);
+
+        $page   = ! empty($request->page) ? $request->page : 1;
+        $per    = 20;
+        $offset = ($page - 1) * $per;
+
+        $company = Company::find($request->companyId);
+        $users   = User::getEmployees('on', $request->companyId, true, 'user.date_employment', 'desc', $per, $page);
+
+        return view('organization.company.choose-each', [
+            'area'      => $request->area,
+            'company'   => $company,
+            'companyId' => $request->companyId, 
+            'users'     => $users,
+            'offset'    => $offset
+        ]);
+    }
+
+    public function setPrincipal(Request $request)
+    {
+        $company = Company::find($request->input('companyId'));
+
+        if (empty($company))
+            return redirect()->back()->withInput()->withErrors(['error' => __('查無公司資料')]);
+
+        $region = Region::find($company->company_city);
+        $user   = User::find($request->input('choose'));
+
+        if (empty($user))
+            return redirect()->back()->withInput()->withErrors(['error' => __('查無員工資料')]);
+        else if (Company::where('principal', $request->input('choose'))->where('status', 1)->where('company_id', '!=', $request->input('company_id'))->count() > 0)
+            return redirect()->back()->withInput()->withErrors(['error' => __('此員工已是其他公司的負責人，不可同時負責兩間公司。')]);
+        else if ($user->company_id == 1)
+            return redirect()->back()->withInput()->withErrors(['error' => __('總公司員工不可指定為分公司負責人')]);
+
+        if (! empty($company) & ! empty($request->input('choose'))) {
+            $company->principal = $request->input('choose');
+            $company->save();
+            
+            if (! empty($user)) {
+                $user->company_id = $company->company_id;
+                $user->job_id     = 15;
+                $user->save();
+            }
+        }
+
+        return redirect('/organization/company/'.$region->area);
     }
 
 }

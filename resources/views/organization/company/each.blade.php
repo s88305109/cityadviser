@@ -8,7 +8,10 @@
 				<span class="input-group-text" id="basic-addon3">負責人</span>
 				
 				@if(empty($row->principal))
-				<div class="form-control text-center"><a href="/organization/employee/new">點我新增負責人</a></div>
+				<div class="form-control">
+					<a class="float-start" href="/organization/employee/new">點我新增負責人</a>
+					<a class="float-end" href="/organization/company/{{ $area }}/choose/{{ $row->company_id }}">員工列表</a>
+				</div>
 				@else
 				<div class="form-control">{{ $row->principal_name }}</div>
 				@endif

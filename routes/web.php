@@ -113,25 +113,41 @@ Route::middleware(['auth', 'permission'])->name('auth.')->group(function () {
                 // 保存公司資料
                 Route::post('/organization/company/saveCompany', [OrganizationController::class, 'saveCompany']);
                 // 公司列表
-                Route::get('/organization/company/{area}', [OrganizationController::class, 'companyList']);
+                Route::get('/organization/company/{area}', [OrganizationController::class, 'companyList'])->where('area', '^(北部|中部|南部|東部|離島)$');;
                 Route::get('/organization/company/moreCompany/{area}/{page}', [OrganizationController::class, 'moreCompany']);
                 // 編輯公司
-                Route::get('/organization/company/{area}/{companyId}', [OrganizationController::class, 'modifyCompany']);
+                Route::get('/organization/company/{area}/{companyId}', [OrganizationController::class, 'modifyCompany'])
+                    ->where('area', '^(北部|中部|南部|東部|離島)$')
+                    ->where('companyId', '[0-9]+');;
                 // 員工列表
-                Route::redirect('/organization/company/{area}/{companyId}/people', '/organization/company/{area}');
-                Route::get('/organization/company/{area}/{companyId}/people/{state}', [OrganizationController::class, 'companyPeople'])->where('state', '^(left|on)$');
-                Route::get('/organization/company/{area}/{companyId}/morePeople/{state}/{page}', [OrganizationController::class, 'morePeople'])->where('state', '^(left|on)$');
+                Route::redirect('/organization/company/{area}/{companyId}/people', '/organization/company/{area}')
+                    ->where('area', '^(北部|中部|南部|東部|離島)$');
+                Route::get('/organization/company/{area}/{companyId}/people/{state}', [OrganizationController::class, 'companyPeople'])
+                    ->where('state', '^(left|on)$')
+                    ->where('area', '^(北部|中部|南部|東部|離島)$');
+                Route::get('/organization/company/{area}/{companyId}/morePeople/{state}/{page}', [OrganizationController::class, 'morePeople'])
+                    ->where('state', '^(left|on)$')
+                    ->where('area', '^(北部|中部|南部|東部|離島)$');
                 // 編輯公司資料 (凍結公司)
                 Route::post('/organization/company/lockCompany', [OrganizationController::class, 'lockCompany']);
                 // 編輯公司資料 (解除凍結)
                 Route::post('/organization/company/unlockCompany', [OrganizationController::class, 'unlockCompany']);
                 // 編輯員工資料
-                Route::get('/organization/company/{area}/{companyId}/people/{state}/{userId}', [OrganizationController::class, 'modifyPeople'])->where('state', '^(left|on)$');
+                Route::get('/organization/company/{area}/{companyId}/people/{state}/{userId}', [OrganizationController::class, 'modifyPeople'])
+                    ->where('state', '^(left|on)$')
+                    ->where('area', '^(北部|中部|南部|東部|離島)$');
                 // 編輯員工資料 (保存)
                 Route::post('/organization/company/savePeople', [OrganizationController::class, 'savePeople']);
                 // 查找User公司負責人
                 Route::post('/organization/company/findUser', [OrganizationController::class, 'findUser']);
-                Route::post('/organization/company/{area}', [OrganizationController::class, 'companyList']);
+                Route::post('/organization/company/{area}', [OrganizationController::class, 'companyList'])->where('area', '^(北部|中部|南部|東部|離島)$');
+                // 選擇公司負責人
+                Route::redirect('/organization/company/{area}/choose', '/organization/company/{area}')->where('area', '^(北部|中部|南部|東部|離島)$');
+                Route::get('/organization/company/{area}/choose/{companyId}', [OrganizationController::class, 'choose'])
+                    ->where('area', '^(北部|中部|南部|東部|離島)$');
+                Route::get('/organization/company/{area}/moreChoose/{companyId}/{page}', [OrganizationController::class, 'moreChoose'])
+                    ->where('area', '^(北部|中部|南部|東部|離島)$');
+                Route::post('/organization/company/setPrincipal', [OrganizationController::class, 'setPrincipal']);
             });
         });
 
