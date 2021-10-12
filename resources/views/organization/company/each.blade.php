@@ -10,7 +10,7 @@
 				@if(empty($row->principal))
 				<div class="form-control">
 					<a class="float-start" href="/organization/employee/new">點我新增負責人</a>
-					<a class="float-end" href="/organization/company/{{ $area }}/choose/{{ $row->company_id }}">員工列表</a>
+					<a class="float-end" href="/organization/company/{{ $row->area }}/choose/{{ $row->company_id }}">員工列表</a>
 				</div>
 				@else
 				<div class="form-control">{{ $row->principal_name }}</div>
@@ -18,8 +18,8 @@
 			</div>
 		</h6>
 		<div class="text-center">
-			<a class="btn btn-primary me-5" href="/organization/company/{{ $area }}/{{ $row->company_id }}">編輯公司</a>
-			<a class="btn btn-primary" href="/organization/company/{{ $area }}/{{ $row->company_id }}/people/on">員工列表</a>
+			<a class="btn btn-primary me-5" href="/organization/company/{{ $row->area }}/{{ $row->company_id }}">編輯公司</a>
+			<a class="btn btn-primary" href="/organization/company/{{ $row->area }}/{{ $row->company_id }}/people/on">員工列表</a>
 		</div>
 	</div>
 </div>

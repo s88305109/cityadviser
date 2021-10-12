@@ -38,17 +38,16 @@
         .inner-addon.reset-icon i.bi { 
             z-index: 10;
             display: none; 
-            margin-right: .25em;;
+            margin-right: .25em;
         }
         .left-addon i.bi  { left:  0px; }
         .right-addon i.bi { right: 0px; }
         .left-addon input { padding-left:  30px; }
         .right-addon input { padding-right: 30px; }
-
         .inner-addon i.bi.password-visible {
-            z-index: 999;
+            z-index: 20;
             display: inline-block;
-            margin-right: 4px;
+            margin-right: .25em;
         }
 
         /* Form Input Group */
@@ -63,7 +62,7 @@
         .input-group-top .input-group-text { border-radius: 0.25em 0.25em 0 0; }
         .input-group-top > .form-control,
         .input-group-top > .form-select { border-radius: 0 0 0.25em 0.25em; }
-        .input-group-top.inner-addon.reset-icon i.bi { margin-top: -1.8em; }
+        .input-group-top.inner-addon.reset-icon i.bi.bi-x-circle-fill { margin-top: -1.8em; }
         .job-set .btn { min-width: 106px; }
         .job-set .card-header { text-align: center; }
         .input-group-text, .gender-label { 
@@ -185,12 +184,13 @@
         /* 組織管理 > 公司列表 */
         .company-list .badge.num-count{
             margin-top: -2.5em;
-            margin-right: -0.25em;
+            margin-right: -0.8em;
+            filter: opacity(1);
         }
 
         /* 組織管理 > 權限管理 & 客製化權限 */
         .role-edit .list-group-item .form-switch { padding-left: 3.5em; }
-        .role-edit .list-group-item .form-switch.triple { padding-left: 4.5em; }
+        .role-edit .list-group-item.grandson .form-switch { padding-left: 4.5em; }
 
         /* 個人資料 */
         .information-edit .password-change-text { 
@@ -216,7 +216,7 @@
 
         $(document).ready(function () {
             {{-- 文字方塊叉叉圖示處理 --}}
-            $(".inner-addon.reset-icon i.bi").click(function() {
+            $(".inner-addon.reset-icon i.bi.bi-x-circle-fill").click(function() {
                 isChanged = true;
                 $(this).hide().parent().children("input, textarea").val("").focus().trigger("keyup");
 
@@ -229,21 +229,34 @@
             });
 
             $(".inner-addon.reset-icon input, .inner-addon.reset-icon textarea").on("keyup",function(e) {
-                if ($(this).val() != "") {
-                    $(this).css("background-image", "none").parent().children("i.bi").fadeIn();
-                } else {
-                    $(this).parent().children("i.bi").hide();
-                }
+                if ($(this).val() != "")
+                    $(this).css("background-image", "none").parent().children("i.bi.bi-x-circle-fill").fadeIn();
+                else
+                    $(this).parent().children("i.bi.bi-x-circle-fill").hide();
             }).on("focus",function(e){
-                if ($(this).val() != "") {
+                if ($(this).val() != "")
                     $(this).css("background-image", "none").parent().children("i.bi").fadeIn();
-                } else {
-                    $(this).parent().children("i.bi").hide();
-                }
-            }).on("blur",function(e){ $(this).parent().children("i.bi").fadeOut(); });
+                else
+                    $(this).parent().children("i.bi.bi-x-circle-fill").hide();
+            }).on("blur",function(e){ $(this).parent().children("i.bi.bi-x-circle-fill").fadeOut(); });
 
+            {{-- 密碼切換顯示功能 --}}
+            $("i.password-visible").click(function () {
+                var obj = $(this).parent().find("input");
+
+                if($(obj).attr("type") == "password") {
+                    $("#user_password").attr("type", "text");
+                    $("#show_password").val(1);
+                } else {
+                    $("#user_password").attr("type", "password");
+                    $("#show_password").val(0);
+                }
+            });
+
+            {{-- 捲動 GoTop & GoBottom 功能 --}}
             $(window).scroll(function(event){
                 var st = $(this).scrollTop();
+
                 if (st > lastScrollTop){
                     $(".go-top").hide();
                     $(".go-bottom").show();
@@ -253,6 +266,7 @@
                     $(".go-bottom").hide();
                     setTimeout(function(){ $(".go-top").fadeOut(); }, 2000);
                 }
+
                 lastScrollTop = st;
             });
         });
@@ -299,11 +313,10 @@
                 url: "/unread",
                 dataType: "text",
                 success: function (response) {
-                    if (response > 0) {
+                    if (response > 0)
                         $("span.unread").html(response).show();
-                    } else {
+                    else
                         $("span.unread").hide();
-                    }
                 },
                 error: function (thrownError) {
                     showMessageModal(thrownError.responseJSON.message);

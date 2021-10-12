@@ -4,18 +4,6 @@
 
 <script>
     $(document).ready(function () {
-        $("i.password-visible").click(function () {
-            var obj = $(this).parent().find("input");
-
-            if($(obj).attr("type") == "password") {
-                $("#user_password").attr("type", "text");
-                $("#show_password").val(1);
-            } else {
-                $("#user_password").attr("type", "password");
-                $("#show_password").val(0);
-            }
-        });
-
         $("#saveBtn").click(function () {
             showLoadingMask();
             allowRedirect = true;
@@ -251,6 +239,7 @@
                             <div class="input-group">
                                 <div class="input-group-text @error('user_number') text-danger border-danger @enderror">平台帳號</div>
                             </div>
+
                             <i class="bi bi-x-circle-fill text-danger"></i>
                             <input class="form-control @error('user_number') is-invalid @enderror" id="user_number" name="user_number" type="text" value="{{ ($errors->isEmpty()) ? $user->user_number : old('user_number') }}">
 
@@ -261,11 +250,12 @@
                             @enderror
                         </div>
 
-                        <div class="input-group-top inner-addon right-addon mb-3">
+                        <div class="input-group-top inner-addon right-addon reset-icon mb-3">
                             <div class="input-group">
                                 <div class="input-group-text @error('user_password') text-danger border-danger @enderror">平台密碼</div>
                             </div>
                             
+                            <i class="bi bi-x-circle-fill text-danger"></i>
                             <i class="bi bi-eye-fill password-visible"></i>
                             <input class="form-control no-background-image @error('user_password') is-invalid @enderror" id="user_password" name="user_password" type="password" value="{{ old('user_password') }}" placeholder="8-25位數密碼，請區分大小寫">
 

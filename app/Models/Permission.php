@@ -46,7 +46,7 @@ class Permission extends Model
                     if (empty($oldData) && Permission::where('job_id', $job->job_id)->where('permission', $value)->count() > 0)
                         continue;
 
-                    $role      = Role::where('role', $value)->where('type', $job->type)->first();
+                    $role      = Role::where('role', $value)->first();
                     $parameter = array();
                     $event     = 'roleAdd';
 
@@ -73,7 +73,7 @@ class Permission extends Model
                     if (empty($roles) && Permission::where('job_id', $job->job_id)->where('permission', $key)->count() > 0)
                         continue;
 
-                    $role      = Role::where('role', $key)->where('type', $job->type)->first();
+                    $role      = Role::where('role', $key)->first();
                     $parameter = array();
                     $event     = 'roleDel';
 

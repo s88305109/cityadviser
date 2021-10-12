@@ -115,6 +115,9 @@ Route::middleware(['auth', 'permission'])->name('auth.')->group(function () {
                 // 公司列表
                 Route::get('/organization/company/{area}', [OrganizationController::class, 'companyList'])->where('area', '^(北部|中部|南部|東部|離島)$');;
                 Route::get('/organization/company/moreCompany/{area}/{page}', [OrganizationController::class, 'moreCompany']);
+                // 公司搜尋
+                Route::post('/organization/company/search', [OrganizationController::class, 'search']);
+                Route::post('/organization/company/moreSearch', [OrganizationController::class, 'moreSearch']);
                 // 編輯公司
                 Route::get('/organization/company/{area}/{companyId}', [OrganizationController::class, 'modifyCompany'])
                     ->where('area', '^(北部|中部|南部|東部|離島)$')

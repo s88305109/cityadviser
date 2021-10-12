@@ -99,9 +99,8 @@
         });
 
         $("#user_number, #user_password, #captcha").on("keypress",function(e) {
-            if(e.which == 13) {
+            if(e.which == 13)
                 $("#run").trigger("click");
-            }
         });
 
         @error('user_password')

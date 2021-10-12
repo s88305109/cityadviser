@@ -242,6 +242,13 @@ class OrganizationController extends Controller
         $user->status = 0;
         $user->save();
 
+        // 若是公司負責人則連動凍結公司
+        $principal = Company::where('principal', $user->user_id)->first();
+        if (! empty($principal)) {
+            $principal->status = 0;
+            $principal->save();
+        }
+
         if ($company->type == 1)
             return redirect('/organization/employee/list/'.$request->input('state'));
         else
@@ -363,7 +370,7 @@ class OrganizationController extends Controller
     {
         $areas    = Company::getAreas();
         $area     = empty($request->area) ? '南部' : $request->area;
-        $companys = Company::getAreaRecord($area);
+        $companys = Company::getRecord($area, null);
 
         return view('organization.company.companyList', ['area' => $area, 'areas' => $areas, 'companys' => $companys]);
     }
@@ -375,7 +382,7 @@ class OrganizationController extends Controller
 
         $page   = ! empty($request->page) ? $request->page : 1;
         $area     = empty($request->area) ? '南部' : $request->area;
-        $companys = Company::getAreaRecord($area, $page);
+        $companys = Company::getRecord($area, null, $page);
 
         return view('organization.company.each', ['area' => $area, 'companys' => $companys]);
     }
@@ -427,7 +434,7 @@ class OrganizationController extends Controller
             $errors['company_bank_account'] = __('請輸入公司銀行帳戶');
 
         if (! empty($request->input('principal'))) {
-            $user = User::find($company->principal);
+            $user = User::find($request->input('principal'));
 
             if ($user->company_id == 1)
                 $errors['principal_name'] = __('總公司員工不可指定為分公司負責人');
@@ -543,9 +550,9 @@ class OrganizationController extends Controller
     {
         sleep(0.5);
 
-        $page   = ! empty($request->page) ? $request->page : 1;
-        $per    = 20;
-        $offset = ($page - 1) * $per;
+        $page    = ! empty($request->page) ? $request->page : 1;
+        $per     = 20;
+        $offset  = ($page - 1) * $per;
 
         $company = Company::find($request->companyId);
         $users   = User::getEmployees($request->state, $request->companyId, false, 'user.date_employment', 'desc', $per, $page);
@@ -563,12 +570,11 @@ class OrganizationController extends Controller
     // 編輯員工資料 (分公司)
     public function modifyPeople(Request $request)
     {
-        $user = User::where('user_id', $request->userId)->first();
-
-        $company = Company::orderBy('sort')->get();                                 // 公司資料
-        $region = Region::orderBy('sort')->get();                                   // 縣市資料
-        $job1 = Job::where('type', 1)->where('status', 1)->orderBy('sort')->get();  // 總公司職務
-        $job2 = Job::where('type', 2)->where('status', 1)->orderBy('sort')->get();  // 分公司職務
+        $user    = User::where('user_id', $request->userId)->first();
+        $company = Company::orderBy('sort')->get();                                     // 公司資料
+        $region  = Region::orderBy('sort')->get();                                      // 縣市資料
+        $job1    = Job::where('type', 1)->where('status', 1)->orderBy('sort')->get();   // 總公司職務
+        $job2    = Job::where('type', 2)->where('status', 1)->orderBy('sort')->get();   // 分公司職務
 
         return view('organization.employee.edit', [
             'area'      => $request->area,
@@ -582,7 +588,7 @@ class OrganizationController extends Controller
         ]);
     }
 
-    // 查找區經理
+    // 查找公司負責人 (只顯示分公司的員工)
     public function findUser(Request $request)
     {
         sleep(0.5);
@@ -590,8 +596,10 @@ class OrganizationController extends Controller
         if (empty($request->input('principal_name')))
             return null;
 
-        $users = User::where('name', 'like', '%'.$request->input('principal_name').'%')
-            ->select('user_id', 'name')
+        $users = User::join('company', 'company.company_id', '=', 'user.company_id')
+            ->where('user.name', 'like', '%'.$request->input('principal_name').'%')
+            ->where('company.type', 2)
+            ->select('user.user_id', 'user.name')
             ->get();
 
         return response()->json($users);
@@ -662,6 +670,25 @@ class OrganizationController extends Controller
         }
 
         return redirect('/organization/company/'.$region->area);
+    }
+
+    // 公司搜尋
+    public function search(Request $request)
+    {
+        $companys = Company::getRecord(null, $request->input('keyword'));
+
+        return view('organization.company.search', ['keyword' => $request->input('keyword'), 'companys' => $companys]);
+    }
+
+    // 公司列表 載入更多
+    public function moreSearch(Request $request)
+    {
+        sleep(0.5);
+
+        $page   = ! empty($request->page) ? $request->page : 1;
+        $companys = Company::getRecord(null, $request->input('keyword'), $page);
+
+        return view('organization.company.each', ['keyword' => $request->input('keyword'), 'companys' => $companys]);
     }
 
 }

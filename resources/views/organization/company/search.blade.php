@@ -31,9 +31,11 @@
 
 	function loadMore(page) {
         $.ajax({
-            type: "GET",
-            url: "/organization/company/moreCompany/{{ $area }}/" + page,
+            type: "POST",
+            url: "/organization/company/moreSearch",
+            data: { keyword : '{{ $keyword }}', page :page },
             dataType: "text",
+            headers: { "X-CSRF-TOKEN": $("meta[name=\"csrf-token\"]").attr("content") },
             success: function (response) {
             	if (response == "") 
             		end = true;
@@ -53,13 +55,13 @@
 <div class="container company-list list">
 	<div class="row justify-content-center">
 		<div class="col-md-8 list">
-			<h4><i class="bi bi-building"></i> 公司管理（公司列表）</h4>
+			<h4><i class="bi bi-building"></i> 公司管理（公司搜尋）</h4>
 
 			<form class="search" method="POST" action="/organization/company/search">
 				@csrf
 				
 				<div class="input-group mb-2">
-					<input type="text" class="form-control form-control skip-change-validate" name="keyword" placeholder="請輸入搜尋關鍵字">
+					<input type="text" class="form-control form-control skip-change-validate" name="keyword" value="{{ $keyword }}" placeholder="請輸入搜尋關鍵字">
 					<button type="submit" class="input-group-text btn-primary rounded-end"><i class="bi bi-search me-2"></i>{{ __('搜尋') }}</button>
 				</div>
 			</form>
@@ -73,12 +75,6 @@
 					<span class="visually-hidden">Loading...</span>
 				</div>
 			</div>
-		</div>
-
-		<div class="btn-group bottom-tabs">
-			@foreach($areas as $value)
-			<a class="btn btn-outline-primary @if($area == $value) active @endif" href="/organization/company/{{ $value }}">{{ $value }}</a>
-			@endforeach
 		</div>
 	</div>
 </div>

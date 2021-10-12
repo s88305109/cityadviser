@@ -45,7 +45,7 @@
         if ($("#principal").val() != "" && $("#old_principal").val() != "" && $("#principal").val() != $("#old_principal").val()) {
             showConfirmModal("目前負責人為" + $("#old_principal").data("name") + "，確定要更換成" + $("#principal_name").val() + "？", "forceSubmit();");
         } else {
-            showConfirmModal("確定儲存嗎？", "forceSubmit();");
+            showConfirmModal("確定{{ (empty($company->company_id)) ? '新增' : '儲存' }}嗎？", "forceSubmit();");
         }
     }
 

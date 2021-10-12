@@ -154,7 +154,11 @@ class StaffController extends Controller
         $user    = User::find($request->userId);
         $company = Company::find(Auth::user()->company_id); // 公司資料
         $region  = Region::orderBy('sort')->get();          // 縣市資料
-        $job     = Job::where('type', $company->type)->where('status', 1)->orderBy('sort')->get();  // 分公司職務
+        $job     = Job::where('type', $company->type)       // 分公司職務 (不顯示15[負責人])
+            ->where('job_id', '!=', 15)
+            ->where('status', 1)
+            ->orderBy('sort')
+            ->get();
 
         // 檢查是否為同公司的員工
         if (Auth::user()->company_id != $user->company_id)

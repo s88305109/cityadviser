@@ -31,14 +31,30 @@ class Company extends Model
     }
 
     // 取得區域內公司人數資料
-    public static function getAreaRecord($area = '北部', $page = 1)
+    public static function getRecord($area = '北部', $keyword = null, $page = 1)
     {
         $per    = 10;
         $offset = ($page - 1) * $per;
 
         $companys = Company::join('region', 'company_city', '=', 'region.region_id')
                 ->where('company.type', 2)
-                ->where('region.area', $area)
+                ->when($area, function ($query, $area) {
+                    return $query->where('region.area', $area);
+                })
+                ->when($keyword, function ($query, $keyword) {
+                    return $query->where(function($query) use ($keyword) {
+                            $query->orWhere('company.company_name', 'like', '%'.$keyword.'%');
+                            $query->orWhere('company.company_address', 'like', '%'.$keyword.'%');
+                            $query->orWhere('company.company_no', $keyword);
+                            $query->orWhere('company.phone_number', $keyword);
+                            $query->orWhereExists(function ($query) use ($keyword) {
+                                $query->select('user.user_id')
+                                    ->from('user')
+                                    ->whereColumn('company.company_id', 'user.company_id')
+                                    ->where('user.name', 'like', '%'.$keyword.'%');
+                            });
+                    });
+                })
                 ->orderBy('company.sort', 'desc')
                 ->offset($offset)
                 ->limit($per)
@@ -47,6 +63,7 @@ class Company extends Model
         foreach($companys as $key => $row) {
             $companys[$key]['count'] = User::getCompanyCount($row->company_id);
             $companys[$key]['principal_name'] = (! empty($row->principal)) ? User::where('user_id', $row->principal)->first()->name : null;
+            $companys[$key]['area'] = Region::find($row->company_city)->area;
         }
 
         return $companys;
