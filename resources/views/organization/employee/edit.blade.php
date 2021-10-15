@@ -44,7 +44,7 @@
 
         $("#date_resignation").change(function() {
             if ($(this).val() == "")
-                $("#reason").val("");
+                $("#reason").val("").parent().hide();
             else 
                 $("#reason").parent().removeClass("d-none").css("display", "flex").show();
         });
