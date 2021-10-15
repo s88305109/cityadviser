@@ -123,11 +123,11 @@ class Permission extends Model
         $delStr = implode($delStr, '、');
 
         if (! empty($addStr) && empty($delStr))
-            Secretary::createEvent($user_id, 'roleAdd', json_encode(array($addStr), JSON_UNESCAPED_UNICODE));
+            Secretary::createEvent($user_id, 'roleAdd', [$addStr]);
         else if (empty($addStr) && ! empty($delStr))
-            Secretary::createEvent($user_id, 'roleDel', json_encode(array($delStr), JSON_UNESCAPED_UNICODE));
+            Secretary::createEvent($user_id, 'roleDel', [$delStr]);
         else if (! empty($addStr) && ! empty($delStr))
-            Secretary::createEvent($user_id, 'roleBoth', json_encode(array($addStr, $delStr), JSON_UNESCAPED_UNICODE));
+            Secretary::createEvent($user_id, 'roleBoth', array($addStr, $delStr));
     }
 
     // 取得職位的權限設定並陣列化

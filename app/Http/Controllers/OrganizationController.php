@@ -13,6 +13,7 @@ use App\Models\Job;
 use App\Models\Company;
 use App\Models\Permission;
 use App\Models\Role;
+use App\Models\Secretary;
 
 class OrganizationController extends Controller
 {
@@ -43,12 +44,14 @@ class OrganizationController extends Controller
         $job2    = Job::where('type', 2)->where('status', 1)->orderBy('sort')->get();  // 分公司職務
 
         return view('organization.employee.edit', [
-            'state'   => $request->state,
-            'user'    => $user,
-            'region'  => $region,
-            'company' => $company,
-            'job1'    => $job1,
-            'job2'    => $job2
+            'state'     => $request->state,
+            'user'      => $user,
+            'region'    => $region,
+            'company'   => $company,
+            'job1'      => $job1,
+            'job2'      => $job2,
+            'area'      => $request->area,
+            'companyId' => $request->companyId,
         ]);
     }
 
@@ -173,6 +176,11 @@ class OrganizationController extends Controller
                 return redirect()->back()->withInput()->withErrors(['user_id' => __('此員工是'.$principalCheck->company_name.'的負責人，不能變更所屬公司。')]);
             else if ($request->input('job_id') != $user->job_id & ! empty($principalCheck))
                 return redirect()->back()->withInput()->withErrors(['user_id' => __('此員工是'.$principalCheck->company_name.'的負責人，不能變更職位。')]);
+
+            if ($user->job_id != $request->input('job_id')) {
+                $job = Job::find($request->input('job_id'));
+                Secretary::createEvent($user->user_id, 'jobChange', [$job->job_title]);
+            }
         } else {
             // 取不重複的亂數做UID
             do {
@@ -211,7 +219,17 @@ class OrganizationController extends Controller
         $user->save();
 
         // 若新增員工且指定為負責人 則一併自動變更公司負責人ID
-        if($request->input('job_id') == 15 && empty($company->principal)) {
+        if($request->input('job_id') == 15) {
+            // 先將原負責人變更為員工
+            if (! empty($company->principal)) {
+                $findUser = User::find($company->principal);
+                $findUser->job_id = 16;
+                $findUser->save();
+
+                $job = Job::find(16);
+                Secretary::createEvent($findUser->user_id, 'jobChange', [$job->job_title]);
+            }
+
             $company->principal = $user->user_id;
             $company->save();
         }
@@ -457,6 +475,9 @@ class OrganizationController extends Controller
                 if (! empty($user)) {
                     $user->job_id = 16;
                     $user->save();
+
+                    $job = Job::find(16);
+                    Secretary::createEvent($user->user_id, 'jobChange', [$job->job_title]);
                 }
             }
         } else {
@@ -484,6 +505,9 @@ class OrganizationController extends Controller
                 $user->company_id = $company->company_id;
                 $user->job_id     = 15;
                 $user->save();
+
+                $job = Job::find(15);
+                Secretary::createEvent($user->user_id, 'jobChange', [$job->job_title]);
             }
         }
 
@@ -666,6 +690,9 @@ class OrganizationController extends Controller
                 $user->company_id = $company->company_id;
                 $user->job_id     = 15;
                 $user->save();
+
+                $job = Job::find(15);
+                Secretary::createEvent($user->user_id, 'jobChange', [$job->job_title]);
             }
         }
 

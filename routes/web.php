@@ -139,8 +139,6 @@ Route::middleware(['auth', 'permission'])->name('auth.')->group(function () {
                 Route::get('/organization/company/{area}/{companyId}/people/{state}/{userId}', [OrganizationController::class, 'modifyPeople'])
                     ->where('state', '^(left|on)$')
                     ->where('area', '^(北部|中部|南部|東部|離島)$');
-                // 編輯員工資料 (保存)
-                Route::post('/organization/company/savePeople', [OrganizationController::class, 'savePeople']);
                 // 查找User公司負責人
                 Route::post('/organization/company/findUser', [OrganizationController::class, 'findUser']);
                 Route::post('/organization/company/{area}', [OrganizationController::class, 'companyList'])->where('area', '^(北部|中部|南部|東部|離島)$');
@@ -151,6 +149,9 @@ Route::middleware(['auth', 'permission'])->name('auth.')->group(function () {
                 Route::get('/organization/company/{area}/moreChoose/{companyId}/{page}', [OrganizationController::class, 'moreChoose'])
                     ->where('area', '^(北部|中部|南部|東部|離島)$');
                 Route::post('/organization/company/setPrincipal', [OrganizationController::class, 'setPrincipal']);
+                // 新增公司負責人
+                Route::redirect('/organization/company/{area}/addPerson', '/organization/company/{area}')->where('area', '^(北部|中部|南部|東部|離島)$');
+                Route::get('/organization/company/{area}/addPerson/{companyId}', [OrganizationController::class, 'new'])->where('area', '^(北部|中部|南部|東部|離島)$');
             });
         });
 

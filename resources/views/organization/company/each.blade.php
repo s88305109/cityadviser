@@ -9,7 +9,7 @@
 				
 				@if(empty($row->principal))
 				<div class="form-control">
-					<a class="float-start" href="/organization/employee/new">點我新增負責人</a>
+					<a class="float-start" href="/organization/company/{{ $row->area }}/addPerson/{{ $row->company_id }}">點我新增負責人</a>
 					<a class="float-end" href="/organization/company/{{ $row->area }}/choose/{{ $row->company_id }}">員工列表</a>
 				</div>
 				@else

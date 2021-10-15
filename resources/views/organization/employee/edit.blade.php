@@ -68,6 +68,12 @@
         @if(old('show_password') == 1)
         $("#user_password").attr("type", "text");
         @endif
+
+        @if(empty($user->user_id) && ! empty($companyId))
+        $("#company_id").val({{ $companyId }});
+        $("#job15").prop("checked", true).parent().find("label").addClass("active");
+        checkCompanyType();
+        @endif
     });
 
     function checkCompanyType() {

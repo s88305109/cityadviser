@@ -57,7 +57,7 @@ class Secretary extends Model
         $secretary = new Secretary();
         $secretary->user_id    = $user_id;
         $secretary->event      = $event;
-        $secretary->parameter  = $parameter;
+        $secretary->parameter  = json_encode($parameter, JSON_UNESCAPED_UNICODE);
         $secretary->deadline   = $deadline;
         $secretary->item_id    = $item_id;
         $secretary->url        = $url;
