@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Company;
+use App\Models\Job;
 
 class UserController extends Controller
 {    
@@ -19,9 +21,15 @@ class UserController extends Controller
     // 個人資料頁面
     public function information(Request $request)
     {
-        $user = Auth::user();
+        $user    = Auth::user();
+        $company = Company::find($user->company_id);
+        $job     = Job::find($user->job_id);
 
-        return view('user.information', ['user' => $user]);
+        return view('user.information', [
+            'user'    => $user,
+            'company' => $company,
+            'job'     => $job
+        ]);
     }
 
     // 修改密碼

@@ -80,13 +80,25 @@
                             <label for="fullname">姓名</label>
                             <input class="form-control" type="text" value="{{ $user->name }}" readonly>
                         </div>
+
                         <div class="form-group">
                             <label for="phone">手機號碼</label>
                             <input class="form-control" type="text" value="{{ $user->phone_number }}" readonly>
                         </div>
+
                         <div class="form-group">
                             <label for="email">Email</label>
                             <input class="form-control" type="text" value="{{ $user->email }}" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">所屬公司</label>
+                            <input class="form-control" type="text" value="{{ $company->company_name }}" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">職位</label>
+                            <input class="form-control" type="text" value="{{ $job->job_title }}" readonly>
                         </div>
 
                         <hr>
