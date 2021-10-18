@@ -98,6 +98,17 @@
             $("ul.check-list li i.bi").hide();
         });
 
+        $("#prev2").click(function () {
+            $("#captcha, #user_password").val("");
+            $(".step1, .step3, #prev, #prev2").addClass("d-none");
+            $(".step2, #prev").removeClass("d-none");
+            $("#captcha, #user_password").removeClass("is-invalid");
+            $("#run").removeClass("btn-danger");
+            $("#captcha").parent().find("span.invalid-feedback > strong").remove();
+            $("#user_password").parent().find("span.invalid-feedback > strong").remove();
+            $("ul.check-list li i.bi").hide();
+        });
+
         $("#user_number, #user_password, #captcha").on("keypress",function(e) {
             if(e.which == 13)
                 $("#run").trigger("click");
@@ -105,14 +116,14 @@
 
         @error('user_password')
         $(".step1, .step3").addClass("d-none");
-        $(".step2").removeClass("d-none");
+        $(".step2, #prev").removeClass("d-none");
         $("#user_password").focus();
         objectShake($("#user_password"));
         @enderror
 
         @error('captcha')
         $(".step1, .step2").addClass("d-none");
-        $(".step3").removeClass("d-none");
+        $(".step3, #prev2").removeClass("d-none");
         $("#captcha").focus();
         objectShake($("#captcha"));
         @enderror
@@ -168,7 +179,7 @@
             success: function (response) {
                 $("#run").prop("disabled", true);
                 $(".step1, .step2, #prev").addClass("d-none");
-                $(".step3").removeClass("d-none");
+                $(".step3, #prev2").removeClass("d-none");
                 $("#captcha").focus();
             },
             error: function (thrownError) {
@@ -284,6 +295,8 @@
                         </button>
 
                         <button class="btn btn-secondary w-100 mt-3 px-5 d-none" id="prev" type="button">{{ __('上一步') }}</button>
+
+                        <button class="btn btn-secondary w-100 mt-3 px-5 d-none" id="prev2" type="button">{{ __('上一步') }}</button>
                     </div>
                 </form>
             </div>

@@ -436,7 +436,6 @@
         </div>
     </div>
 
-
     <div class="go-top btn-secondary"><i class="bi bi-chevron-bar-up fs-3"></i></div>
     <div class="go-bottom btn-secondary"><i class="bi bi-chevron-bar-down fs-3"></i></div>
 </body>
