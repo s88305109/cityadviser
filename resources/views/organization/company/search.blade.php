@@ -23,19 +23,20 @@
 
 		$("form.search").submit(function() {
 			if ($("input[name=keyword]").val() == "") {
-				showMessageModal("請輸入搜尋關鍵字");
+				window.location.href = "/organization/company/{{ $first }}";
 				return false;
 			}
+
+			window.location.href = "/organization/company/search/" + $("input[name=keyword]").val();
+			return false;
 		});
 	});
 
 	function loadMore(page) {
         $.ajax({
-            type: "POST",
-            url: "/organization/company/moreSearch",
-            data: { keyword : '{{ $keyword }}', page :page },
+            type: "GET",
+            url: "/organization/company/moreSearch/{{ $keyword }}",
             dataType: "text",
-            headers: { "X-CSRF-TOKEN": $("meta[name=\"csrf-token\"]").attr("content") },
             success: function (response) {
             	if (response == "") 
             		end = true;

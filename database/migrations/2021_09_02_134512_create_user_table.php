@@ -35,6 +35,7 @@ class CreateUserTable extends Migration
             $table->datetime('disable_period')->nullable()->comment('議價功能關閉期限');
             $table->string('label_order')->nullable()->comment('初始畫面頁籤');            
             $table->tinyInteger('admin')->default(0)->comment('管理者權限');
+            $table->tinyInteger('role_custom')->default(0)->comment('是否啟用客製化權限');
             $table->tinyInteger('status')->default(0)->comment('帳號狀態');
             $table->dateTime('created_at', $precision = 0)->nullable()->comment('資料建立時間');
             $table->dateTime('updated_at', $precision = 0)->nullable()->comment('最後更新時間');

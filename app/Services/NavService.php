@@ -5,6 +5,7 @@ namespace App\Services;
 use Route;
 use Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Company;
 
 class NavService 
 {
@@ -37,6 +38,17 @@ class NavService
         } else if (Route::currentRouteName() == 'auth.home.organization.company') {
             if (! Auth::user()->hasPermission('employee') & Auth::user()->hasPermission('company')) 
                 return '/home';
+        } else if (Route::currentRouteName() == 'auth.home.organization.company.search') {
+            // 組織管理 > 公司管理 > 關鍵字搜尋 
+            $areas = Company::getAreas();
+            $first = empty(reset($areas)) ? '南部' : reset($areas);
+            return '/organization/company/'.$first;
+        } else if (Route::currentRouteName() == 'auth.home.organization.company.search.edit') {
+            // 組織管理 > 公司管理 > 關鍵字搜尋 > 編輯公司
+            return '/organization/company/search/'.request()->keyword;
+        } else if (Route::currentRouteName() == 'auth.home.organization.company.search.people') {
+            // 組織管理 > 公司管理 > 關鍵字搜尋 > 員工列表
+            return '/organization/company/search/'.request()->keyword;
         }
 
         $link = '/';

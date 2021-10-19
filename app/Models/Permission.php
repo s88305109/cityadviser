@@ -27,10 +27,19 @@ class Permission extends Model
     }
 
     // 更新使用者的權限設定
-    public static function updateUserPermission($user_id, $roles) 
+    public static function updateUserPermission($role_custom, $user_id, $roles) 
     {
+        $user = User::find($user_id);
+        $oldRoleCustom = $user->role_custom;
+
+        $user->role_custom = empty($role_custom) ? 0 : 1;
+        $user->save();
+
+        if (! $role_custom)
+            $roles = null;
+
         $oldData = self::getUserPermission($user_id);
-        $job     = Job::find(User::find($user_id)->job_id);
+        $job = Job::find(User::find($user_id)->job_id);
 
         if (! empty($roles)) {
             foreach($roles as $value) {
@@ -43,7 +52,7 @@ class Permission extends Model
                     $permission->save();
 
                     // 若首次新增個人客製化權限 職位通用權限內已有的項目不做事件通知
-                    if (empty($oldData) && Permission::where('job_id', $job->job_id)->where('permission', $value)->count() > 0)
+                    if ((! $oldRoleCustom & $role_custom) && Permission::where('job_id', $job->job_id)->where('permission', $value)->count() > 0)
                         continue;
 
                     $role      = Role::where('role', $value)->first();
@@ -70,7 +79,7 @@ class Permission extends Model
                     Permission::where('user_id', $user_id)->where('permission', $key)->delete();
 
                     // 若移除個人客製化權限後 職位通用權限內已有的項目不做事件通知
-                    if (empty($roles) && Permission::where('job_id', $job->job_id)->where('permission', $key)->count() > 0)
+                    if (! $role_custom && Permission::where('job_id', $job->job_id)->where('permission', $key)->count() > 0)
                         continue;
 
                     $role      = Role::where('role', $key)->first();

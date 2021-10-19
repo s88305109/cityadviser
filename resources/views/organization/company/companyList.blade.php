@@ -26,6 +26,9 @@
 				showMessageModal("請輸入搜尋關鍵字");
 				return false;
 			}
+
+			window.location.href = "/organization/company/search/" + $("input[name=keyword]").val();
+			return false;
 		});
 	});
 
@@ -55,7 +58,7 @@
 		<div class="col-md-8 list">
 			<h4><i class="bi bi-building"></i> 公司管理（公司列表）</h4>
 
-			<form class="search" method="POST" action="/organization/company/search">
+			<form class="search" method="GET" action="/organization/company/search">
 				@csrf
 				
 				<div class="input-group mb-2">

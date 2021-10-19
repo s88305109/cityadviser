@@ -303,12 +303,13 @@ class OrganizationController extends Controller
     // 個人權限設定
     public function role(Request $request)
     {
-        $user       = User::find($request->userId);
-        $permission = Permission::getUserPermission($request->userId);
-        $job        = Job::find($user->job_id);
-        $roles      = (! empty($job)) ? Role::getRoles($job->type) : array();
+        $user  = User::find($request->userId);
+        $job   = Job::find($user->job_id);
+        $roles = (! empty($job)) ? Role::getRoles($job->type) : array();
 
-        if (empty($permission))
+        if ($user->role_custom)
+            $permission = Permission::getUserPermission($request->userId);
+        else
             $permission = Permission::getJobPermission($user->job_id);
 
         return view('organization.employee.role', [
@@ -326,7 +327,7 @@ class OrganizationController extends Controller
         $company = Company::find($user->company_id);
         $region  = Region::find($company->company_city);
 
-        Permission::updateUserPermission($request->input('user_id'), $request->input('role'));
+        Permission::updateUserPermission($request->input('role_custom'), $request->input('user_id'), $request->input('role'));
 
         if ($company->type == 1)
             return redirect('/organization/employee/list/'.$request->input('state'));
@@ -702,9 +703,15 @@ class OrganizationController extends Controller
     // 公司搜尋
     public function search(Request $request)
     {
-        $companys = Company::getRecord(null, $request->input('keyword'));
+        $areas    = Company::getAreas();
+        $first    = empty(reset($areas)) ? '南部' : reset($areas);
+        $companys = Company::getRecord(null, $request->keyword);
 
-        return view('organization.company.search', ['keyword' => $request->input('keyword'), 'companys' => $companys]);
+        return view('organization.company.search', [
+            'first'    => $first,
+            'keyword'  => $request->keyword, 
+            'companys' => $companys
+        ]);
     }
 
     // 公司列表 載入更多
@@ -712,10 +719,16 @@ class OrganizationController extends Controller
     {
         sleep(0.5);
 
-        $page   = ! empty($request->page) ? $request->page : 1;
-        $companys = Company::getRecord(null, $request->input('keyword'), $page);
+        $areas    = Company::getAreas();
+        $first    = empty(reset($areas)) ? '南部' : reset($areas);
+        $page     = ! empty($request->page) ? $request->page : 1;
+        $companys = Company::getRecord(null, $request->keyword, $page);
 
-        return view('organization.company.each', ['keyword' => $request->input('keyword'), 'companys' => $companys]);
+        return view('organization.company.each', [
+            'first'    => $first,
+            'keyword'  => $request->keyword, 
+            'companys' => $companys
+        ]);
     }
 
 }

@@ -47,6 +47,12 @@ class RouteServiceProvider extends ServiceProvider
                 ->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));
         });
+
+        Route::pattern('userId', '[0-9]+');
+        Route::pattern('jobId', '[0-9]+');
+        Route::pattern('companyId', '[0-9]+');
+        Route::pattern('page', '[0-9]+');
+        Route::pattern('area', '^(北部|中部|南部|東部|離島)$');
     }
 
     /**

@@ -79,8 +79,7 @@ class User extends Authenticatable
             return true;
 
         // 檢查是否有設定個人客製化權限 若有則優先採用個人權限設定 否則採用職位通用權限
-        $count = Permission::where('user_id', Auth::user()->user_id)->count();
-        $field = ($count > 0) ? 'user_id' : 'job_id';
+        $field = (Auth::user()->role_custom) ? 'user_id' : 'job_id';
 
         // 檢查權限
         $permission = Permission::where($field, Auth::user()->$field)

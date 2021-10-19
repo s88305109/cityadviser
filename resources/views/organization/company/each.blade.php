@@ -18,8 +18,8 @@
 			</div>
 		</h6>
 		<div class="text-center">
-			<a class="btn btn-primary me-5" href="/organization/company/{{ $row->area }}/{{ $row->company_id }}">編輯公司</a>
-			<a class="btn btn-primary" href="/organization/company/{{ $row->area }}/{{ $row->company_id }}/people/on">員工列表</a>
+			<a class="btn btn-primary me-5" href="/organization/company/{{ $row->area }}/{{ $row->company_id }}{{ isset($keyword) ? '/search/'.$keyword : '' }}">編輯公司</a>
+			<a class="btn btn-primary" href="/organization/company/{{ $row->area }}/{{ $row->company_id }}/people/on{{ isset($keyword) ? '/search/'.$keyword : '' }}">員工列表</a>
 		</div>
 	</div>
 </div>
