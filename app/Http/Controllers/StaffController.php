@@ -142,7 +142,6 @@ class StaffController extends Controller
         $page   = ! empty($request->page) ? $request->page : 1;
         $per    = 20;
         $offset = ($page - 1) * $per;
-
         $users  = User::getEmployees($request->state, Auth::user()->company_id, true, 'user.date_employment', 'desc', $per, $page);
 
         return view('staff.each', ['state' => $request->state, 'users' => $users, 'offset' => $offset]);

@@ -53,6 +53,7 @@ class RouteServiceProvider extends ServiceProvider
         Route::pattern('companyId', '[0-9]+');
         Route::pattern('page', '[0-9]+');
         Route::pattern('area', '^(北部|中部|南部|東部|離島)$');
+        Route::pattern('state', '^(left|on|wait|processed)$');
     }
 
     /**

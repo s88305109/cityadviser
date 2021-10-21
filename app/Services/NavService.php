@@ -42,6 +42,7 @@ class NavService
             // 組織管理 > 公司管理 > 關鍵字搜尋 
             $areas = Company::getAreas();
             $first = empty(reset($areas)) ? '南部' : reset($areas);
+            
             return '/organization/company/'.$first;
         } else if (Route::currentRouteName() == 'auth.home.organization.company.search.edit') {
             // 組織管理 > 公司管理 > 關鍵字搜尋 > 編輯公司
@@ -57,8 +58,8 @@ class NavService
             if($i < count(Request::segments()) & $i > 0)
                 $link .= ($link == '/') ? Request::segment($i) : '/' . Request::segment($i);
 
-            if ($link == '/')
-                $link = self::getHomeUrl();
+        if ($link == '/')
+            $link = self::getHomeUrl();
         
         return $link;
     }

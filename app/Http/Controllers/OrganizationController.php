@@ -187,8 +187,8 @@ class OrganizationController extends Controller
                 $uid = Str::random(16);
             } while(User::where('user_uid', $uid)->count() > 0);
 
-            $user->user_uid   = $uid;
-            $user->status     = 1;
+            $user->user_uid = $uid;
+            $user->status   = 1;
 
             // 若是新增員工且是公司負責人則先檢查該公司是否已有任命負責人
             if($request->input('job_id') == 15 && ! empty($company->principal)) {
@@ -409,10 +409,9 @@ class OrganizationController extends Controller
     // 編輯公司資料
     public function modifyCompany(Request $request)
     {
-        $company = Company::find($request->companyId);
-
+        $company  = Company::find($request->companyId);
         $managers = User::where('job_id', 14)->orderBy('user_id')->get();   // 區經理資料
-        $region = Region::orderBy('sort')->get();                           // 縣市資料
+        $region   = Region::orderBy('sort')->get();                         // 縣市資料
 
         $company->principal_name = (! empty($company->principal)) ? User::find($company->principal)->name : '';
 
@@ -650,10 +649,9 @@ class OrganizationController extends Controller
     {
         sleep(0.5);
 
-        $page   = ! empty($request->page) ? $request->page : 1;
-        $per    = 20;
-        $offset = ($page - 1) * $per;
-
+        $page    = ! empty($request->page) ? $request->page : 1;
+        $per     = 20;
+        $offset  = ($page - 1) * $per;
         $company = Company::find($request->companyId);
         $users   = User::getEmployees('on', $request->companyId, true, 'user.date_employment', 'desc', $per, $page);
 

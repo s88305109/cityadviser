@@ -54,8 +54,8 @@ Route::middleware(['auth', 'permission'])->name('auth.')->group(function () {
 
     /** Secretary 小秘書 **/
     Route::get('/secretary', [SecretaryController::class, 'index']);                 // 小秘書頁面
-    Route::get('/secretary/{state}', [SecretaryController::class, 'index'])->where('state', '^(wait|processed)$');
-    Route::get('/secretary/more/{state}/{page}', [SecretaryController::class, 'more'])->where('state', '^(wait|processed)$');
+    Route::get('/secretary/{state}', [SecretaryController::class, 'index']);
+    Route::get('/secretary/more/{state}/{page}', [SecretaryController::class, 'more']);
     Route::get('/secretary/processAll', [SecretaryController::class, 'processAll']); // 全部處理
     Route::post('/secretary/watch', [SecretaryController::class, 'watch']);          // 事件已讀
 
@@ -85,16 +85,16 @@ Route::middleware(['auth', 'permission'])->name('auth.')->group(function () {
                 Route::post('/organization/employee/save', [OrganizationController::class, 'save']);
                 // 員工列表
                 Route::redirect('/organization/employee/list', '/organization/employee');
-                Route::get('/organization/employee/list/{state}', [OrganizationController::class, 'employeeList'])->where('state', '^(left|on)$');
+                Route::get('/organization/employee/list/{state}', [OrganizationController::class, 'employeeList']);
                 Route::get('/organization/employee/moreEmployee/{state}/{page}', [OrganizationController::class, 'moreEmployee']);
                 // 編輯員工資料
-                Route::get('/organization/employee/list/{state}/{userId}', [OrganizationController::class, 'modifyEmployee'])->where('state', '^(left|on)$');
+                Route::get('/organization/employee/list/{state}/{userId}', [OrganizationController::class, 'modifyEmployee']);
                 // 編輯員工資料 (凍結帳號)
                 Route::post('/organization/employee/lockUser', [OrganizationController::class, 'lockUser']);
                 // 編輯員工資料 (解除凍結)
                 Route::post('/organization/employee/unlockUser', [OrganizationController::class, 'unlockUser']);
                 // 個人權限設定
-                Route::get('/organization/employee/list/{state}/{userId}/role', [OrganizationController::class, 'role'])->where('state', '^(left|on)$');
+                Route::get('/organization/employee/list/{state}/{userId}/role', [OrganizationController::class, 'role']);
                 // 個人權限設定 (保存)
                 Route::post('/organization/employee/saveRole', [OrganizationController::class, 'saveRole']);
                 // 職位權限設定
@@ -124,20 +124,15 @@ Route::middleware(['auth', 'permission'])->name('auth.')->group(function () {
                 Route::get('/organization/company/{area}/{companyId}/search/{keyword}', [OrganizationController::class, 'modifyCompany'])->name('organization.company.search.edit');
                 // 員工列表
                 Route::redirect('/organization/company/{area}/{companyId}/people', '/organization/company/{area}');
-                Route::get('/organization/company/{area}/{companyId}/people/{state}', [OrganizationController::class, 'companyPeople'])
-                    ->where('state', '^(left|on)$');
-                Route::get('/organization/company/{area}/{companyId}/people/{state}/search/{keyword}', [OrganizationController::class, 'companyPeople'])
-                    ->where('state', '^(left|on)$')
-                    ->name('organization.company.search.people');
-                Route::get('/organization/company/{area}/{companyId}/morePeople/{state}/{page}', [OrganizationController::class, 'morePeople'])
-                    ->where('state', '^(left|on)$');
+                Route::get('/organization/company/{area}/{companyId}/people/{state}', [OrganizationController::class, 'companyPeople']);
+                Route::get('/organization/company/{area}/{companyId}/people/{state}/search/{keyword}', [OrganizationController::class, 'companyPeople'])->name('organization.company.search.people');
+                Route::get('/organization/company/{area}/{companyId}/morePeople/{state}/{page}', [OrganizationController::class, 'morePeople']);
                 // 編輯公司資料 (凍結公司)
                 Route::post('/organization/company/lockCompany', [OrganizationController::class, 'lockCompany']);
                 // 編輯公司資料 (解除凍結)
                 Route::post('/organization/company/unlockCompany', [OrganizationController::class, 'unlockCompany']);
                 // 編輯員工資料
-                Route::get('/organization/company/{area}/{companyId}/people/{state}/{userId}', [OrganizationController::class, 'modifyPeople'])
-                    ->where('state', '^(left|on)$');
+                Route::get('/organization/company/{area}/{companyId}/people/{state}/{userId}', [OrganizationController::class, 'modifyPeople']);
                 // 查找User公司負責人
                 Route::post('/organization/company/findUser', [OrganizationController::class, 'findUser']);
                 Route::post('/organization/company/{area}', [OrganizationController::class, 'companyList']);

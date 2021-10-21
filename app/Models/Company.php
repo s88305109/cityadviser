@@ -61,9 +61,9 @@ class Company extends Model
                 ->get();
 
         foreach($companys as $key => $row) {
-            $companys[$key]['count'] = User::getCompanyCount($row->company_id);
+            $companys[$key]['count']          = User::getCompanyCount($row->company_id);
             $companys[$key]['principal_name'] = (! empty($row->principal)) ? User::where('user_id', $row->principal)->first()->name : null;
-            $companys[$key]['area'] = Region::find($row->company_city)->area;
+            $companys[$key]['area']           = Region::find($row->company_city)->area;
         }
 
         return $companys;
